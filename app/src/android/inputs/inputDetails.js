@@ -6,10 +6,8 @@ import {
 	Text,
 	View,
 	TouchableHighlight,
-	ListView,
 	ScrollView,
 	ActivityIndicator,
-	TextInput,
 	Alert, BackHandler
 } from 'react-native';
 
@@ -26,7 +24,7 @@ class InputDetails extends Component {
 
 		this.state = {
 			serverError: false
-		}
+		};
 
 		if (props.data) {
 			this.state = {

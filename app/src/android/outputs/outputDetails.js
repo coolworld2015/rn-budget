@@ -6,7 +6,8 @@ import {
 	TouchableHighlight,
 	ScrollView,
 	ActivityIndicator,
-	Alert, BackHandler
+	Alert,
+	BackHandler
 } from 'react-native';
 
 class OutputDetails extends Component {

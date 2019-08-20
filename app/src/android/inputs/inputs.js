@@ -50,6 +50,7 @@ class Inputs extends Component {
     componentWillUpdate() {
         if (appConfig.inputs.refresh) {
             appConfig.inputs.refresh = false;
+            appConfig.assets.refresh = true;
 
             this.setState({
                 showProgress: true,

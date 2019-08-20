@@ -43,12 +43,6 @@ class Store extends Component {
         this.getItems();
 	}
 
-    componentWillReceiveProps() {
-        if (appConfig.assets.refresh) {
-            this.getItems();
-        }
-    }
-
     componentWillUpdate() {
         if (appConfig.assets.refresh) {
             appConfig.assets.refresh = false;
