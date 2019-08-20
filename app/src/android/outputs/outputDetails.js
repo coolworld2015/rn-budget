@@ -1,36 +1,29 @@
 import React, {Component} from 'react';
 import {
-    AppRegistry,
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    TouchableHighlight,
-    ListView,
-    ScrollView,
-    ActivityIndicator,
-    TabBarIOS,
-    NavigatorIOS,
-    TextInput,
-	BackAndroid,
-	Alert
+	StyleSheet,
+	Text,
+	View,
+	TouchableHighlight,
+	ScrollView,
+	ActivityIndicator,
+	Alert, BackHandler
 } from 'react-native';
 
 class OutputDetails extends Component {
     constructor(props) {
         super(props);
-		
-		BackAndroid.addEventListener('hardwareBackPress', () => {
+
+		BackHandler.addEventListener('hardwareBackPress', () => {
 			if (this.props.navigator) {
 				this.props.navigator.pop();
 			}
 			return true;
-		});			
-		
+		});
+
 		this.state = {
 			serverError: false
-		}	
-		
+		}
+
 		if (props.data) {
 			this.state = {
 				id: props.data.id,
@@ -38,25 +31,25 @@ class OutputDetails extends Component {
 				date: props.data.date,
 				project: props.data.project,
 				projectID: props.data.projectID,
-				department: props.data.department,				
-				departmentID: props.data.departmentID,				
+				department: props.data.department,
+				departmentID: props.data.departmentID,
 				employee: props.data.employee,
 				employeeID: props.data.employeeID,
-				product: props.data.product,	
-				productID: props.data.productID,				
+				product: props.data.product,
+				productID: props.data.productID,
 				description: props.data.description,
-				
+
 				priceShow: ((+props.data.price).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
 				quantityShow: ((+props.data.quantity).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
-				totalShow: ((+props.data.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),				
-				
+				totalShow: ((+props.data.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
+
 				price: props.data.price,
 				quantity: props.data.quantity,
 				total: props.data.total,
 				showProgress: false,
 				serverError: false
 			};
-		}		
+		}
     }
 
     deleteItemDialog() {
@@ -71,10 +64,10 @@ class OutputDetails extends Component {
 					}
 				},
 			]
-		);	
+		);
 	}
-	
-    deleteItem() {		
+
+    deleteItem() {
         this.setState({
             showProgress: true,
 			bugANDROID: ' '
@@ -134,12 +127,12 @@ class OutputDetails extends Component {
             });
 
     }
-    
+
 	goBack() {
 		this.props.navigator.pop();
 	}
-	
-    render() {	
+
+    render() {
         let errorCtrl, loader, image;
 
         if (this.state.serverError) {
@@ -157,7 +150,7 @@ class OutputDetails extends Component {
                 />
             </View>;
         }
-		
+
         return (
             <View style={styles.container}>
 				<View style={styles.header}>
@@ -169,7 +162,7 @@ class OutputDetails extends Component {
 							<Text style={styles.textSmall}>
 								{appConfig.language.back}
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 					<View style={styles.itemWrap}>
 						<TouchableHighlight
@@ -178,8 +171,8 @@ class OutputDetails extends Component {
 							<Text style={styles.textLarge}>
 								{this.state.project}
 							</Text>
-						</TouchableHighlight>	
-					</View>						
+						</TouchableHighlight>
+					</View>
 					<View>
 						<TouchableHighlight
 							onPress={()=> this.deleteItemDialog()}
@@ -188,107 +181,107 @@ class OutputDetails extends Component {
 							<Text style={styles.textSmall}>
 								{appConfig.language.delete}
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 				</View>
-										
+
 				<ScrollView>
 					{errorCtrl}
-						
+
 					{loader}
-					
-					<View style={styles.form}>								
+
+					<View style={styles.form}>
 						<View style={styles.itemBlock}>
 							<Text style={styles.itemTextBold}>
 								ID:
-							</Text>									
+							</Text>
 							<Text style={styles.itemText}>
 								{this.state.invoiceID}
-							</Text>		
+							</Text>
 						</View>
-						
+
 						<View style={styles.itemBlock}>
 							<Text style={styles.itemTextBold}>
 								{appConfig.language.date}:
-							</Text>									
+							</Text>
 							<Text style={styles.itemText}>
 								{this.state.date}
-							</Text>		
+							</Text>
 						</View>
-						
+
 						<View style={styles.itemBlock}>
 							<Text style={styles.itemTextBold}>
 								{appConfig.language.project}:
-							</Text>				
-							<View style={styles.itemWrap}>	
+							</Text>
+							<View style={styles.itemWrap}>
 								<Text style={styles.itemText}>
 									{this.state.project}
-								</Text>		
-							</View>	
-						</View>	
-												
+								</Text>
+							</View>
+						</View>
+
 						<View style={styles.itemBlock}>
 							<Text style={styles.itemTextBold}>
 								{appConfig.language.department}:
-							</Text>			
-							<View style={styles.itemWrap}>							
+							</Text>
+							<View style={styles.itemWrap}>
 								<Text style={styles.itemText}>
 									{this.state.department}
-								</Text>		
-							</View>		
-						</View>		
-						
+								</Text>
+							</View>
+						</View>
+
 						<View style={styles.itemBlock}>
 							<Text style={styles.itemTextBold}>
 								{appConfig.language.employee}:
-							</Text>					
-							<View style={styles.itemWrap}>	
+							</Text>
+							<View style={styles.itemWrap}>
 								<Text style={styles.itemText}>
 									{this.state.employee}
-								</Text>		
-							</View>	
-						</View>	
-						
+								</Text>
+							</View>
+						</View>
+
 						<View style={styles.itemBlock}>
 							<Text style={styles.itemTextBold}>
 								{appConfig.language.resource}:
-							</Text>				
-							<View style={styles.itemWrap}>	
+							</Text>
+							<View style={styles.itemWrap}>
 								<Text style={styles.itemText}>
 									{this.state.product}
-								</Text>		
-							</View>		
-						</View>		
-						
+								</Text>
+							</View>
+						</View>
+
 						<View style={styles.itemBlock}>
 							<Text style={styles.itemTextBold}>
 								{appConfig.language.price}:
-							</Text>									
+							</Text>
 							<Text style={styles.itemText}>
 								{this.state.priceShow}
-							</Text>		
-						</View>			
-						
+							</Text>
+						</View>
+
 						<View style={styles.itemBlock}>
 							<Text style={styles.itemTextBold}>
 								{appConfig.language.quantity}:
-							</Text>									
+							</Text>
 							<Text style={styles.itemText}>
 								{this.state.quantityShow}
-							</Text>		
-						</View>			
-						
+							</Text>
+						</View>
+
 						<View style={styles.itemBlock}>
 							<Text style={styles.itemTextBold}>
 								{appConfig.language.description}:
 							</Text>
-							<View style={styles.itemWrap}>								
+							<View style={styles.itemWrap}>
 								<Text style={styles.itemText}>
 									{this.state.description}
-								</Text>		
-							</View>			
-						</View>			
-									
+								</Text>
+							</View>
+						</View>
+
 						<Text style={styles.itemTextBold}>
 							{appConfig.language.total}: {this.state.totalShow}
 						</Text>
@@ -300,7 +293,7 @@ class OutputDetails extends Component {
 								{appConfig.language.back}
 							</Text>
 						</TouchableHighlight>
-						
+
 						<Text>{this.state.bugANDROID}</Text>
 					</View>
 				</ScrollView>
@@ -311,10 +304,10 @@ class OutputDetails extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1, 
-		justifyContent: 'center', 
+		flex: 1,
+		justifyContent: 'center',
 		backgroundColor: 'white'
-	},		
+	},
 	header: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
@@ -322,14 +315,14 @@ const styles = StyleSheet.create({
 		backgroundColor: 'darkblue',
 		borderWidth: 0,
 		borderColor: 'whitesmoke'
-	},	
+	},
 	textSmall: {
 		fontSize: 16,
 		textAlign: 'center',
 		margin: 14,
 		fontWeight: 'bold',
 		color: 'white'
-	},		
+	},
 	textLarge: {
 		fontSize: 20,
 		textAlign: 'center',
@@ -350,16 +343,16 @@ const styles = StyleSheet.create({
     },
  	itemWrap: {
 		flex: 1,
-		flexDirection: 'column', 
+		flexDirection: 'column',
 		flexWrap: 'wrap'
-    },	
+    },
     itemTextBold: {
 		fontSize: 18,
 		textAlign: 'left',
 		margin: 5,
 		fontWeight: 'bold',
 		color: 'black'
-    },    
+    },
 	itemText: {
 		fontSize: 18,
 		textAlign: 'left',
@@ -392,7 +385,7 @@ const styles = StyleSheet.create({
         color: 'red',
         paddingTop: 10,
         textAlign: 'center'
-    }	
+    }
 });
 
 export default OutputDetails;

@@ -252,14 +252,12 @@ class OutputsTab extends Component {
 
     render() {
         return (
-            <Navigator
+            <NavigationExperimental.Navigator
                 initialRoute={this.routes[0]}
                 initialRouteStack={this.routes}
                 renderScene={this.renderScene.bind(this)}
-                style={{padding: 0}}
-
                 configureScene={(route, routeStack) =>
-                    Navigator.SceneConfigs.PushFromRight}
+                    NavigationExperimental.Navigator.SceneConfigs.PushFromRight}
             />
         )
     }

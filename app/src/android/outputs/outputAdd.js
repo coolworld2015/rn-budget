@@ -1,38 +1,32 @@
 import React, {Component} from 'react';
 import {
-    AppRegistry,
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    TouchableHighlight,
-    ListView,
-    ScrollView,
-    ActivityIndicator,
-    TabBarIOS,
-    NavigatorIOS,
-    TextInput,
-    Picker,
-	Alert,
-	BackAndroid
+	StyleSheet,
+	Text,
+	View,
+	TouchableHighlight,
+	ScrollView,
+	ActivityIndicator,
+	TextInput,
+	Picker,
+	BackHandler
 } from 'react-native';
 
 class OutputAdd extends Component {
     constructor(props) {
         super(props);
-		
-		BackAndroid.addEventListener('hardwareBackPress', () => {
+
+		BackHandler.addEventListener('hardwareBackPress', () => {
 			if (this.props.navigator) {
 				this.props.navigator.pop();
 			}
 			return true;
 		});
-		
+
         let d = new Date;
         let todayDate = d.getMonth() + 1 + '/' + (d.getDate()) + '/' + d.getFullYear();
 		let time = d.toTimeString().split(' ');
 		let date = todayDate + ' ' + time[0];
-		
+
         this.state = {
             showProgress: true,
             showProgressAdd: true,
@@ -40,25 +34,25 @@ class OutputAdd extends Component {
             projects: [],
             departments: [],
             employees: [],
-            employeesFiltered: [{name: appConfig.language.selectemp}],			
+            employeesFiltered: [{name: appConfig.language.selectemp}],
             goods: [],
 			invoiceID: (appConfig.outputs.outputsCount).toString(),
 			date: date,
 			id: +new Date,
 			total: '0.00'
         };
-		
+
     }
-	
+
 	componentDidMount() {
 		this.getProjects();
 		this.getDepartments();
 		this.getEmployees();
 		this.getGoods();
 	}
-	
+
 	getGoods() {
-        fetch(appConfig.url + 'api/goods/get', {			
+        fetch(appConfig.url + 'api/goods/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -89,10 +83,10 @@ class OutputAdd extends Component {
                     showProgressAdd: false
                 });
             });
-    }	
-	
+    }
+
 	getEmployees() {
-        fetch(appConfig.url + 'api/employees/get', {			
+        fetch(appConfig.url + 'api/employees/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -119,10 +113,10 @@ class OutputAdd extends Component {
                     //showProgress: false
                 });
             });
-    }	
-	
+    }
+
 	getProjects() {
-        fetch(appConfig.url + 'api/projects/get', {			
+        fetch(appConfig.url + 'api/projects/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -152,7 +146,7 @@ class OutputAdd extends Component {
     }
 
     getDepartments() {
-        fetch(appConfig.url + 'api/departments/get', {			
+        fetch(appConfig.url + 'api/departments/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -214,7 +208,7 @@ class OutputAdd extends Component {
             this.state.date == undefined ||
             this.state.quantity == undefined ||
             this.state.description == undefined ||
-			
+
 			this.isNumber(this.state.quantity) != true) {
             this.setState({
                 invalidValue: true
@@ -226,20 +220,20 @@ class OutputAdd extends Component {
             showProgressAdd: true,
 			bugANDROID: ' '
         });
-		
+
 		appConfig.outputs.showProgress = true;
-		
+
         fetch(appConfig.url + 'api/outputs/add', {
             method: 'post',
             body: JSON.stringify({
                 id: + new Date,
 				invoiceID: this.state.invoiceID,
 				date: this.state.date,
-				price: this.state.price,				
-				quantity: this.state.quantity,				
+				price: this.state.price,
+				quantity: this.state.quantity,
 				description: this.state.description,
 				total: this.state.total,
-				
+
 				projectID: this.state.projectID,
 				project: this.state.projectName,
 				employeeID: this.state.employeeID,
@@ -262,7 +256,7 @@ class OutputAdd extends Component {
                 appConfig.assets.refresh = true;
 				appConfig.projects.refresh = true;
 				appConfig.departments.refresh = true;
-				appConfig.employees.refresh = true;				
+				appConfig.employees.refresh = true;
                 this.props.navigator.pop();
             })
             .catch((error)=> {
@@ -276,11 +270,11 @@ class OutputAdd extends Component {
                 });
             });
     }
-	
+
 	goBack() {
 		this.props.navigator.pop();
 	}
-	
+
     render() {
         var errorCtrl = <View />;
 
@@ -297,7 +291,7 @@ class OutputAdd extends Component {
                 Value required - please provide.
             </Text>;
         }
-		
+
 		var loader = <View />;
 
         if (this.state.showProgress) {
@@ -308,8 +302,8 @@ class OutputAdd extends Component {
 				style={{marginTop: 10}}
 			/>
 		}
-		
-        return (            
+
+        return (
             <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
 				<View style={{
 					flexDirection: 'row',
@@ -332,7 +326,7 @@ class OutputAdd extends Component {
 							}}>
 								{appConfig.language.back}
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 					<View>
 						<TouchableHighlight
@@ -348,8 +342,8 @@ class OutputAdd extends Component {
 							}}>
 								{appConfig.language.newrec}
 							</Text>
-						</TouchableHighlight>	
-					</View>						
+						</TouchableHighlight>
+					</View>
 					<View>
 						<TouchableHighlight
 							underlayColor='#ddd'
@@ -360,12 +354,12 @@ class OutputAdd extends Component {
 								margin: 14,
 								fontWeight: 'bold'
 							}}>
-								 
+
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 				</View>
-				
+
 				<ScrollView keyboardShouldPersistTaps={true}>
 					<View style={{
 						flex: 1,
@@ -377,9 +371,9 @@ class OutputAdd extends Component {
 						backgroundColor: 'white'
 					}}>
 						{errorCtrl}
-						
+
 						{loader}
-						
+
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
 							onChangeText={(text)=> this.setState({
@@ -399,7 +393,7 @@ class OutputAdd extends Component {
 							placeholder="date">
 						</TextInput>
 					</View>
-					
+
 					<View style={{backgroundColor: 'white'}}>
 						<View style={{
 							borderColor: 'darkblue',
@@ -429,7 +423,7 @@ class OutputAdd extends Component {
 							</Picker>
 						</View>
 					</View>
-					
+
 					<View style={{backgroundColor: 'white'}}>
 						<View style={{
 							borderColor: 'darkblue',
@@ -445,16 +439,16 @@ class OutputAdd extends Component {
                                 onValueChange={(value) => {
 									let arr = [].concat(this.state.departments);
  									let department = arr.filter((el) => el.id == value);
- 
+
  									let arrEmployees = [].concat(this.state.employees);
  									let employees = arrEmployees.filter((el) => el.departmentID == value);
-									
+
                                     this.setState({
                                         department: value,
                                         departmentID: department[0].id,
                                         departmentName: department[0].name,
 										invalidValue: false,
-										employeesFiltered: employees										
+										employeesFiltered: employees
                                     })
                                 }}>
 
@@ -464,7 +458,7 @@ class OutputAdd extends Component {
 							</Picker>
 						</View>
 					</View>
-					
+
 					<View style={{backgroundColor: 'white'}}>
 						<View style={{
 							borderColor: 'darkblue',
@@ -480,7 +474,7 @@ class OutputAdd extends Component {
                                 onValueChange={(value) => {
 									let arr = [].concat(this.state.employeesFiltered);
  									let employee = arr.filter((el) => el.id == value);
- 
+
                                     this.setState({
                                         employee: value,
                                         employeeID: employee[0].id,
@@ -494,8 +488,8 @@ class OutputAdd extends Component {
 								)}
 							</Picker>
 						</View>
-					</View>					
-					
+					</View>
+
 					<View style={{backgroundColor: 'white'}}>
 						<View style={{
 							borderColor: 'darkblue',
@@ -511,7 +505,7 @@ class OutputAdd extends Component {
                                 onValueChange={(value) => {
 									let arr = [].concat(this.state.goods);
  									let good = arr.filter((el) => el.id == value);
- 
+
                                     this.setState({
                                         good: value,
                                         productID: good[0].id,
@@ -528,7 +522,7 @@ class OutputAdd extends Component {
 							</Picker>
 						</View>
 					</View>
-										
+
 					<View style={{
 						flex: 1,
 						padding: 10,
@@ -543,12 +537,12 @@ class OutputAdd extends Component {
 							value={this.state.price}
 							placeholder={appConfig.language.price}>
 						</TextInput>
-						
+
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
 							onChangeText={(text)=> this.setState({
 								quantity: text,
-								total: ((+this.state.price)*(+text)).toFixed(2).toString(),								
+								total: ((+this.state.price)*(+text)).toFixed(2).toString(),
 								invalidValue: false
 							})}
 							style={styles.loginInputBold}
@@ -567,7 +561,7 @@ class OutputAdd extends Component {
 							value={this.state.description}
 							placeholder={appConfig.language.description}>
 						</TextInput>
-						
+
 						<View style={{
 							flexDirection: 'row',
 							marginTop: 10,
@@ -575,9 +569,9 @@ class OutputAdd extends Component {
 						}}>
 							<Text style={styles.itemTextBold}>
 								{appConfig.language.total}: {this.state.total}
-							</Text>		
-						</View>		
-						
+							</Text>
+						</View>
+
 						{validCtrl}
 
 						<TouchableHighlight
@@ -587,7 +581,7 @@ class OutputAdd extends Component {
 								{appConfig.language.submit}
 							</Text>
 						</TouchableHighlight>
-						
+
 						{errorCtrl}
 
 						<ActivityIndicator
@@ -619,7 +613,7 @@ const styles = StyleSheet.create({
 		margin: 5,
 		fontWeight: 'bold',
 		color: 'black'
-    },  
+    },
     countHeader: {
         fontSize: 16,
         textAlign: 'center',
@@ -658,7 +652,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         color: 'black',
 		fontWeight: 'bold'
-    },	
+    },
 	loginInput1: {
         height: 100,
         marginTop: 10,
@@ -669,7 +663,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         color: 'black',
 		fontWeight: 'bold'
-    },		
+    },
     button: {
         height: 50,
         //backgroundColor: '#48BBEC',
