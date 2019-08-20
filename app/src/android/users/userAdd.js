@@ -1,39 +1,45 @@
-'use strict';
-
 import React, {Component} from 'react';
 import {
+    AppRegistry,
     StyleSheet,
     Text,
     View,
+    Image,
     TouchableHighlight,
-    TouchableWithoutFeedback,
+    ListView,
     ScrollView,
     ActivityIndicator,
+    TabBarIOS,
+    NavigatorIOS,
     TextInput,
-    BackHandler
+	BackAndroid
 } from 'react-native';
 
 class UserAdd extends Component {
     constructor(props) {
         super(props);
-
-        BackHandler.addEventListener('hardwareBackPress', () => {
-            if (this.props.navigator) {
-                this.props.navigator.pop();
-            }
-            return true;
-        });
-
+		
+		BackAndroid.addEventListener('hardwareBackPress', () => {
+			if (this.props.navigator) {
+				this.props.navigator.pop();
+			}
+			return true;
+		});
+		
         this.state = {
             showProgress: false,
-            bugANDROID: ''
+			bugANDROID: ''
         }
     }
 
-    addItem() {
-        if (this.state.name === undefined || this.state.name === '' ||
-            this.state.pass === undefined || this.state.pass === '' ||
-            this.state.description === undefined || this.state.description === '') {
+    addUser() {
+		if (appConfig.users.showProgress == true) {
+            return;
+        }
+		
+        if (this.state.name == undefined ||
+            this.state.pass == undefined ||
+            this.state.description == undefined) {
             this.setState({
                 invalidValue: true
             });
@@ -42,44 +48,46 @@ class UserAdd extends Component {
 
         this.setState({
             showProgress: true,
-            bugANDROID: ' '
+			bugANDROID: ' '
         });
-
+		
+		appConfig.users.showProgress = true;
+		
         fetch(appConfig.url + 'api/users/add', {
             method: 'post',
             body: JSON.stringify({
-                id: +new Date,
+                id: + new Date,
                 name: this.state.name,
                 pass: this.state.pass,
                 description: this.state.description,
-                authorization: appConfig.access_token
+				authorization: appConfig.access_token
             }),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         })
-            .then((response) => response.json())
-            .then((responseData) => {
+            .then((response)=> response.json())
+            .then((responseData)=> {
                 appConfig.users.refresh = true;
                 this.props.navigator.pop();
             })
-            .catch((error) => {
+            .catch((error)=> {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(() => {
+            .finally(()=> {
                 this.setState({
                     showProgress: false
                 });
             });
     }
-
-    goBack() {
-        this.props.navigator.pop();
-    }
-
+	
+	goBack() {
+		this.props.navigator.pop();
+	}
+	
     render() {
         let errorCtrl, validCtrl, loader;
 
@@ -88,7 +96,7 @@ class UserAdd extends Component {
                 Something went wrong.
             </Text>;
         }
-
+		
         if (this.state.invalidValue) {
             validCtrl = <Text style={styles.error}>
                 Value required - please provide.
@@ -104,156 +112,176 @@ class UserAdd extends Component {
                 />
             </View>;
         }
-		
+
         return (
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <View>
+            <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
+				<View style={{
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					backgroundColor: 'darkblue',
+					borderWidth: 0,
+					borderColor: 'whitesmoke'
+				}}>
+					<View>
 						<TouchableHighlight
 							onPress={()=> this.goBack()}
 							underlayColor='darkblue'
 						>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                    Back
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback underlayColor='#ddd'>
-                            <View>
-                                <Text style={styles.textLarge}>
-                                    New record
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback underlayColor='#ddd'>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                </View>
+							<Text style={{
+								fontSize: 16,
+								textAlign: 'center',
+								margin: 14,
+								fontWeight: 'bold',
+								color: 'white'
+							}}>
+								{appConfig.language.back}
+							</Text>
+						</TouchableHighlight>	
+					</View>
+					<View>
+						<TouchableHighlight
+							underlayColor='#ddd'
+						>
+							<Text style={{
+								fontSize: 20,
+								textAlign: 'center',
+								margin: 10,
+								marginRight: 40,
+								fontWeight: 'bold',
+								color: 'white'
+							}}>
+								{appConfig.language.newrec}
+							</Text>
+						</TouchableHighlight>	
+					</View>						
+					<View>
+						<TouchableHighlight
+							underlayColor='#ddd'
+						>
+							<Text style={{
+								fontSize: 16,
+								textAlign: 'center',
+								margin: 14,
+								fontWeight: 'bold'
+							}}>
+								 
+							</Text>
+						</TouchableHighlight>	
+					</View>
+				</View>
+				
+				<ScrollView keyboardShouldPersistTaps={true}>
+					{errorCtrl}						
+					{loader}
+					
+					<View style={{
+						flex: 1,
+						padding: 10,
+						justifyContent: 'flex-start',
+						paddingBottom: 130,
+						backgroundColor: 'white'
+					}}>
+						<TextInput
+							underlineColorAndroid='rgba(0,0,0,0)'
+							onChangeText={(text)=> this.setState({
+								name: text,
+								invalidValue: false
+							})}
+							style={styles.loginInput}
+							value={this.state.name}
+							placeholder={appConfig.language.login}>
+						</TextInput>
 
-                <ScrollView keyboardShouldPersistTaps='always'>
-                    <View style={styles.form}>
-                        <TextInput
-                            underlineColorAndroid='rgba(0,0,0,0)'
-                            onChangeText={(text) => this.setState({
-                                name: text,
-                                invalidValue: false
-                            })}
-                            style={styles.formInput}
-                            value={this.state.name}
-                            placeholder='Login'>
-                        </TextInput>
+						<TextInput
+							underlineColorAndroid='rgba(0,0,0,0)'
+							onChangeText={(text)=> this.setState({
+								pass: text,
+								invalidValue: false
+							})}
+							style={styles.loginInput}
+							value={this.state.pass}
+							placeholder={appConfig.language.pass}>
+						</TextInput>
 
-                        <TextInput
-                            underlineColorAndroid='rgba(0,0,0,0)'
-                            onChangeText={(text) => this.setState({
-                                pass: text,
-                                invalidValue: false
-                            })}
-                            style={styles.formInput}
-                            value={this.state.pass}
-                            placeholder='Password'>
-                        </TextInput>
+						<TextInput
+							underlineColorAndroid='rgba(0,0,0,0)'
+							multiline={true}
+							onChangeText={(text)=> this.setState({
+								description: text,
+								invalidValue: false
+							})}
+							style={styles.loginInput1}
+							value={this.state.description}
+							placeholder={appConfig.language.description}>
+						</TextInput>
 
-                        <TextInput
-                            underlineColorAndroid='rgba(0,0,0,0)'
-                            multiline={true}
-                            onChangeText={(text) => this.setState({
-                                description: text,
-                                invalidValue: false
-                            })}
-                            style={styles.formInputArea}
-                            value={this.state.description}
-                            placeholder='Description'>
-                        </TextInput>
+						{validCtrl}
 
-                        {validCtrl}
+						<TouchableHighlight
+							onPress={()=> this.addUser()}
+							style={styles.button}>
+							<Text style={styles.buttonText}>{appConfig.language.add}</Text>
+						</TouchableHighlight>
 
-                        <TouchableHighlight
-                            onPress={() => this.addItem()}
-                            style={styles.button}>
-                            <Text style={styles.buttonText}>
-                                Add
-                            </Text>
-                        </TouchableHighlight>
-
-                        {errorCtrl}
+						<ActivityIndicator
+							animating={this.state.showProgress}
+							size="large"
+							style={styles.loader}
+						/>
 						
-						{loader}
-
-                        <Text>{this.state.bugANDROID}</Text>
-                    </View>
-                </ScrollView>
-            </View>
+						<Text>{this.state.bugANDROID}</Text>
+					</View>
+				</ScrollView>
+			</View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
+    AppContainer: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white'
+        alignItems: 'center',
+        backgroundColor: 'gray',
     },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
-        borderWidth: 0,
-        borderColor: 'whitesmoke'
-    },
-    textSmall: {
+    countHeader: {
         fontSize: 16,
         textAlign: 'center',
-        margin: 16,
-        fontWeight: 'bold',
-        color: 'white'
+        padding: 15,
+        backgroundColor: '#F5FCFF',
     },
-    textLarge: {
+    countFooter: {
+        fontSize: 16,
+        textAlign: 'center',
+        padding: 10,
+        borderColor: '#D7D7D7',
+        backgroundColor: 'whitesmoke'
+    },
+    welcome: {
         fontSize: 20,
         textAlign: 'center',
-        margin: 10,
-        marginTop: 12,
-        marginRight: 40,
-        fontWeight: 'bold',
-        color: 'white'
+        margin: 20,
     },
-    form: {
-        flex: 1,
-        padding: 10,
-        justifyContent: 'flex-start',
-        paddingBottom: 130,
-        backgroundColor: 'white'
-    },
-    formInput: {
+    loginInput: {
         height: 50,
         marginTop: 10,
         padding: 4,
         fontSize: 18,
         borderWidth: 1,
-        borderColor: 'lightgray',
+        borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black'
     },
-    formInputArea: {
+	loginInput1: {
         height: 100,
         marginTop: 10,
         padding: 4,
         fontSize: 18,
         borderWidth: 1,
-        borderColor: 'lightgray',
+        borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black'
-    },
+    },	
     button: {
         height: 50,
         //backgroundColor: '#48BBEC',
@@ -268,7 +296,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 20,
-        fontWeight: 'bold'
+		fontWeight: 'bold'
     },
     loader: {
         marginTop: 20
@@ -277,6 +305,12 @@ const styles = StyleSheet.create({
         color: 'red',
         paddingTop: 10,
         textAlign: 'center'
+    },
+    img: {
+        height: 95,
+        width: 75,
+        borderRadius: 20,
+        margin: 20
     }
 });
 

@@ -6,120 +6,84 @@ import {
     Text,
     View,
     TouchableHighlight,
-    TouchableWithoutFeedback,
-    ScrollView,
-    BackHandler
+    ScrollView
 } from 'react-native';
 
 class AuditDetails extends Component {
     constructor(props) {
         super(props);
 
-        BackHandler.addEventListener('hardwareBackPress', () => {
-            if (this.props.navigator) {
-                this.props.navigator.pop();
-            }
-            return true;
-        });
+        let ip = props.pushEvent.ip.split(':');
 
         this.state = {
-            name: ''
+            id: props.pushEvent.id,
+            name: props.pushEvent.name,
+            date: props.pushEvent.date,
+            ip: ip[3],
+            description: props.pushEvent.description,
+            showProgress: false
         };
-
-        if (props) {
-            let ip = appConfig.audit.item.ip.split(':');
-
-            this.state = {
-                id: appConfig.audit.item.id,
-                name: appConfig.audit.item.name,
-                date: appConfig.audit.item.date,
-                ip: ip[3],
-                description: appConfig.audit.item.description,
-                showProgress: false
-            };
-        }
     }
 
     goBack() {
-        this.props.navigation.goBack();
+        this.props.navigator.pop();
     }
 
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.header}>
-                    <View>
-						<TouchableHighlight
-							onPress={()=> this.goBack()}
-							underlayColor='darkblue'
-						>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                    Back
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback>
-                            <View>
-                                <Text style={styles.textLarge}>
-                                    {this.state.date}
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                </View>
-
                 <ScrollView>
                     <View style={styles.form}>
                         <View style={styles.itemBlock}>
                             <Text style={styles.itemTextBold}>
                                 User:
                             </Text>
-                            <Text style={styles.itemText}>
-                                {this.state.name}
-                            </Text>
+                            <View style={styles.itemWrap}>
+                                <Text style={styles.itemText}>
+                                    {this.state.name}
+                                </Text>
+                            </View>
                         </View>
 
                         <View style={styles.itemBlock}>
                             <Text style={styles.itemTextBold}>
                                 Date:
                             </Text>
-                            <Text style={styles.itemText}>
-                                {this.state.date}
-                            </Text>
+                            <View style={styles.itemWrap}>
+                                <Text style={styles.itemText}>
+                                    {this.state.date}
+                                </Text>
+                            </View>
                         </View>
 
                         <View style={styles.itemBlock}>
                             <Text style={styles.itemTextBold}>
                                 IP:
                             </Text>
-                            <Text style={styles.itemText}>
-                                {this.state.ip}
-                            </Text>
+                            <View style={styles.itemWrap}>
+                                <Text style={styles.itemText}>
+                                    {this.state.ip}
+                                </Text>
+                            </View>
                         </View>
 
                         <View style={styles.itemBlock}>
                             <Text style={styles.itemTextBold}>
                                 ID:
                             </Text>
-                            <Text style={styles.itemText}>
-                                {this.state.id}
-                            </Text>
+                            <View style={styles.itemWrap}>
+                                <Text style={styles.itemText}>
+                                    {this.state.id}
+                                </Text>
+                            </View>
                         </View>
 
                         <View style={styles.itemBlock}>
+                            <Text style={styles.itemTextBold}>
+                                Description:
+                            </Text>
                             <View style={styles.itemWrap}>
-                                <Text style={styles.itemTextBold}>
+                                <Text style={styles.itemText}>
                                     {this.state.description}
                                 </Text>
                             </View>
@@ -132,12 +96,10 @@ class AuditDetails extends Component {
                                 Back
                             </Text>
                         </TouchableHighlight>
-
-                        <Text>{this.state.bugANDROID}</Text>
                     </View>
                 </ScrollView>
             </View>
-        )
+        );
     }
 }
 
@@ -146,35 +108,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         backgroundColor: 'white'
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
-        borderWidth: 0,
-        borderColor: 'whitesmoke'
-    },
-    textSmall: {
-        fontSize: 16,
-        textAlign: 'center',
-        margin: 16,
-        fontWeight: 'bold',
-        color: 'white'
-    },
-    textLarge: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-        marginTop: 12,
-        marginRight: 40,
-        fontWeight: 'bold',
-        color: 'white'
-    },
-	itemWrap: {
-        flex: 1,
-        flexDirection: 'column',
-        flexWrap: 'wrap'
     },
     form: {
         flex: 1,
@@ -186,24 +119,28 @@ const styles = StyleSheet.create({
     itemBlock: {
         flexDirection: 'row'
     },
+    itemWrap: {
+        flex: 1,
+        flexDirection: 'column',
+        flexWrap: 'wrap'
+    },
     itemTextBold: {
-        fontSize: 18,
+        fontSize: 20,
         textAlign: 'left',
-        margin: 5,
+        margin: 10,
         fontWeight: 'bold',
         color: 'black'
     },
     itemText: {
-        fontSize: 18,
+        fontSize: 20,
         textAlign: 'left',
-        margin: 5,
+        margin: 10,
         marginLeft: 2,
         color: 'black'
     },
     button: {
         height: 50,
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
+        backgroundColor: '#48BBEC',
         borderColor: '#48BBEC',
         alignSelf: 'stretch',
         marginTop: 10,
@@ -215,14 +152,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 20,
         fontWeight: 'bold'
-    },
-    loader: {
-        marginTop: 20
-    },
-    error: {
-        color: 'red',
-        paddingTop: 10,
-        textAlign: 'center'
     }
 });
 

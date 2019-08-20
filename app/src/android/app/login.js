@@ -19,8 +19,8 @@ class Login extends Component {
 
         this.state = {
             showProgress: false,
-            username: '1',
-            password: '1',
+            //username: '2',
+            //password: '2',
             bugANDROID: ''
         }
     }
@@ -32,6 +32,10 @@ class Login extends Component {
     }
 
     onLogin() {
+        if (appConfig.login.showProgress === true) {
+            return;
+        }
+
         if (this.state.username === undefined || this.state.username === '' ||
             this.state.password === undefined || this.state.password === '') {
             this.setState({
@@ -41,10 +45,12 @@ class Login extends Component {
         }
 
         this.setState({
-            showProgress: true
+            showProgress: true,
+			badCredentials: false,
+            bugANDROID: ' '
         });
 
-
+        appConfig.login.showProgress = true;
 
         fetch(appConfig.url + 'api/login', {
             method: 'post',
@@ -62,27 +68,33 @@ class Login extends Component {
             .then((responseData) => {
                 if (responseData.token) {
                     appConfig.access_token = responseData.token;
+
                     this.setState({
                         badCredentials: false
                     });
+
                     this.props.onLogin();
                 } else {
                     this.setState({
-                        badCredentials: true,
-                        showProgress: false
+                        badCredentials: true
                     });
                 }
             })
             .catch((error) => {
                 this.setState({
-                    badCredentials: true,
-                    showProgress: false
+                    badCredentials: true
                 });
             })
+            .finally(() => {
+                appConfig.login.showProgress = false;
+                this.setState({
+                    showProgress: false
+                });
+            });
     }
 
     render() {
-        let errorCtrl, showProgress;
+        let errorCtrl;
 
         if (this.state.badCredentials) {
             errorCtrl = <Text style={styles.error}>
@@ -90,29 +102,20 @@ class Login extends Component {
             </Text>;
         }
 
-        if (this.state.showProgress) {
-            showProgress =  <ActivityIndicator
-                animating={this.state.showProgress}
-                size="large"
-                color="darkblue"
-                style={styles.loader}
-            />;
-        }
-
         return (
-            <ScrollView style={{backgroundColor: 'whitesmoke'}} keyboardShouldPersistTaps='always'>
+            <ScrollView style={{backgroundColor: 'whitesmoke'}} keyboardShouldPersistTaps={true}>
                 <View style={styles.container}>
-
+				
                     <View style={styles.headerContainer}>
                         <Text style={styles.heading}>
-                            RN-Base
+                            {appConfig.language.title}
                         </Text>
                     </View>
-
-					<Image style={styles.logo}
+									
+                    <Image style={styles.logo}
                            source={require('../../../img/logo.jpg')}
                     />
-
+					
                     <TextInput
                         underlineColorAndroid='rgba(0,0,0,0)'
                         onChangeText={(text) => this.setState({
@@ -121,7 +124,7 @@ class Login extends Component {
                         })}
                         style={{
                             height: 50,
-                            width: Dimensions.get('window').width * .9,
+                            width: this.state.width * .90,
                             marginTop: 10,
                             padding: 4,
                             fontSize: 18,
@@ -132,8 +135,7 @@ class Login extends Component {
                             backgroundColor: 'white'
                         }}
                         value={this.state.username}
-                        editable = {!this.state.showProgress}
-                        placeholder='Login'>
+                        placeholder={appConfig.language.login}>
                     </TextInput>
 
                     <TextInput
@@ -144,7 +146,7 @@ class Login extends Component {
                         })}
                         style={{
                             height: 50,
-                            width: Dimensions.get('window').width * .9,
+                            width: this.state.width * .90,
                             marginTop: 10,
                             padding: 4,
                             fontSize: 18,
@@ -155,32 +157,51 @@ class Login extends Component {
                             backgroundColor: 'white'
                         }}
                         value={this.state.password}
-                        editable = {!this.state.showProgress}
-                        placeholder='Password'
+                        placeholder={appConfig.language.pass}
                         secureTextEntry={true}>
                     </TextInput>
 
                     <TouchableHighlight
+                        //onPress={this.onLoginPressed.bind(this)}
                         onPress={() => this.onLogin()}
-                        disabled = {this.state.showProgress}
                         style={styles.button}>
                         <Text style={styles.buttonText}>
-                            Log in
+                            {appConfig.language.enter}
                         </Text>
                     </TouchableHighlight>
 
                     {errorCtrl}
 
-                    {showProgress}
+                    <ActivityIndicator
+                        animating={this.state.showProgress}
+                        size="large"
+						color="darkblue"
+                        style={styles.loader}
+                    />
 
                     <Text>{this.state.bugANDROID}</Text>
                 </View>
             </ScrollView>
         )
     }
+
+    onLoginPressed() {
+        this.props.onLogin();
+    }
 }
 
 const styles = StyleSheet.create({
+    AppContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
+    },
+    welcome: {
+        fontSize: 20,
+        textAlign: 'center',
+        margin: 20,
+    },
     container: {
         paddingTop: 40,
         padding: 10,
@@ -192,9 +213,9 @@ const styles = StyleSheet.create({
         height: 150,
         paddingTop: 140,
         borderRadius: 20,
-		//marginBottom: 10
+		marginBottom: 10
     },
-    headerContainer: {
+	headerContainer: {
         justifyContent: 'center',
         alignItems: 'center',
 		marginBottom: 10,
@@ -207,14 +228,38 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center'
     },
+    footer: {
+        fontSize: 30,
+        marginTop: 10,
+    },
+    loginInput1: {
+        height: 50,
+        marginTop: 10,
+        padding: 4,
+        fontSize: 18,
+        borderWidth: 1,
+        borderColor: '#48BBEC',
+        borderRadius: 0,
+        color: '#48BBEC'
+    },
+    loginInput: {
+        height: 50,
+        marginTop: 10,
+        padding: 4,
+        fontSize: 18,
+        borderWidth: 1,
+        borderColor: 'lightgray',
+        borderRadius: 0,
+        color: 'black',
+        backgroundColor: 'white'
+    },
     button: {
         height: 50,
         //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
         borderColor: '#48BBEC',
         alignSelf: 'stretch',
-        marginTop: 20,
-        margin: 5,
+        marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5

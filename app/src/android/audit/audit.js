@@ -7,6 +7,7 @@ import {
     View,
     TouchableHighlight,
     TouchableWithoutFeedback,
+    ListView,
     ScrollView,
     ActivityIndicator,
     TextInput,
@@ -15,14 +16,12 @@ import {
 	RefreshControl
 } from 'react-native';
 
-import ListView from 'deprecated-react-native-listview';
-
 class Audit extends Component {
     constructor(props) {
         super(props);
 
-        let ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
+        var ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 != r2
         });
 
         this.state = {
@@ -36,14 +35,14 @@ class Audit extends Component {
 			refreshing: false
         };
     }
-
-    componentDidMount() {
+	
+	componentDidMount() {
 		this.setState({
             width: Dimensions.get('window').width
         });
         this.getItems();
-    }
-
+	}
+	
     getItems() {
 		this.setState({
 			serverError: false,
@@ -52,18 +51,17 @@ class Audit extends Component {
             positionY: 0,
 			searchQuery: ''
         });
-
+		
         fetch(appConfig.url + 'api/audit/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': appConfig.access_token
+				'Authorization': appConfig.access_token
             }
         })
-            .then((response) => response.json())
-            .then((responseData) => {
-
+            .then((response)=> response.json())
+            .then((responseData)=> {			
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(responseData.slice(0, 15)),
                     resultsCount: responseData.length,
@@ -71,12 +69,15 @@ class Audit extends Component {
                     filteredItems: responseData
                 });
             })
-            .catch((error) => {
+            .catch((error)=> {
                 this.setState({
                     serverError: true
                 });
+				setTimeout(() => {
+					appConfig.onLogOut();
+				}, 1000);
             })
-            .finally(() => {
+            .finally(()=> {
                 this.setState({
                     showProgress: false
                 });
@@ -84,16 +85,22 @@ class Audit extends Component {
     }
 
     showDetails(rowData) {
-        this.props.navigator.push({
-            index: 1,
-            data: rowData
-        });
+		this.props.navigator.push({
+			index: 61,
+			data: rowData
+		});
     }
-
+	
+	addAudit() {
+		this.props.navigator.push({
+			index: 62
+		});
+    }
+	
     renderRow(rowData) {
         return (
             <TouchableHighlight
-                onPress={() => this.showDetails(rowData)}
+                onPress={()=> this.showDetails(rowData)}
                 underlayColor='#ddd'
             >
                 <View style={styles.row}>
@@ -106,35 +113,48 @@ class Audit extends Component {
     }
 
     refreshData(event) {
-        if (this.state.showProgress === true) {
+        if (this.state.showProgress == true) {
             return;
         }
 
-        if (this.state.filteredItems === undefined) {
+        if (event.nativeEvent.contentOffset.y <= -150) {
+            this.setState({
+                showProgress: true,
+                resultsCount: 0,
+                recordsCount: 15,
+                positionY: 0,
+                searchQuery: ''
+            });
+
+            setTimeout(() => {
+                this.getItems()
+            }, 300);
+        }
+
+        if (this.state.filteredItems == undefined) {
             return;
         }
 
-        let items, positionY, recordsCount;
-        recordsCount = this.state.recordsCount;
-        positionY = this.state.positionY;
-        items = this.state.filteredItems.slice(0, recordsCount);
+        var recordsCount = this.state.recordsCount;
+        var positionY = this.state.positionY;
+        var items = this.state.filteredItems.slice(0, recordsCount);
 
-        if (event.nativeEvent.contentOffset.y >= positionY - 10) {
+        if (event.nativeEvent.contentOffset.y >= positionY) {
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(items),
                 recordsCount: recordsCount + 10,
-                positionY: positionY + 500
+                positionY: positionY + 400
             });
         }
     }
 
     onChangeText(text) {
-        if (this.state.dataSource === undefined) {
+        if (this.state.dataSource == undefined) {
             return;
         }
 
-        let arr = [].concat(this.state.responseData);
-        let items = arr.filter((el) => el.name.toLowerCase().indexOf(text.toLowerCase()) !== -1);
+        var arr = [].concat(this.state.responseData);
+        var items = arr.filter((el) => el.name.toLowerCase().indexOf(text.toLowerCase()) != -1);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(items),
             resultsCount: items.length,
@@ -142,35 +162,31 @@ class Audit extends Component {
             searchQuery: text
         })
     }
+	
+	refreshDataAndroid() {
+		this.setState({
+			showProgress: true,
+			resultsCount: 0
+		});
 
-    refreshDataAndroid() {
-        this.setState({
-            showProgress: true,
-            resultsCount: 0
-        });
-
-        this.getItems();
-    }
-
-    goBack() {
-        this.props.navigator.pop();
-    }
-
-    clearSearchQuery() {
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(this.state.responseData.slice(0, 15)),
+		this.getItems();
+	}
+	
+	goBack() {
+		this.props.navigator.pop();
+	}
+	
+	clearSearchQuery() {
+		this.setState({
+			dataSource: this.state.dataSource.cloneWithRows(this.state.responseData.slice(0, 15)),
             resultsCount: this.state.responseData.length,
             filteredItems: this.state.responseData,
-            positionY: 0,
-            recordsCount: 15,
-            searchQuery: ''
-        });
-    }
-
-    onMenu() {
-        appConfig.drawer.openDrawer();
-    }
-
+			positionY: 0,
+			recordsCount: 15,
+			searchQuery: ''
+		});
+	}
+	
     render() {
         let errorCtrl, loader, image;
 
@@ -205,19 +221,22 @@ class Audit extends Component {
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View>
-                        <TouchableWithoutFeedback onPress={this.onMenu.bind(this)}>
+						<TouchableHighlight
+							onPress={()=> this.goBack()}
+							underlayColor='darkblue'
+						>
                             <View>
-                                <Image style={styles.menu}
-                                   source={require('../../../img/menu.png')}
-                                />
+                                <Text style={styles.textSmall}>
+									{appConfig.language.back}
+                                </Text>
                             </View>
-                        </TouchableWithoutFeedback>
+                        </TouchableHighlight>
                     </View>
                     <View>
                         <TouchableWithoutFeedback>
                             <View>
                                 <Text style={styles.textLarge}>
-                                    Audit
+                                    {appConfig.language.audit}
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
@@ -226,13 +245,12 @@ class Audit extends Component {
                         <TouchableWithoutFeedback>
                             <View>
                                 <Text style={styles.textSmall}>
-									New
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
                 </View>
-
+				
                 <View style={styles.iconForm}>
 					<View>
 						<TextInput
@@ -245,10 +263,10 @@ class Audit extends Component {
 								borderWidth: 3,
 								borderColor: 'white',
 								borderRadius: 0,
-								width: Dimensions.get('window').width * .90,
+								width: this.state.width * .90,
 							}}
 							value={this.state.searchQuery}
-							placeholder="Search here">
+							placeholder={appConfig.language.search}>
 						</TextInput>
 					</View>
 					<View style={{
@@ -258,12 +276,12 @@ class Audit extends Component {
 						borderColor: 'white',
 						marginLeft: -10,
 						paddingLeft: 5,
-						width: Dimensions.get('window').width * .10,
-					}}>
+						width: this.state.width * .10,
+					}}>			
 						<TouchableWithoutFeedback
 							onPress={() => this.clearSearchQuery()}
-						>
-							<View>
+						>			
+							<View>					
 								{image}
 							</View>
 						</TouchableWithoutFeedback>
@@ -272,8 +290,8 @@ class Audit extends Component {
 
                 {errorCtrl}
 
-                {loader}
-
+                {loader}	
+				
 				<ScrollView onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}
 					refreshControl={
 						<RefreshControl
@@ -289,12 +307,13 @@ class Audit extends Component {
 						renderRow={this.renderRow.bind(this)}
 					/>
 				</ScrollView>
+				
+				<View style={{marginBottom: 0}}>
+					<Text style={styles.countFooter}>
+						{appConfig.language.records} {this.state.resultsCount.toString()} 
+					</Text>
+				</View>
 
-                <View>
-                    <Text style={styles.countFooter}>
-                        Records: {this.state.resultsCount.toString()}
-                    </Text>
-                </View>
             </View>
         )
     }
@@ -324,6 +343,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         margin: 14,
+		marginBottom: 10,
         fontWeight: 'bold',
         color: 'white'
     },
@@ -331,8 +351,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
-        marginTop: 12,
-        paddingLeft: 10,
+        marginRight: 60,
         fontWeight: 'bold',
         color: 'white'
     },
@@ -377,11 +396,6 @@ const styles = StyleSheet.create({
         color: 'red',
         paddingTop: 10,
         textAlign: 'center'
-    },
-    menu: {
-        alignItems: 'center',
-        margin: 14,
-        marginTop: 16
     }
 });
 

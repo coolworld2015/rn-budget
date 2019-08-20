@@ -6,32 +6,181 @@ import {
     Text,
     View,
     TouchableHighlight,
-    TouchableWithoutFeedback,
+	TouchableWithoutFeedback,
+    ListView,
     ScrollView,
+    ActivityIndicator,
     TextInput,
     Switch,
-    Dimensions
+	Dimensions,
+	Picker,
+	DatePickerAndroid
 } from 'react-native';
 
 class Search extends Component {
     constructor(props) {
         super(props);
-
+		
+		var width = Dimensions.get('window').width;
+		
+        var ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 != r2
+        });
+		
+		let d = new Date;
+		var todayDate = d.toLocaleDateString();
+		
         this.state = {
             showProgress: false,
-            eventSwitchTitle: false,
-            eventSwitchBase: false,
-            textSwitchBase: 'Search by phone',
-            bugANDROID: ''
+			serverError: false,
+            eventSwitchTitle: true,
+			eventSwitchBase: true,
+            textSwitchBase: 'Choose project',
+			projectName: appConfig.language.allproj,
+			departmentName: appConfig.language.alldep,
+			employeeName: appConfig.language.allemp,
+			bugANDROID: '',
+            projects: [],
+            departments: [],
+            employees: [],
+            dataSource: ds.cloneWithRows([]),
+			
+			presetDate: new Date(),
+			simpleDate: new Date(),
+			spinnerDate: new Date(),
+			calendarDate: new Date(),
+			defaultDate: new Date(),
+			allDate: new Date(),
+			startText: '01/01/18',
+			endText: todayDate,
+			simpleText: 'pick a date',
+			spinnerText: 'pick a date',
+			calendarText: 'pick a date',
+			defaultText: 'pick a date',
+			minText: 'pick a date, no earlier than today',
+			maxText: 'pick a date, no later than today',
+			presetText: 'pick a date, preset to 2020/5/5',
+			allText: 'pick a date between 2020/5/1 and 2020/5/10'
         }
     }
-
-    componentDidMount() {
-        this.setState({
-            width: Dimensions.get('window').width
+	
+	componentDidMount() {
+		this.setState({
+			width: Dimensions.get('window').width
         });
+		this.getProjects();
+		this.getDepartments();
+		this.getEmployees();
+	}
+	
+	getProjects() {
+        fetch(appConfig.url + 'api/projects/get', {			
+            method: 'get',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+				'Authorization': appConfig.access_token
+            }
+        })
+            .then((response)=> response.json())
+            .then((responseData)=> {
+				var items = responseData.sort(this.sort);
+				items.unshift({name: appConfig.language.allproj});
+                this.setState({
+                    projects: items,
+					serverError: false
+                });
+            })
+            .catch((error)=> {
+                this.setState({
+                    serverError: true
+                });
+				setTimeout(() => {
+					appConfig.onLogOut();
+				}, 1000);
+            })
+            .finally(()=> {
+                this.setState({
+                    //showProgress: false
+                });
+            });
     }
 
+    getDepartments() {
+        fetch(appConfig.url + 'api/departments/get', {			
+            method: 'get',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+				'Authorization': appConfig.access_token
+            }
+        })
+            .then((response)=> response.json())
+            .then((responseData)=> {
+				var items = responseData.sort(this.sort);
+				items.unshift({name: appConfig.language.alldep});
+                this.setState({
+                    departments: items,
+					serverError: false
+                });
+            })
+            .catch((error)=> {
+                this.setState({
+                    serverError: true
+                });
+            })
+            .finally(()=> {
+                this.setState({
+                    //showProgress: false
+                });
+            });
+    }
+
+	getEmployees() {
+        fetch(appConfig.url + 'api/employees/get', {			
+            method: 'get',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+				'Authorization': appConfig.access_token
+            }
+        })
+            .then((response)=> response.json())
+            .then((responseData)=> {
+				var items = responseData.sort(this.sort);
+				items.unshift({name: appConfig.language.allemp});
+                this.setState({
+                    employees: items,
+					serverError: false
+                });
+            })
+            .catch((error)=> {
+                this.setState({
+                    serverError: true
+                });
+            })
+            .finally(()=> {
+                this.setState({
+                    //showProgress: false
+                });
+            });
+    }
+	
+    sort(a, b) {
+        var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
+        if (nameA < nameB) {
+            return -1
+        }
+        if (nameA > nameB) {
+            return 1
+        }
+        return 0;
+    }
+	
+    goBack() {
+		this.props.navigator.pop();
+	}
+	
     clearSearch() {
         this.setState({
             searchQuery: '',
@@ -39,42 +188,56 @@ class Search extends Component {
         })
     }
 
-    onSearchPressed() {
-        if (this.state.searchQuery === undefined ||
-            this.state.searchQuery === '') {
-            this.setState({
-                invalidValue: true
-            });
-            return;
-        }
-
-        this.props.navigator.push({
-            index: 3,
-            data: {
-                searchQuery: this.state.searchQuery,
-                searchType: this.state.textSwitchBase
-            }
-        });
+    onSearchPressed() { 
+		this.props.navigator.push({
+			index: 2,
+			data: {
+				projectName: this.state.projectName,
+				departmentName: this.state.departmentName,
+				employeeName: this.state.employeeName,
+				startDate: this.state.startText,
+				endDate: this.state.endText
+			}
+		});
     }
-
+	
     toggleTypeChange() {
-        if (this.state.eventSwitchBase) {
+        if (!this.state.eventSwitchBase) {
             this.setState({
-                textSwitchBase: 'Search by phone'
+                textSwitchBase: 'Choose project'
             });
         } else {
             this.setState({
-                textSwitchBase: 'Search by name'
+                textSwitchBase: 'Choose project'
             });
         }
     }
-
-    goBack() {
-        this.props.navigator.pop();
-    }
+	
+	showPicker = async (stateKey, options) => {
+		try {
+			var newState = {};
+			const {action, year, month, day} = await DatePickerAndroid.open(options);
+			if (action === DatePickerAndroid.dismissedAction) {
+				//newState[stateKey + 'Text'] = 'dismissed';
+			} else {
+				var date = new Date(year, month, day);
+				newState[stateKey + 'Text'] = date.toLocaleDateString();
+				newState[stateKey + 'Date'] = date;
+			}
+			this.setState(newState);
+		} catch ({code, message}) {
+			console.warn(`Error in example '${stateKey}': `, message);
+		}
+	};
 
     render() {
-        let validCtrl;
+        let errorCtrl, validCtrl, loader;
+
+        if (this.state.serverError) {
+            errorCtrl = <Text style={styles.error}>
+                Something went wrong.
+            </Text>;
+        }
 
         if (this.state.invalidValue) {
             validCtrl = <Text style={styles.error}>
@@ -82,189 +245,295 @@ class Search extends Component {
             </Text>;
         }
 
+        if (this.state.showProgress) {
+			loader = <ActivityIndicator
+				animating={true}
+				color="darkblue"
+				size="large"
+			/>
+		}
+		
         return (
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <View>
+			<View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
+				<View style={{
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					backgroundColor: 'darkblue',
+					borderWidth: 0,
+					borderColor: 'whitesmoke'
+				}}>
+					<View>
 						<TouchableHighlight
 							onPress={()=> this.goBack()}
 							underlayColor='darkblue'
 						>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                    Back
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback>
-                            <View>
-                                <Text style={styles.textLarge}>
-                                    Search
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                    <View>
+							<View>
+								<Text style={{
+									fontSize: 16,
+									textAlign: 'center',
+									margin: 14,
+									fontWeight: 'bold',
+									color: 'white'
+								}}>
+									{appConfig.language.back}
+								</Text>
+							</View>
+						</TouchableHighlight>	
+					</View>
+					<View>
+						<TouchableWithoutFeedback>
+							<View>
+								<Text style={{
+									fontSize: 20,
+									textAlign: 'center',
+									margin: 10,
+									marginRight: 40,
+									//marginRight: 40,
+									fontWeight: 'bold',
+									color: 'white'
+								}}>
+									{appConfig.language.reports} 
+								</Text>
+							</View>
+						</TouchableWithoutFeedback>	
+					</View>						
+					<View>
+						<TouchableWithoutFeedback>
+							<View>
+								<Text style={{
+									fontSize: 16,
+									textAlign: 'center',
+									margin: 14,
+									fontWeight: 'bold'
+								}}>
+								</Text>
+							</View>
+						</TouchableWithoutFeedback>	
+					</View>
+				</View>
+				
+				<ScrollView>
+					<View style={{backgroundColor: 'white'}}>
+						{errorCtrl}
+						
+						{loader}
+						
+						<View style={{
+							borderColor: 'darkblue',
+							borderWidth: 5,
+							marginTop: 10,
+							margin: 10,
+							marginBottom: 0,
+							flex: 1,
+						}}>
+							<Picker style={{marginTop: 0}}
+								selectedValue={this.state.project}
+
+								onValueChange={(value) => {
+									let arr = [].concat(this.state.projects);
+									let project = arr.filter((el) => el.id == value);
+									
+									this.setState({
+										project: value,
+										projectID: project[0].id,
+										projectName: project[0].name,
+										invalidValue: false
+									})
+								}}>
+
+								{this.state.projects.map((item, i) =>
+									<Picker.Item value={item.id} label={item.name} key={i}/>
+								)}
+							</Picker>
+						</View>
+					</View>
+					
+					<View style={{backgroundColor: 'white'}}>
+						<View style={{
+							borderColor: 'darkblue',
+							borderWidth: 5,
+							marginTop: 10,
+							margin: 10,
+							marginBottom: 0,
+							flex: 1,
+						}}>
+							<Picker style={{marginTop: 0}}
+								selectedValue={this.state.department}
+
+								onValueChange={(value) => {
+									let arr = [].concat(this.state.departments);
+									let department = arr.filter((el) => el.id == value);
+									
+									this.setState({
+										department: value,
+										departmentID: department[0].id,
+										departmentName: department[0].name,
+										invalidValue: false
+									})
+								}}>
+
+								{this.state.departments.map((item, i) =>
+									<Picker.Item value={item.id} label={item.name} key={i}/>
+								)}
+							</Picker>
+						</View>
+					</View>
+					
+					<View style={{backgroundColor: 'white'}}>
+						<View style={{
+							borderColor: 'darkblue',
+							borderWidth: 5,
+							marginTop: 10,
+							margin: 10,
+							marginBottom: 0,
+							flex: 1,
+						}}>
+							<Picker style={{marginTop: 0}}
+								selectedValue={this.state.employee}
+
+								onValueChange={(value) => {
+									let arr = [].concat(this.state.employees);
+									let employee = arr.filter((el) => el.id == value);
+ 
+									this.setState({
+										employee: value,
+										employeeID: employee[0].id,
+										employeeName: employee[0].name,
+										invalidValue: false
+									})
+								}}>
+
+								{this.state.employees.map((item, i) =>
+									<Picker.Item value={item.id} label={item.name} key={i}/>
+								)}
+							</Picker>
+						</View>
+					</View>					
+
+					<View style={{
+						flex: 1,
+						flexDirection: 'column',
+						justifyContent: 'center',
+						alignItems: 'center'
+					}}>				
 						<TouchableHighlight
-							onPress={()=> this.clearSearch()}
-							underlayColor='darkblue'
-						>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                    Clear
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                </View>
+							onPress={this.showPicker.bind(this, 'start', {date: this.state.simpleDate})}
+							style={styles.button1}>
+							<Text style={styles.buttonText1}>{appConfig.language.firstday}: {this.state.startText}</Text>
+						</TouchableHighlight>						
+						
+						<TouchableHighlight
+							onPress={this.showPicker.bind(this, 'end', {date: this.state.simpleDate})}
+							style={styles.button1}>
+							<Text style={styles.buttonText1}>{appConfig.language.lastday}: {this.state.endText}</Text>
+						</TouchableHighlight>	
+										
+						{validCtrl}
 
-                <ScrollView keyboardShouldPersistTaps='always'>
-                    <View style={styles.scrollBlock}>
-                        <View style={styles.switchBlock}>
-                            <View>
-                                <Text style={styles.switchItemText}>
-                                    {this.state.textSwitchBase}
-                                </Text>
-                            </View>
-
-                            <View style={styles.switchItem}>
-                                <Switch
-                                    onValueChange={(value) => {
-                                        this.toggleTypeChange();
-                                        this.setState({
-                                            eventSwitchBase: value
-                                        });
-                                    }}
-                                    value={this.state.eventSwitchBase}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={styles.inputBlock}>
-                            <TextInput
-                                underlineColorAndroid='rgba(0,0,0,0)'
-                                onChangeText={(text) => this.setState({
-                                    searchQuery: text,
-                                    invalidValue: false
-                                })}
-                                value={this.state.searchQuery}
-                                style={{
-                                    height: 50,
-                                    width: Dimensions.get('window').width * .94,
-                                    fontSize: 18,
-                                    color: 'darkblue',
-                                    paddingTop: 6
-                                }}
-								placeholderTextColor="darkblue"
-                                placeholder="Search here">
-                            </TextInput>
-                        </View>
-
-                        {validCtrl}
-
-                        <TouchableHighlight
-                            onPress={() => this.onSearchPressed()}
-                            style={styles.button}>
-                            <Text style={styles.buttonText}>
-                                Submit
-                            </Text>
-                        </TouchableHighlight>
-                    </View>
-                </ScrollView>
-            </View>
+						<TouchableHighlight
+							onPress={this.onSearchPressed.bind(this)}
+							style={styles.button}>
+							<Text style={styles.buttonText}>{appConfig.language.submit}</Text>
+						</TouchableHighlight>
+					</View>
+				</ScrollView>
+			</View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'white'
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
-        borderWidth: 0,
-        borderColor: 'whitesmoke'
-    },
-    textSmall: {
+	text: {
+		color: 'black',
+	},
+    countHeader: {
         fontSize: 16,
         textAlign: 'center',
-        margin: 16,
-        fontWeight: 'bold',
-        color: 'white'
+        padding: 15,
+        backgroundColor: '#F5FCFF',
     },
-    textLarge: {
+    countFooter: {
+        fontSize: 16,
+        textAlign: 'center',
+        padding: 10,
+        borderColor: '#D7D7D7',
+        backgroundColor: 'whitesmoke'
+    },
+    countHeader1: {
+        fontSize: 16,
+        textAlign: 'center',
+        padding: 15,
+        backgroundColor: '#F5FCFF',
+    },
+    welcome: {
         fontSize: 20,
         textAlign: 'center',
+        margin: 20,
+    },
+    container: {
+		padding: 10,
+        paddingBottom: 210,
+        alignItems: 'center',
+        flex: 1,
+		backgroundColor: 'white',
+    },
+    logo: {
+        width: 66,
+        height: 65
+    },
+    heading: {
+        fontSize: 30,
         margin: 10,
-        marginRight: 20,
-        fontWeight: 'bold',
-        color: 'white'
+        marginBottom: 20
     },
-    scrollBlock: {
-        flex: 1,
-        padding: 10,
-        marginTop: 10,
-        justifyContent: 'center',
-        backgroundColor: 'white'
-    },
-    switchBlock: {
+    loginInput: {
         height: 50,
-        borderWidth: 1,
-        //borderColor: '#48BBEC',
-        borderColor: 'darkblue',
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        borderRadius: 5
-    },
-    switchItem: {
+		width: 360,
         marginTop: 10,
-        margin: 10
-    },
-    switchItemText: {
+        padding: 4,
         fontSize: 18,
-        marginTop: 10,
-        margin: 10,
-		color: 'darkblue'
-    },
-    inputBlock: {
-        height: 50,
-        marginTop: 10,
         borderWidth: 1,
-        //borderColor: '#48BBEC',
-        borderColor: 'darkblue',
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        borderColor: '#48BBEC',
         borderRadius: 5,
-        paddingLeft: 6
+        color: 'black'
     },
-    button: {
+	button: {
         height: 50,
         //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
         borderColor: '#48BBEC',
         alignSelf: 'stretch',
-        marginTop: 20,
+        margin: 10,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5
     },
+    button1: {
+        height: 50,
+        borderWidth: 1,
+        //borderColor: '#48BBEC',
+        borderColor: 'darkblue',
+        alignSelf: 'stretch',
+        margin: 10,
+        marginBottom: 0,
+        justifyContent: 'center',
+        //alignItems: 'center',
+        borderRadius: 5
+    },    
     buttonText: {
         color: '#fff',
         fontSize: 20,
-        fontWeight: 'bold'
+		fontWeight: 'bold'
+    },    
+	buttonText1: {
+        fontSize: 20,
+		fontWeight: 'bold',
+		color: 'darkblue',
+		textAlign: 'left',
+		marginLeft: 5,
     },
     loader: {
-        justifyContent: 'center',
-        height: 100
+        marginTop: 40
     },
     error: {
         color: 'red',

@@ -6,78 +6,31 @@ import {
     Text,
     View,
     TouchableHighlight,
-    TouchableWithoutFeedback,
-    ScrollView,
-    BackHandler
+    ScrollView
 } from 'react-native';
 
 class PhoneDetails extends Component {
     constructor(props) {
         super(props);
 
-        BackHandler.addEventListener('hardwareBackPress', () => {
-            if (this.props.navigator) {
-                this.props.navigator.pop();
-            }
-            return true;
-        });
-
         this.state = {
-            name: ''
+            id: props.pushEvent.id,
+            name: props.pushEvent.name,
+            phone: props.pushEvent.phone,
+            street: props.pushEvent.street,
+            house: props.pushEvent.house,
+            apt: props.pushEvent.apt,
+            index: props.pushEvent.index
         };
-
-        if (props) {
-            this.state = {
-                id: props.navigation.state.params.data.id,
-                name: props.navigation.state.params.data.name,
-                phone: props.navigation.state.params.data.phone,
-                street: props.navigation.state.params.data.street,
-                house: props.navigation.state.params.data.house,
-                apt: props.navigation.state.params.data.apt,
-                index: props.navigation.state.params.data.index
-            };
-        }
     }
 
     goBack() {
-        this.props.navigation.goBack();
+        this.props.navigator.pop();
     }
 
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.header}>
-                    <View>
-						<TouchableHighlight
-							onPress={()=> this.goBack()}
-							underlayColor='darkblue'
-						>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                    Back
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback>
-                            <View>
-                                <Text style={styles.textLarge}>
-                                    {this.state.name}
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                </View>
-
                 <ScrollView>
                     <View style={styles.form}>
                         <View style={styles.itemBlock}>
@@ -160,11 +113,9 @@ class PhoneDetails extends Component {
                         <TouchableHighlight
                             onPress={() => this.goBack()}
                             style={styles.button}>
-                            <View>
-                                <Text style={styles.buttonText}>
-                                    Back
-                                </Text>
-                            </View>
+                            <Text style={styles.buttonText}>
+                                Back
+                            </Text>
                         </TouchableHighlight>
 
                         <Text>{this.state.bugANDROID}</Text>
@@ -180,30 +131,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         backgroundColor: 'white'
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
-        borderWidth: 0,
-        borderColor: 'whitesmoke'
-    },
-    textSmall: {
-        fontSize: 16,
-        textAlign: 'center',
-        margin: 16,
-        fontWeight: 'bold',
-        color: 'white'
-    },
-    textLarge: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-        marginTop: 12,
-        marginRight: 40,
-        fontWeight: 'bold',
-        color: 'white'
     },
     form: {
         flex: 1,
@@ -221,23 +148,22 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap'
     },
     itemTextBold: {
-        fontSize: 18,
+        fontSize: 20,
         textAlign: 'left',
-        margin: 5,
+        margin: 10,
         fontWeight: 'bold',
         color: 'black'
     },
     itemText: {
-        fontSize: 18,
+        fontSize: 20,
         textAlign: 'left',
-        margin: 5,
+        margin: 10,
         marginLeft: 2,
         color: 'black'
     },
     button: {
         height: 50,
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
+        backgroundColor: '#48BBEC',
         borderColor: '#48BBEC',
         alignSelf: 'stretch',
         marginTop: 10,
@@ -249,14 +175,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 20,
         fontWeight: 'bold'
-    },
-    loader: {
-        marginTop: 20
-    },
-    error: {
-        color: 'red',
-        paddingTop: 10,
-        textAlign: 'center'
     }
 });
 

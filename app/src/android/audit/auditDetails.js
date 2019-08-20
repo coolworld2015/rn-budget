@@ -1,203 +1,238 @@
-'use strict';
-
 import React, {Component} from 'react';
 import {
+    AppRegistry,
     StyleSheet,
     Text,
     View,
+    Image,
     TouchableHighlight,
-    TouchableWithoutFeedback,
+    ListView,
     ScrollView,
-    BackHandler
+    ActivityIndicator,
+    TabBarIOS,
+    NavigatorIOS,
+    TextInput,
+	BackAndroid
 } from 'react-native';
 
 class AuditDetails extends Component {
     constructor(props) {
         super(props);
+		
+		BackAndroid.addEventListener('hardwareBackPress', () => {
+			if (this.props.navigator) {
+				this.props.navigator.pop();
+			}
+			return true;
+		});
+		
+		this.state = {
+			name: ''
+		}	
+					
+		if (props.data) {
+			var ip = props.data.ip.split(':');
 
-        BackHandler.addEventListener('hardwareBackPress', () => {
-            if (this.props.navigator) {
-                this.props.navigator.pop();
-            }
-            return true;
-        });
-
-        this.state = {
-            name: ''
-        };
-
-        if (props.data) {
-            let ip = props.data.ip.split(':');
-
-            this.state = {
-                id: props.data.id,
-                name: props.data.name,
-                date: props.data.date,
-                ip: ip[3],
-                description: props.data.description,
-                showProgress: false
-            };
-        }
+			this.state = {
+				id: props.data.id,
+				name: props.data.name,
+				date: props.data.date,
+				ip: ip[3],
+				description: props.data.description,
+				showProgress: false
+			};
+		}
     }
-
-    goBack() {
-        this.props.navigator.pop();
-    }
-
+	
+    goBack(rowData) {
+		this.props.navigator.pop();
+	}
+	
     render() {
         return (
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <View>
+            <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
+				<View style={{
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					backgroundColor: 'darkblue',
+					borderWidth: 0,
+					borderColor: 'whitesmoke'
+				}}>
+					<View>
 						<TouchableHighlight
 							onPress={()=> this.goBack()}
 							underlayColor='darkblue'
 						>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                    Back
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback>
-                            <View>
-                                <Text style={styles.textLarge}>
-                                    {this.state.date}
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                </View>
+							<Text style={{
+								fontSize: 16,
+								textAlign: 'center',
+								margin: 14,
+								fontWeight: 'bold',
+								color: 'white'
+							}}>
+								{appConfig.language.back} 
+							</Text>
+						</TouchableHighlight>	
+					</View>
+					<View>
+						<TouchableHighlight
+							underlayColor='#ddd'
+						>
+							<Text style={{
+								fontSize: 20,
+								textAlign: 'center',
+								margin: 10,
+								marginRight: 20,
+								fontWeight: 'bold',
+								color: 'white'
+							}}>
+								{this.state.date}
+							</Text>
+						</TouchableHighlight>	
+					</View>						
+					<View>
+						<TouchableHighlight
+							underlayColor='#ddd'
+						>
+							<Text style={{
+								fontSize: 16,
+								textAlign: 'center',
+								margin: 14,
+								fontWeight: 'bold'
+							}}>
+								 
+							</Text>
+						</TouchableHighlight>	
+					</View>
+				</View>
+				
+				<ScrollView>	
+					<View style={{
+						flex: 1,
+						padding: 10,
+						paddingBottom: 115,
+						justifyContent: 'flex-start',
+						backgroundColor: 'white'
+					}}>
+						<View style={{
+							flexDirection: 'row'
+						}}>
+							<Text style={styles.itemTextBold}>
+								{appConfig.language.user}:
+							</Text>									
+							<Text style={styles.itemText}>
+								{this.state.name}
+							</Text>		
+						</View>
+						
+						<View style={{
+							flexDirection: 'row'
+						}}>
+							<Text style={styles.itemTextBold}>
+								{appConfig.language.date}:
+							</Text>									
+							<Text style={styles.itemText}>
+								{this.state.date}
+							</Text>		
+						</View>
+						
+						<View style={{
+							flexDirection: 'row'
+						}}>
+							<Text style={styles.itemTextBold}>
+								IP:
+							</Text>									
+							<Text style={styles.itemText}>
+								{this.state.ip}
+							</Text>		
+						</View>		
+						
+						<View style={{
+							flexDirection: 'row'
+						}}>
+							<Text style={styles.itemTextBold}>
+								ID:
+							</Text>									
+							<Text style={styles.itemText}>
+								{this.state.id}
+							</Text>		
+						</View>
+						
+						<View style={{
+							flexDirection: 'row'
+						}}>
+							<Text style={styles.itemTextBold}>
+								{appConfig.language.description}:
+							</Text>									
+							<Text style={styles.itemText}>
+								{this.state.description}
+							</Text>		
+						</View>
 
-                <ScrollView>
-                    <View style={styles.form}>
-                        <View style={styles.itemBlock}>
-                            <Text style={styles.itemTextBold}>
-                                User:
-                            </Text>
-                            <Text style={styles.itemText}>
-                                {this.state.name}
-                            </Text>
-                        </View>
+						<TouchableHighlight
+							onPress={()=> this.goBack()}
 
-                        <View style={styles.itemBlock}>
-                            <Text style={styles.itemTextBold}>
-                                Date:
-                            </Text>
-                            <Text style={styles.itemText}>
-                                {this.state.date}
-                            </Text>
-                        </View>
-
-                        <View style={styles.itemBlock}>
-                            <Text style={styles.itemTextBold}>
-                                IP:
-                            </Text>
-                            <Text style={styles.itemText}>
-                                {this.state.ip}
-                            </Text>
-                        </View>
-
-                        <View style={styles.itemBlock}>
-                            <Text style={styles.itemTextBold}>
-                                ID:
-                            </Text>
-                            <Text style={styles.itemText}>
-                                {this.state.id}
-                            </Text>
-                        </View>
-
-                        <View style={styles.itemBlock}>
-                            <View style={styles.itemWrap}>
-                                <Text style={styles.itemTextBold}>
-                                    {this.state.description}
-                                </Text>
-                            </View>
-                        </View>
-
-                        <TouchableHighlight
-                            onPress={() => this.goBack()}
-                            style={styles.button}>
-                            <Text style={styles.buttonText}>
-                                Back
-                            </Text>
-                        </TouchableHighlight>
-
-                        <Text>{this.state.bugANDROID}</Text>
-                    </View>
-                </ScrollView>
-            </View>
-        )
+							style={styles.button}>
+							<Text style={styles.buttonText}>{appConfig.language.back}</Text>
+						</TouchableHighlight>
+					</View>
+				</ScrollView>
+			</View>
+        );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'white'
+    itemTextBold: {
+		fontSize: 20,
+		textAlign: 'left',
+		margin: 10,
+		fontWeight: 'bold',
+		color: 'black'
+    },    
+	itemText: {
+		fontSize: 20,
+		textAlign: 'left',
+		margin: 10,
+		marginLeft: 2,
+		color: 'black'
     },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
-        borderWidth: 0,
-        borderColor: 'whitesmoke'
-    },
-    textSmall: {
+    countHeader: {
         fontSize: 16,
         textAlign: 'center',
-        margin: 16,
-        fontWeight: 'bold',
-        color: 'white'
+        padding: 15,
+        backgroundColor: '#F5FCFF',
     },
-    textLarge: {
+    countFooter: {
+        fontSize: 16,
+        textAlign: 'center',
+        padding: 10,
+        borderColor: '#D7D7D7',
+        backgroundColor: 'whitesmoke'
+    },
+    welcome: {
         fontSize: 20,
         textAlign: 'center',
-        margin: 10,
-        marginTop: 12,
-        marginRight: 40,
-        fontWeight: 'bold',
-        color: 'white'
+        margin: 20,
     },
-	itemWrap: {
-        flex: 1,
-        flexDirection: 'column',
-        flexWrap: 'wrap'
-    },
-    form: {
-        flex: 1,
-        padding: 10,
-        justifyContent: 'flex-start',
-        paddingBottom: 130,
-        backgroundColor: 'white'
-    },
-    itemBlock: {
-        flexDirection: 'row'
-    },
-    itemTextBold: {
+    loginInput: {
+        height: 50,
+        marginTop: 10,
+        padding: 4,
         fontSize: 18,
-        textAlign: 'left',
-        margin: 5,
-        fontWeight: 'bold',
+        borderWidth: 1,
+        borderColor: 'darkblue',
+        borderRadius: 5,
         color: 'black'
     },
-    itemText: {
+    loginInput1: {
+        height: 100,
+        marginTop: 10,
+        padding: 4,
         fontSize: 18,
-        textAlign: 'left',
-        margin: 5,
-        marginLeft: 2,
+        borderWidth: 1,
+        borderColor: 'darkblue',
+        borderRadius: 5,
         color: 'black'
     },
     button: {
@@ -214,7 +249,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 20,
-        fontWeight: 'bold'
+		fontWeight: 'bold'
     },
     loader: {
         marginTop: 20
@@ -223,6 +258,12 @@ const styles = StyleSheet.create({
         color: 'red',
         paddingTop: 10,
         textAlign: 'center'
+    },
+    img: {
+        height: 95,
+        width: 75,
+        borderRadius: 20,
+        margin: 20
     }
 });
 

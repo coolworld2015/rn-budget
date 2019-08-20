@@ -5,13 +5,17 @@ import {
     StyleSheet,
     Text,
     View,
+    Image,
     TouchableHighlight,
     TouchableWithoutFeedback,
+    ListView,
     ScrollView,
+    ActivityIndicator,
     TextInput,
-    Switch,
-    Dimensions
+    Switch
 } from 'react-native';
+
+import searchResults from './searchResults';
 
 class Search extends Component {
     constructor(props) {
@@ -19,17 +23,10 @@ class Search extends Component {
 
         this.state = {
             showProgress: false,
-            eventSwitchTitle: false,
+            eventSwitchTitle: true,
             eventSwitchBase: true,
-            textSwitchBase: 'Search by name',
-            bugANDROID: ''
+            textSwitchBase: 'Search by phone',
         }
-    }
-
-    componentDidMount() {
-        this.setState({
-            width: Dimensions.get('window').width
-        });
     }
 
     clearSearch() {
@@ -40,36 +37,36 @@ class Search extends Component {
     }
 
     onSearchPressed() {
-        if (this.state.searchQuery === undefined ||
-            this.state.searchQuery === '') {
+        if (this.state.searchQuery == undefined ||
+            this.state.searchQuery == '') {
             this.setState({
                 invalidValue: true
             });
             return;
         }
 
-        this.props.navigation.navigate('SearchResults', {
-            data: {
+        this.props.navigator.push({
+            component: searchResults,
+            title: this.state.searchQuery,
+            passProps: {
                 searchQuery: this.state.searchQuery,
                 searchType: this.state.textSwitchBase
             }
-        })
+        });
     }
 
     toggleTypeChange() {
-        if (this.state.eventSwitchBase) {
+        if (!this.state.eventSwitchBase) {
             this.setState({
-                textSwitchBase: 'Search by phone'
+                textSwitchBase: 'Search by phone',
+                eventSwitchBase: true
             });
         } else {
             this.setState({
-                textSwitchBase: 'Search by name'
+                textSwitchBase: 'Search by name',
+                eventSwitchBase: false
             });
         }
-    }
-
-    goBack() {
-        this.props.navigation.navigate('Phones')
     }
 
     render() {
@@ -82,176 +79,110 @@ class Search extends Component {
         }
 
         return (
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <View>
-						<TouchableHighlight
-							onPress={()=> this.goBack()}
-							underlayColor='darkblue'
-						>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                    Back
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback>
-                            <View>
-                                <Text style={styles.textLarge}>
-                                    Search
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                    <View>
-						<TouchableHighlight
-							onPress={()=> this.clearSearch()}
-							underlayColor='darkblue'
-						>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                    Clear
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                </View>
+            <ScrollView>
+                <View style={styles.container}>
+                    <TouchableHighlight
+                        onPress={this.clearSearch.bind(this)}
+                        style={styles.button}>
+                        <Text style={styles.buttonText}>
+                            Search
+                        </Text>
+                    </TouchableHighlight>
 
-                <ScrollView keyboardShouldPersistTaps='always'>
-                    <View style={styles.scrollBlock}>
-                        <View style={styles.switchBlock}>
-                            <View>
-                                <Text style={styles.switchItemText}>
-                                    {this.state.textSwitchBase}
-                                </Text>
-                            </View>
-
-                            <View style={styles.switchItem}>
-                                <Switch
-                                    onValueChange={(value) => {
-                                        this.toggleTypeChange();
-                                        this.setState({
-                                            eventSwitchBase: value
-                                        });
-                                    }}
-                                    value={this.state.eventSwitchBase}
-                                />
-                            </View>
-                        </View>
-
-                        <View style={styles.inputBlock}>
-                            <TextInput
-                                underlineColorAndroid='rgba(0,0,0,0)'
-                                onChangeText={(text) => this.setState({
-                                    searchQuery: text,
-                                    invalidValue: false
-                                })}
-                                value={this.state.searchQuery}
-                                style={{
-                                    height: 50,
-                                    width: Dimensions.get('window').width * .94,
-                                    fontSize: 18,
-                                    color: 'darkblue',
-                                    paddingTop: 0
-                                }}
-								placeholderTextColor="darkblue"
-                                placeholder="Search here">
-                            </TextInput>
-                        </View>
-
-                        {validCtrl}
-
-                        <TouchableHighlight
-                            onPress={() => this.onSearchPressed()}
-                            style={styles.button}>
-                            <Text style={styles.buttonText}>
-                                Submit
+                    <View style={styles.form}>
+                        <View style={styles.textForm}>
+                            <Text style={styles.text}>
+                                {this.state.textSwitchBase}
                             </Text>
-                        </TouchableHighlight>
+                        </View>
+
+                        <View>
+                            <Switch
+                                onValueChange={(value) => {
+                                    this.toggleTypeChange();
+                                    this.setState({
+                                        eventSwitchTitle: value
+                                    });
+                                }}
+                                value={this.state.eventSwitchTitle}
+                            />
+                        </View>
                     </View>
-                </ScrollView>
-            </View>
+
+                    <TextInput
+                        onChangeText={(text) => this.setState({
+                            searchQuery: text,
+                            invalidValue: false
+                        })}
+                        value={this.state.searchQuery}
+                        style={styles.loginInput}
+                        placeholder="Search here">
+                    </TextInput>
+
+                    {validCtrl}
+
+                    <TouchableHighlight
+                        onPress={this.onSearchPressed.bind(this)}
+                        style={styles.button}>
+                        <Text style={styles.buttonText}>
+                            Submit
+                        </Text>
+                    </TouchableHighlight>
+
+                    <ActivityIndicator
+                        animating={this.state.showProgress}
+                        size="large"
+                        style={styles.loader}
+                    />
+                </View>
+            </ScrollView>
         )
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'white'
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
-        borderWidth: 0,
-        borderColor: 'whitesmoke'
-    },
-    textSmall: {
-        fontSize: 16,
-        textAlign: 'center',
-        margin: 16,
-        fontWeight: 'bold',
-        color: 'white'
-    },
-    textLarge: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-        marginRight: 20,
-        fontWeight: 'bold',
-        color: 'white'
-    },
-    scrollBlock: {
-        flex: 1,
         padding: 10,
-        marginTop: 10,
-        justifyContent: 'center',
-        backgroundColor: 'white'
+        alignItems: 'center',
+        flex: 1
     },
-    switchBlock: {
-        height: 50,
-        borderWidth: 1,
-        //borderColor: '#48BBEC',
-        borderColor: 'darkblue',
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        borderRadius: 5
-    },
-    switchItem: {
-        marginTop: 10,
-        margin: 10
-    },
-    switchItemText: {
-        fontSize: 18,
-        marginTop: 14,
-        margin: 10,
-		color: 'darkblue'
-    },
-    inputBlock: {
+    form: {
         height: 50,
         marginTop: 10,
+        padding: 10,
         borderWidth: 1,
-        //borderColor: '#48BBEC',
-        borderColor: 'darkblue',
+        borderColor: '#48BBEC',
+        alignSelf: 'stretch',
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-between',
         borderRadius: 5,
-        paddingLeft: 6
+        fontSize: 18
+    },
+    textForm: {
+        marginTop: 3,
+        flex: 1
+    },
+    text: {
+        fontSize: 18,
+        color: 'gray'
+    },
+    loginInput: {
+        height: 50,
+        marginTop: 10,
+        paddingLeft: 10,
+        padding: 4,
+        fontSize: 18,
+        borderWidth: 1,
+        borderColor: '#48BBEC',
+        borderRadius: 5,
+        color: 'black'
     },
     button: {
         height: 50,
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
+        backgroundColor: '#48BBEC',
         borderColor: '#48BBEC',
         alignSelf: 'stretch',
-        marginTop: 20,
+        marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5
@@ -262,8 +193,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     loader: {
-        justifyContent: 'center',
-        height: 100
+        marginTop: 20
     },
     error: {
         color: 'red',

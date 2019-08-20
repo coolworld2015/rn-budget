@@ -2,221 +2,286 @@
 
 import React, {Component} from 'react';
 import {
+    AppRegistry,
     StyleSheet,
     Text,
     View,
+    Image,
     TouchableHighlight,
-    TouchableWithoutFeedback,
+    ListView,
     ScrollView,
     ActivityIndicator,
+    TabBarIOS,
+    NavigatorIOS,
     TextInput,
-    BackHandler,
-	Image,
-	Dimensions,
-	RefreshControl
+	BackAndroid
 } from 'react-native';
-
-import ListView from 'deprecated-react-native-listview';
 
 class SearchResults extends Component {
     constructor(props) {
         super(props);
-
-        BackHandler.addEventListener('hardwareBackPress', () => {
-            if (this.props.navigator) {
-                this.props.navigator.pop();
-            }
-            return true;
+		
+		BackAndroid.addEventListener('hardwareBackPress', () => {
+			if (this.props.navigator) {
+				this.props.navigator.pop();
+			}
+			return true;
+		});
+		
+        var ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 != r2
         });
-
-        let ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
-        });
-
-        this.state = {
-            dataSource: ds.cloneWithRows([])
-        };
-
-        if (props.data) {
-            this.state = {
-                dataSource: ds.cloneWithRows([]),
-                searchQueryHttp: props.data.searchQuery,
-                searchType: props.data.searchType,
-                showProgress: true,
-                resultsCount: 0,
-                recordsCount: 15,
-                positionY: 0,
-				searchQuery: '',
-				refreshing: false
-            };
-        }
+		
+		this.state = {
+			dataSource1: ds.cloneWithRows([]),
+			dataSource2: ds.cloneWithRows([]),
+			resultsCount1: 0,
+			resultsCount2: 0
+		}	
+		
+		if (props.data) {
+			this.state = {
+				dataSource1: ds.cloneWithRows([]),
+				dataSource2: ds.cloneWithRows([]),
+				
+				projectName: props.data.projectName,
+				departmentName: props.data.departmentName,
+				employeeName: props.data.employeeName,
+				
+				startDate: props.data.startDate,
+				endDate: props.data.endDate,
+				
+				searchType: props.data.searchType,
+				showProgress: true,
+				
+				resultsCount1: 0,
+				recordsCount1: 15,
+				positionY1: 0,
+								
+				resultsCount2: 0,
+				recordsCount2: 15,
+				positionY2: 0,
+				
+				inputsTotal: 0,
+				outputsTotal: 0
+			};
+		}
     }
+	
+	componentDidMount() {
+		this.getInputs();
+		this.getOutputs();
+	}
+	
+	dateCheck(dateFrom, dateTo, dateCheck) {
+		var start = Date.parse(dateFrom);
+		var end = Date.parse(dateTo);
+		var check = Date.parse(dateCheck );
+		if((check <= end && check >= start)) {
+			return true;
+		}
+	}
 
-    componentDidMount() {
-		this.setState({
-            width: Dimensions.get('window').width
-        });
-        this.getItems();
-    }
-
-    getItems() {
-		this.setState({
-			serverError: false,
-            resultsCount: 0,
-            recordsCount: 15,
-            positionY: 0,
-			searchQuery: ''
-        });
-
-        let webUrl;
-        if (this.state.searchType === 'Search by phone') {
-            webUrl = 'api/items/findByPhone/'
-        } else {
-            webUrl = 'api/items/findByName/'
-        }
-
-        fetch(appConfig.url + webUrl + this.state.searchQueryHttp, {
+    getInputs() {
+        fetch(appConfig.url + 'api/inputs/get', {			
             method: 'get',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': appConfig.access_token
+				'Authorization': appConfig.access_token
             }
         })
-            .then((response) => response.json())
-            .then((responseData) => {
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(responseData.sort(this.sort).slice(0, 15)),
-                    resultsCount: responseData.length,
-                    responseData: responseData.sort(this.sort),
-                    filteredItems: responseData.sort(this.sort),
-					refreshing: false
-                });
+            .then((response)=> response.json())
+            .then((responseData)=> {
+				var itemsDate, itemsProject, itemsDepartment, itemsEmployee, items;
+				
+				itemsDate = [].concat(responseData.sort(this.sort));	
+				itemsDate = itemsDate.filter((el) => this.dateCheck(this.state.startDate, this.state.endDate, el.date.split(' ')[0]));
+				
+				itemsProject = [].concat(itemsDate);	
+				if (this.state.projectName != appConfig.language.allproj) {
+					itemsProject = itemsDate.filter((el) => el.project.toLowerCase() == this.state.projectName.toLowerCase());
+				}	
+					
+				itemsDepartment = [].concat(itemsProject);
+				if (this.state.departmentName != appConfig.language.alldep) {
+					itemsDepartment = itemsProject.filter((el) => el.department.toLowerCase() == this.state.departmentName.toLowerCase());
+				}					
+				
+				itemsEmployee = [].concat(itemsDepartment);
+				if (this.state.employeeName != appConfig.language.allemp) {
+					itemsEmployee = itemsDepartment.filter((el) => el.employee.toLowerCase() == this.state.employeeName.toLowerCase());
+				}
 
+				items = [].concat(itemsEmployee);
+				items.forEach((el) => this.state.inputsTotal = +this.state.inputsTotal + +el.total)
+				
+                this.setState({
+				    dataSource1: this.state.dataSource1.cloneWithRows(items.slice(0, 25)),
+                    resultsCount1: items.length,
+					recordsCount1: 15,
+                    responseData1: items,
+                    filteredItems1: items
+                });
             })
-            .catch((error) => {
+            .catch((error)=> {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(() => {
+            .finally(()=> {
                 this.setState({
                     showProgress: false
                 });
             });
     }
 
+    getOutputs() {
+        fetch(appConfig.url + 'api/outputs/get', {			
+            method: 'get',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+				'Authorization': appConfig.access_token
+            }
+        })
+            .then((response)=> response.json())
+            .then((responseData)=> {
+				var itemsDate, itemsProject, itemsDepartment, itemsEmployee, items;
+				
+				itemsDate = [].concat(responseData.sort(this.sort));	
+				itemsDate = itemsDate.filter((el) => this.dateCheck(this.state.startDate, this.state.endDate, el.date.split(' ')[0]));
+				
+				itemsProject = [].concat(itemsDate);	
+				if (this.state.projectName != appConfig.language.allproj) {
+					itemsProject = itemsDate.filter((el) => el.project.toLowerCase() == this.state.projectName.toLowerCase());
+				}	
+					
+				itemsDepartment = [].concat(itemsProject);
+				if (this.state.departmentName != appConfig.language.alldep) {
+					itemsDepartment = itemsProject.filter((el) => el.department.toLowerCase() == this.state.departmentName.toLowerCase());
+				}					
+				
+				itemsEmployee = [].concat(itemsDepartment);
+				if (this.state.employeeName != appConfig.language.allemp) {
+					itemsEmployee = itemsDepartment.filter((el) => el.employee.toLowerCase() == this.state.employeeName.toLowerCase());
+				}
+
+				items = [].concat(itemsEmployee);
+				items.forEach((el) => this.state.outputsTotal = +this.state.outputsTotal + +el.total)
+								
+                this.setState({
+				    dataSource2: this.state.dataSource2.cloneWithRows(items.slice(0, 25)),
+                    resultsCount2: items.length,
+					recordsCount2: 15,
+                    responseData2: items,
+                    filteredItems2: items
+                });
+            })
+            .catch((error)=> {
+                this.setState({
+                    serverError: true
+                });
+            })
+            .finally(()=> {
+                this.setState({
+                    showProgress: false
+                });
+            });
+    }
+	
     sort(a, b) {
-        let nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
+        var nameA = +a.invoiceID.toLowerCase(), nameB = +b.invoiceID.toLowerCase();
         if (nameA < nameB) {
-            return -1
+            return 1
         }
         if (nameA > nameB) {
-            return 1
+            return -1
         }
         return 0;
     }
 
     showDetails(rowData) {
-        this.props.navigator.push({
-            index: 1,
-            data: rowData
-        });
+		this.props.navigator.push({
+			index: 3,
+			data: rowData
+		});
     }
 
     renderRow(rowData) {
         return (
             <TouchableHighlight
-                onPress={() => this.showDetails(rowData)}
+				onPress={()=> this.showDetails(rowData)}
                 underlayColor='#ddd'
             >
-                <View style={styles.row}>
-                    <Text style={styles.rowText}>
-                        {rowData.name} - {rowData.phone}
-                    </Text>
-                </View>
+				<View style={{
+					flex: 1,
+					flexDirection: 'column',
+					padding: 12,
+					borderColor: '#D7D7D7',
+					borderBottomWidth: 1,
+					backgroundColor: '#fff'
+				}}>              
+					<Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
+						{rowData.invoiceID} - {rowData.project} - {(rowData.date).split(' ')[0]}
+					</Text>						
+					
+					<Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
+						{rowData.description}
+					</Text>						
+					
+					<Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
+						{appConfig.language.total}: {((+rowData.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
+					</Text>
+				</View>
             </TouchableHighlight>
         );
     }
 
-    refreshData(event) {
-        if (this.state.showProgress === true) {
+    refreshData1(event) {
+        if (this.state.showProgress == true) {
             return;
         }
 
-        if (event.nativeEvent.contentOffset.y <= -150) {
+        var items, positionY, recordsCount;
+        recordsCount = this.state.recordsCount1;
+        positionY = this.state.positionY1;
+        items = this.state.filteredItems1.slice(0, recordsCount);
+
+        if (event.nativeEvent.contentOffset.y >= positionY) {
             this.setState({
-                showProgress: true,
-                resultsCount: 0,
-                recordsCount: 15,
-                positionY: 0,
-                searchQuery: ''
-            });
-
-            setTimeout(() => {
-                this.findItems()
-            }, 300);
-        }
-
-        if (this.state.filteredItems === undefined) {
-            return;
-        }
-
-        let items, positionY, recordsCount;
-        recordsCount = this.state.recordsCount;
-        positionY = this.state.positionY;
-        items = this.state.filteredItems.slice(0, recordsCount);
-
-        if (event.nativeEvent.contentOffset.y >= positionY - 10) {
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(items),
-                recordsCount: recordsCount + 10,
-                positionY: positionY + 500
+                dataSource1: this.state.dataSource1.cloneWithRows(items),
+                recordsCount1: recordsCount + 10,
+                positionY1: positionY + 400
             });
         }
     }
-
-    onChangeText(text) {
-        if (this.state.dataSource === undefined) {
+	
+    refreshData2(event) {
+        if (this.state.showProgress == true) {
             return;
         }
 
-        let arr = [].concat(this.state.responseData);
-        let items = arr.filter((el) => el.phone.toLowerCase().indexOf(text.toLowerCase()) !== -1);
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(items),
-            resultsCount: items.length,
-            filteredItems: items,
-            searchQuery: text
-        })
+        var items, positionY, recordsCount;
+        recordsCount = this.state.recordsCount2;
+        positionY = this.state.positionY2;
+        items = this.state.filteredItems2.slice(0, recordsCount);
+
+        if (event.nativeEvent.contentOffset.y >= positionY) {
+            this.setState({
+                dataSource2: this.state.dataSource2.cloneWithRows(items),
+                recordsCount2: recordsCount + 10,
+                positionY2: positionY + 400
+            });
+        }
     }
-
-    refreshDataAndroid() {
-        this.setState({
-            showProgress: true,
-            resultsCount: 0
-        });
-
-        this.getItems();
-    }
-
-    goBack(rowData) {
-        this.props.navigator.pop();
-    }
-
-    clearSearchQuery() {
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(this.state.responseData.slice(0, 15)),
-            resultsCount: this.state.responseData.length,
-            filteredItems: this.state.responseData,
-            positionY: 0,
-            recordsCount: 15,
-            searchQuery: ''
-        });
-    }
-
+	
+    goBack() {
+		this.props.navigator.pop();
+	}
+	
     render() {
-        let errorCtrl, loader, image;
+        var errorCtrl, loader;
 
         if (this.state.serverError) {
             errorCtrl = <Text style={styles.error}>
@@ -225,198 +290,243 @@ class SearchResults extends Component {
         }
 
         if (this.state.showProgress) {
-            loader = <View style={styles.loader}>
+            loader = <View style={{
+                justifyContent: 'center',
+                height: 100
+            }}>
                 <ActivityIndicator
                     size="large"
 					color="darkblue"
-                    animating={true}
-                />
+                    animating={true}/>
             </View>;
         }
 
-		if (this.state.searchQuery.length > 0) {
-			image = <Image
-				source={require('../../../img/cancel.png')}
-				style={{
-					height: 20,
-					width: 20,
-					marginTop: 10
-				}}
-			/>;
-		}
-
         return (
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <View>
+            <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
+				<View style={{
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						backgroundColor: 'darkblue'
+					}}>
+					<View>
 						<TouchableHighlight
 							onPress={()=> this.goBack()}
 							underlayColor='darkblue'
 						>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                    Back
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback>
-                            <View>
-                                <Text style={styles.textLarge}>
-                                    {this.state.searchQueryHttp}
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                </View>
-
-                <View style={styles.iconForm}>
+							<Text style={{
+								fontSize: 16,
+								textAlign: 'center',
+								margin: 14,
+								fontWeight: 'bold',
+								color: 'white'
+							}}>
+								{appConfig.language.back}
+							</Text>
+						</TouchableHighlight>	
+					</View>
 					<View>
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							onChangeText={this.onChangeText.bind(this)}
-							style={{
-								height: 45,
-								padding: 5,
-								backgroundColor: 'white',
-								borderWidth: 3,
-								borderColor: 'white',
-								borderRadius: 0,
-								width: Dimensions.get('window').width * .90,
-							}}
-							value={this.state.searchQuery}
-							placeholder="Search here">
-						</TextInput>
-					</View>
-					<View style={{
-						height: 45,
-						backgroundColor: 'white',
-						borderWidth: 3,
-						borderColor: 'white',
-						marginLeft: -10,
-						paddingLeft: 5,
-						width: Dimensions.get('window').width * .10,
-					}}>
-						<TouchableWithoutFeedback
-							onPress={() => this.clearSearchQuery()}
+						<TouchableHighlight
+							underlayColor='#ddd'
 						>
-							<View>
-								{image}
-							</View>
-						</TouchableWithoutFeedback>
+							<Text style={{
+								fontSize: 20,
+								textAlign: 'center',
+								margin: 10,
+								marginRight: 40,
+								fontWeight: 'bold',
+								color: 'white'
+							}}>
+								{this.state.projectName}
+							</Text>
+						</TouchableHighlight>	
+					</View>						
+					<View>
+						<TouchableHighlight
+							onPress={()=> this.goBack()}
+							underlayColor='#ddd'
+						>
+							<Text style={{
+								fontSize: 16,
+								textAlign: 'center',
+								margin: 14,
+								fontWeight: 'bold',
+								color: 'white'
+							}}>
+								
+							</Text>
+						</TouchableHighlight>	
 					</View>
-                </View>
-
-                {errorCtrl}
-
-                {loader}
-
-				<ScrollView onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}
-					refreshControl={
-						<RefreshControl
-							enabled={true}
-							refreshing={this.state.refreshing}
-							onRefresh={this.refreshDataAndroid.bind(this)}
+				</View>
+									
+				{errorCtrl}
+				
+				{loader}
+				
+				<View style={{
+						flex: 1,
+						flexDirection: 'row',
+						justifyContent: 'space-between'
+					}}>
+	
+					<ScrollView
+						onScroll={this.refreshData2.bind(this)} scrollEventThrottle={16}>
+	
+						<ListView
+							enableEmptySections={true}
+							style={{marginTop: 0, marginBottom: 0}}
+							dataSource={this.state.dataSource2}
+							renderRow={this.renderRow.bind(this)}
 						/>
-					}
-				>
-					<ListView
-						enableEmptySections={true}
-						dataSource={this.state.dataSource}
-						renderRow={this.renderRow.bind(this)}
-					/>
-				</ScrollView>
-
-                <View>
-                    <Text style={styles.countFooter}>
-                        Records: {this.state.resultsCount.toString()}
-                    </Text>
-                </View>
+					</ScrollView>				
+ 
+					<ScrollView
+						onScroll={this.refreshData1.bind(this)} scrollEventThrottle={16}>
+					
+						<ListView
+							enableEmptySections={true}
+							style={{marginTop: 0, marginBottom: 0}}
+							dataSource={this.state.dataSource1}
+							renderRow={this.renderRow.bind(this)}
+						/>
+					</ScrollView>				
+				</View>
+				
+				<View style={{
+						flexDirection: 'row',
+						justifyContent: 'space-between',
+						backgroundColor: 'darkblue'
+					}}>
+					<View style={{marginBottom: 0}}>
+						<Text style={styles.countFooter1}>
+							{appConfig.language.outputs}: {this.state.resultsCount2.toString()}
+						</Text>
+						<Text style={styles.countFooter1}>
+							{((+this.state.outputsTotal).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
+						</Text>						
+					</View>	
+					<View style={{marginBottom: 0}}>
+						<Text style={styles.countFooter2}>
+							{appConfig.language.total}:
+						</Text>						
+						<Text style={styles.countFooter2}>
+							{((+this.state.inputsTotal - +this.state.outputsTotal).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
+						</Text>
+					</View>					
+					<View style={{marginBottom: 0}}>
+						<Text style={styles.countFooter3}>
+							{appConfig.language.inputs}: {this.state.resultsCount1.toString()}
+						</Text>						
+						<Text style={styles.countFooter3}>
+							{((+this.state.inputsTotal).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
+						</Text>
+					</View>	
+				</View>
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
+    AppContainer: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white'
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
     },
-	iconForm: {
-		flexDirection: 'row',
-		//borderColor: 'lightgray',
-		borderColor: 'darkblue',
-		borderWidth: 3
-	},
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
-        borderWidth: 0,
-        borderColor: 'whitesmoke'
-    },
-    textSmall: {
+    countHeader: {
         fontSize: 16,
         textAlign: 'center',
-        margin: 14,
-        fontWeight: 'bold',
-        color: 'white'
-    },
-    textLarge: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-        marginRight: 60,
-        fontWeight: 'bold',
-        color: 'white'
-    },
-    textInput: {
-        height: 45,
-        marginTop: 0,
-        padding: 5,
-        backgroundColor: 'white',
-        borderWidth: 3,
-        borderColor: 'lightgray',
-        borderRadius: 0
-    },
-    row: {
-        flex: 1,
-        flexDirection: 'row',
-        padding: 20,
-        alignItems: 'center',
-        borderColor: '#D7D7D7',
-        borderBottomWidth: 1,
-        backgroundColor: '#fff'
-    },
-    rowText: {
-        backgroundColor: '#fff',
-        color: 'black',
-        fontWeight: 'bold'
+        padding: 15,
+        backgroundColor: '#F5FCFF',
     },
     countFooter: {
         fontSize: 16,
         textAlign: 'center',
         padding: 10,
         borderColor: '#D7D7D7',
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
-        color: 'white',
-        fontWeight: 'bold'
+		color: 'white',
+		fontWeight: 'bold'
+    },    
+	countFooter1: {
+        fontSize: 16,
+        textAlign: 'left',
+		marginTop: 1,   
+        marginLeft: 10,
+        borderColor: '#D7D7D7',
+		color: 'white',
+		fontWeight: 'bold'
+    },	
+	countFooter2: {
+        fontSize: 16,
+        textAlign: 'center',
+        marginTop: 1,        
+		//margin: 3,
+        borderColor: '#D7D7D7',
+		color: 'white',
+		fontWeight: 'bold'
+    },	
+	countFooter3: {
+        fontSize: 16,
+        textAlign: 'right',
+		marginTop: 1,
+        marginRight: 10,
+        borderColor: '#D7D7D7',
+		color: 'white',
+		fontWeight: 'bold'
+    },
+    countHeader1: {
+        fontSize: 16,
+        textAlign: 'center',
+        padding: 15,
+        backgroundColor: '#F5FCFF',
+    },
+    welcome: {
+        fontSize: 20,
+        textAlign: 'center',
+        margin: 20,
+    },
+    container: {
+        backgroundColor: '#F5FCFF',
+        paddingTop: 40,
+        padding: 10,
+        alignItems: 'center',
+        flex: 1
+    },
+    logo: {
+        width: 66,
+        height: 65
+    },
+    heading: {
+        fontSize: 30,
+        margin: 10,
+        marginBottom: 20
+    },
+    loginInput: {
+        height: 50,
+        marginTop: 10,
+        padding: 4,
+        fontSize: 18,
+        borderWidth: 1,
+        borderColor: '#48BBEC',
+        borderRadius: 0,
+        color: '#48BBEC'
+    },
+    button: {
+        height: 50,
+        backgroundColor: '#48BBEC',
+        borderColor: '#48BBEC',
+        alignSelf: 'stretch',
+        marginTop: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 24
     },
     loader: {
-        justifyContent: 'center',
-        height: 100
+        marginTop: 20
     },
     error: {
         color: 'red',

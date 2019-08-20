@@ -3,7 +3,7 @@
 import React, {Component} from 'react';
 
 import Login from './login';
-import AppContainer from './navigation';
+import AppContainer from './appContainer';
 
 console.disableYellowBox = true;
 
@@ -17,17 +17,25 @@ class App extends Component {
 
         window.appConfig = {
             access_token: '',
-            url: 'http://jwt-base.herokuapp.com/',
+            url: 'http://jwt-budget.herokuapp.com/',
             onLogOut: this.onLogOut.bind(this),
-            phones: {
+            search: {
+                refresh: true,
                 items: [],
                 item: {}
             },
             users: {
+                refresh: true,
+                items: [],
+                item: {}
+            },
+            projects: {
+                refresh: true,
                 items: [],
                 item: {}
             },
             audit: {
+                refresh: true,
                 items: [],
                 item: {}
             }

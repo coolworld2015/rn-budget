@@ -9,9 +9,7 @@ import {
     TouchableHighlight,
     ScrollView,
     ActivityIndicator,
-    TextInput,
-    Dimensions,
-    KeyboardAvoidingView
+    TextInput
 } from 'react-native';
 
 class Login extends Component {
@@ -26,8 +24,8 @@ class Login extends Component {
     }
 
     onLogin() {
-        if (this.state.username === undefined || this.state.username === '' ||
-            this.state.password === undefined || this.state.password === '') {
+        if (this.state.username === undefined ||
+            this.state.password === undefined) {
             this.setState({
                 badCredentials: true
             });
@@ -38,7 +36,7 @@ class Login extends Component {
             showProgress: true
         });
 
-        fetch(appConfig.url + 'api/login', {
+        fetch(window.appConfig.url + 'api/login', {
             method: 'post',
             body: JSON.stringify({
                 name: this.state.username,
@@ -57,7 +55,9 @@ class Login extends Component {
                     this.setState({
                         badCredentials: false
                     });
+
                     this.props.onLogin();
+
                 } else {
                     this.setState({
                         badCredentials: true,
@@ -72,6 +72,7 @@ class Login extends Component {
                 });
             })
     }
+
     render() {
         let errorCtrl;
 
@@ -82,26 +83,20 @@ class Login extends Component {
         }
 
         return (
-            <ScrollView style={{backgroundColor: 'whitesmoke'}} keyboardShouldPersistTaps='always'>
-                <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
+            <ScrollView style={{backgroundColor: 'whitesmoke'}} keyboardShouldPersistTaps={true}>
                 <View style={styles.container}>
-                    <View style={styles.headerContainer}>
-                        <Text style={styles.heading}>
-                            RN-Base
-                        </Text>
-                    </View>
-
                     <Image style={styles.logo}
                            source={require('../../../img/logo.jpg')}
                     />
-
+                    <Text style={styles.heading}>
+                        Budget
+                    </Text>
                     <TextInput
                         onChangeText={(text) => this.setState({
                             username: text,
                             badCredentials: false
                         })}
                         value={this.state.username}
-                        editable = {!this.state.showProgress}
                         style={styles.loginInput}
                         placeholder="Login">
                     </TextInput>
@@ -112,7 +107,6 @@ class Login extends Component {
                             badCredentials: false
                         })}
                         value={this.state.password}
-                        editable = {!this.state.showProgress}
                         style={styles.loginInput}
                         placeholder="Password"
                         secureTextEntry={true}>
@@ -120,7 +114,6 @@ class Login extends Component {
 
                     <TouchableHighlight
                         onPress={() => this.onLogin()}
-                        disabled = {this.state.showProgress}
                         style={styles.button}>
                         <Text style={styles.buttonText}>
                             Log in
@@ -132,13 +125,15 @@ class Login extends Component {
                     <ActivityIndicator
                         animating={this.state.showProgress}
                         size="large"
-                        color="darkblue"
                         style={styles.loader}
                     />
                 </View>
-             </KeyboardAvoidingView>
             </ScrollView>
         )
+    }
+
+    onLoginPressed() {
+        this.props.onLogin();
     }
 }
 
@@ -154,24 +149,14 @@ const styles = StyleSheet.create({
         height: 150,
         paddingTop: 140,
         borderRadius: 20,
-        marginTop: 10
-    },
-    headerContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 10,
-        marginTop: -10
     },
     heading: {
         fontSize: 30,
         marginTop: 10,
-        color: 'black',
-        fontWeight: 'bold',
-        textAlign: 'center'
+        fontWeight: 'bold'
     },
     loginInput: {
         height: 50,
-        width: Dimensions.get("window").width * .90,
         marginTop: 10,
         padding: 4,
         fontSize: 18,
@@ -183,12 +168,10 @@ const styles = StyleSheet.create({
     },
     button: {
         height: 50,
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
+        backgroundColor: '#48BBEC',
         borderColor: '#48BBEC',
         alignSelf: 'stretch',
-        marginTop: 20,
-        margin: 5,
+        marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5

@@ -1,49 +1,51 @@
-'use strict';
-
 import React, {Component} from 'react';
 import {
+    AppRegistry,
     StyleSheet,
     Text,
     View,
+    Image,
     TouchableHighlight,
-    TouchableWithoutFeedback,
+    ListView,
     ScrollView,
     ActivityIndicator,
+    TabBarIOS,
+    NavigatorIOS,
     TextInput,
-    BackHandler,
-    Alert
+	BackAndroid,
+	Alert
 } from 'react-native';
 
 class UserDetails extends Component {
     constructor(props) {
         super(props);
-
-        BackHandler.addEventListener('hardwareBackPress', () => {
-            if (this.props.navigator) {
-                this.props.navigator.pop();
-            }
-            return true;
-        });
-
-        this.state = {
-            serverError: false
-        };
-
-        if (props.data) {
-            this.state = {
-                id: props.data.id,
-                name: props.data.name,
-                pass: props.data.pass,
-                description: props.data.description,
-                showProgress: false
-            };
-        }
+		
+		BackAndroid.addEventListener('hardwareBackPress', () => {
+			if (this.props.navigator) {
+				this.props.navigator.pop();
+			}
+			return true;
+		});			
+		
+		this.state = {
+			serverError: false
+		}	
+		
+		if (props.data) {
+			this.state = {
+				id: props.data.id,
+				name: props.data.name,
+				pass: props.data.pass,
+				description: props.data.description,
+				showProgress: false
+			};
+		}		
     }
 
-    updateItem() {
-        if (this.state.name === undefined || this.state.name === '' ||
-            this.state.pass === undefined || this.state.pass === '' ||
-            this.state.description === undefined || this.state.description === '') {
+    updateUser() {
+        if (this.state.name == '' ||
+            this.state.pass == '' ||
+            this.state.description == '') {
             this.setState({
                 invalidValue: true
             });
@@ -52,7 +54,7 @@ class UserDetails extends Component {
 
         this.setState({
             showProgress: true,
-            bugANDROID: ' '
+			bugANDROID: ' '
         });
 
         fetch(appConfig.url + 'api/users/update', {
@@ -62,30 +64,30 @@ class UserDetails extends Component {
                 name: this.state.name,
                 pass: this.state.pass,
                 description: this.state.description,
-                authorization: appConfig.access_token
+				authorization: appConfig.access_token
             }),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         })
-            .then((response) => response.json())
-            .then((responseData) => {
-                if (responseData.pass) {
-                    appConfig.users.refresh = true;
-                    this.props.navigator.pop();
-                } else {
-                    this.setState({
-                        badCredentials: true
-                    });
-                }
+            .then((response)=> response.json())
+            .then((responseData)=> {
+				if (responseData.pass) {
+					appConfig.users.refresh = true;
+					this.props.navigator.pop();
+				} else {
+					this.setState({
+						badCredentials: true
+					});
+				}
             })
-            .catch((error) => {
+            .catch((error)=> {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(() => {
+            .finally(()=> {
                 this.setState({
                     showProgress: false
                 });
@@ -93,71 +95,79 @@ class UserDetails extends Component {
     }
 
     deleteItemDialog() {
-        Alert.alert(
-            'Delete record',
-            'Are you sure you want to delete ' + this.state.name + '?',
-            [
-                {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
-                {
-                    text: 'OK', onPress: () => {
-                    this.deleteItem();
-                }
-                },
-            ]
-        );
-    }
-
-    deleteItem() {
+		Alert.alert(
+			appConfig.language.delrec,
+			appConfig.language.conform + this.state.name + '?',
+			[
+				{text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
+				{
+					text: 'OK',	onPress: () => {
+					this.deleteItem();
+					}
+				},
+			]
+		);	
+	}
+	
+    deleteItem() {		
         this.setState({
             showProgress: true,
-            bugANDROID: ' '
+			bugANDROID: ' '
         });
-
+		
         fetch(appConfig.url + 'api/users/delete', {
             method: 'post',
             body: JSON.stringify({
                 id: this.state.id,
-                authorization: appConfig.access_token
+				authorization: appConfig.access_token
             }),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         })
-            .then((response) => response.json())
-            .then((responseData) => {
-                if (responseData.text) {
-                    appConfig.users.refresh = true;
-                    this.props.navigator.pop();
-                } else {
-                    this.setState({
-                        badCredentials: true
-                    });
-                }
+			.then((response)=> response.json())
+            .then((responseData)=> {
+				console.log(responseData);
+				if (responseData.text) {
+					appConfig.users.refresh = true;
+					this.props.navigator.pop();
+				} else {
+					this.setState({
+						badCredentials: true
+					});
+				}
             })
-            .catch((error) => {
+            .catch((error)=> {
+                console.log(error);
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(() => {
+            .finally(()=> {
                 this.setState({
                     showProgress: false
                 });
             });
 
     }
-
-    goBack() {
-        this.props.navigator.pop();
-    }
-
+    
+	goBack() {
+		this.props.navigator.pop();
+	}
+	
     render() {
         let errorCtrl, validCtrl, loader;
 
         if (this.state.serverError) {
             errorCtrl = <Text style={styles.error}>
                 Something went wrong.
+            </Text>;
+        }
+		
+        if (this.state.invalidValue) {
+            validCtrl = <Text style={styles.error}>
+                Value required - please provide.
             </Text>;
         }
 		
@@ -170,177 +180,191 @@ class UserDetails extends Component {
                 />
             </View>;
         }
-		
-        if (this.state.invalidValue) {
-            validCtrl = <Text style={styles.error}>
-                Value required - please provide.
-            </Text>;
-        }
 
         return (
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <View>
+            <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
+				<View style={{
+					flexDirection: 'row',
+					justifyContent: 'space-between',
+					backgroundColor: 'darkblue',
+					borderWidth: 0,
+					borderColor: 'whitesmoke'
+				}}>
+					<View>
 						<TouchableHighlight
 							onPress={()=> this.goBack()}
 							underlayColor='darkblue'
 						>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                    Back
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback underlayColor='#ddd'>
-                            <View>
-                                <Text style={styles.textLarge}>
-                                    {this.state.name}
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                    <View>
+							<Text style={{
+								fontSize: 16,
+								textAlign: 'center',
+								margin: 14,
+								fontWeight: 'bold',
+								color: 'white'
+							}}>
+								{appConfig.language.back}
+							</Text>
+						</TouchableHighlight>	
+					</View>
+					<View>
+						<TouchableHighlight
+							underlayColor='#ddd'
+						>
+							<Text style={{
+								fontSize: 20,
+								textAlign: 'center',
+								margin: 10,
+								fontWeight: 'bold',
+								color: 'white'
+							}}>
+								{this.state.name}
+							</Text>
+						</TouchableHighlight>	
+					</View>						
+					<View>
 						<TouchableHighlight
 							onPress={()=> this.deleteItemDialog()}
 							underlayColor='darkblue'
 						>
-                            <View>
-                                <Text style={styles.textSmall}>
-                                    Delete
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                </View>
+							<Text style={{
+								fontSize: 16,
+								textAlign: 'center',
+								margin: 14,
+								fontWeight: 'bold',
+								color: 'white'
+							}}>
+								{appConfig.language.delete}
+							</Text>
+						</TouchableHighlight>	
+					</View>
+				</View>
+					
+				<ScrollView keyboardShouldPersistTaps={true}>
+					{errorCtrl}							
+					{loader}
+					
+					<View style={{
+						flex: 1,
+						padding: 10,
+						paddingBottom: 70,
+						justifyContent: 'flex-start',
+						backgroundColor: 'white'
+					}}>						
+						<TextInput
+							underlineColorAndroid='rgba(0,0,0,0)'
+							onChangeText={(text)=> this.setState({
+								name: text,
+								invalidValue: false
+							})}
+							style={styles.loginInputBold}
+							value={this.state.name}
+							placeholder={appConfig.language.login}>
+						</TextInput>
 
-                <ScrollView keyboardShouldPersistTaps='always'>
-                    <View style={styles.form}>
-                        <TextInput
-                            underlineColorAndroid='rgba(0,0,0,0)'
-                            onChangeText={(text) => this.setState({
-                                name: text,
-                                invalidValue: false
-                            })}
-                            style={styles.formInputBold}
-                            value={this.state.name}
-                            placeholder='Login'>
-                        </TextInput>
+						<TextInput
+							underlineColorAndroid='rgba(0,0,0,0)'
+							onChangeText={(text)=> this.setState({
+								pass: text,
+								invalidValue: false
+							})}
+							style={styles.loginInput}
+							value={this.state.pass}
+							placeholder={appConfig.language.pass}>
+						</TextInput>
 
-                        <TextInput
-                            underlineColorAndroid='rgba(0,0,0,0)'
-                            onChangeText={(text) => this.setState({
-                                pass: text,
-                                invalidValue: false
-                            })}
-                            style={styles.formInput}
-                            value={this.state.pass}
-                            placeholder='Password'>
-                        </TextInput>
+						<TextInput
+							underlineColorAndroid='rgba(0,0,0,0)'
+							multiline={true}
+							onChangeText={(text)=> this.setState({
+								description: text,
+								invalidValue: false
+							})}
+							style={styles.loginInput1}
+							value={this.state.description}
+							placeholder={appConfig.language.description}>
+						</TextInput>
 
-                        <TextInput
-                            underlineColorAndroid='rgba(0,0,0,0)'
-                            multiline={true}
-                            onChangeText={(text) => this.setState({
-                                description: text,
-                                invalidValue: false
-                            })}
-                            style={styles.formInputArea}
-                            value={this.state.description}
-                            placeholder='Description'>
-                        </TextInput>
+						{validCtrl}
 
-                        {validCtrl}
+						<TouchableHighlight
+							onPress={()=> this.updateUser()}
 
-                        <TouchableHighlight
-                            onPress={() => this.updateItem()}
-                            style={styles.button}>
-                            <Text style={styles.buttonText}>
-                                Submit
-                            </Text>
-                        </TouchableHighlight>
-
-                        {errorCtrl}
+							style={styles.button}>
+							<Text style={styles.buttonText}>{appConfig.language.submit}</Text>
+						</TouchableHighlight>
 						
-						{loader}
-
-                        <Text>{this.state.bugANDROID}</Text>
-                    </View>
-                </ScrollView>
-            </View>
-        )
+						{errorCtrl}
+						
+						<ActivityIndicator
+							animating={this.state.showProgress}
+							size="large"
+							style={styles.loader}
+						/>
+						
+						<Text>{this.state.bugANDROID}</Text>
+					</View>
+				</ScrollView>
+			</View>
+        );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
+    AppContainer: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white'
+        alignItems: 'center',
+        backgroundColor: 'gray',
     },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
-        borderWidth: 0,
-        borderColor: 'whitesmoke'
-    },
-    textSmall: {
+    countHeader: {
         fontSize: 16,
         textAlign: 'center',
-        margin: 16,
-        fontWeight: 'bold',
-        color: 'white'
+        padding: 15,
+        backgroundColor: '#F5FCFF',
     },
-    textLarge: {
+    countFooter: {
+        fontSize: 16,
+        textAlign: 'center',
+        padding: 10,
+        borderColor: '#D7D7D7',
+        backgroundColor: 'whitesmoke'
+    },
+    welcome: {
         fontSize: 20,
         textAlign: 'center',
-        margin: 10,
-        marginTop: 12,
-        marginRight: 20,
-        fontWeight: 'bold',
-        color: 'white'
+        margin: 20,
     },
-    form: {
-        flex: 1,
-        padding: 10,
-        justifyContent: 'flex-start',
-        paddingBottom: 130,
-        backgroundColor: 'white'
-    },
-    formInputBold: {
+    loginInput: {
         height: 50,
         marginTop: 10,
         padding: 4,
         fontSize: 18,
         borderWidth: 1,
-        borderColor: 'lightgray',
-        borderRadius: 5,
-        color: 'black',
-        fontWeight: 'bold'
-    },
-    formInput: {
-        height: 50,
-        marginTop: 10,
-        padding: 4,
-        fontSize: 18,
-        borderWidth: 1,
-        borderColor: 'lightgray',
+        borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black'
     },
-    formInputArea: {
+	loginInputBold: {
+        height: 50,
+        marginTop: 10,
+        padding: 4,
+        fontSize: 18,
+        borderWidth: 1,
+        borderColor: 'darkblue',
+        borderRadius: 5,
+        color: 'black',
+		fontWeight: 'bold'
+    },		
+	loginInput1: {
         height: 100,
         marginTop: 10,
         padding: 4,
         fontSize: 18,
         borderWidth: 1,
-        borderColor: 'lightgray',
+        borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black'
-    },
+    },		
     button: {
         height: 50,
         //backgroundColor: '#48BBEC',
@@ -355,7 +379,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 20,
-        fontWeight: 'bold'
+		fontWeight: 'bold'
     },
     loader: {
         marginTop: 20
@@ -364,6 +388,12 @@ const styles = StyleSheet.create({
         color: 'red',
         paddingTop: 10,
         textAlign: 'center'
+    },
+    img: {
+        height: 95,
+        width: 75,
+        borderRadius: 20,
+        margin: 20
     }
 });
 

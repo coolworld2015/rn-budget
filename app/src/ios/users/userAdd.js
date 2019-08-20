@@ -8,7 +8,7 @@ import {
     TouchableHighlight,
     ScrollView,
     ActivityIndicator,
-    TextInput, TouchableWithoutFeedback
+    TextInput
 } from 'react-native';
 
 class UserAdd extends Component {
@@ -21,9 +21,9 @@ class UserAdd extends Component {
     }
 
     addItem() {
-        if (this.state.name === undefined || this.state.name === '' ||
-            this.state.pass === undefined || this.state.pass === '' ||
-            this.state.description === undefined || this.state.description === '') {
+        if (this.state.name == undefined ||
+            this.state.pass == undefined ||
+            this.state.description == undefined) {
             this.setState({
                 invalidValue: true
             });
@@ -50,9 +50,11 @@ class UserAdd extends Component {
         })
             .then((response) => response.json())
             .then((responseData) => {
-                this.props.navigation.navigate('Users', { refresh: true})
+                appConfig.users.refresh = true;
+                this.props.navigator.pop();
             })
             .catch((error) => {
+                console.log(error);
                 this.setState({
                     serverError: true
                 });
@@ -62,10 +64,6 @@ class UserAdd extends Component {
                     showProgress: false
                 });
             });
-    }
-
-    goBack() {
-        this.props.navigation.goBack();
     }
 
     render() {
@@ -84,142 +82,75 @@ class UserAdd extends Component {
         }
 
         return (
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <View>
-                        <TouchableHighlight
-                            onPress={()=> this.goBack()}
-                            underlayColor='darkblue'
-                        >
-                            <View>
-                                <Text style={styles.textSmall}>
-                                    Back
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                    <View>
-                        <TouchableWithoutFeedback underlayColor='#ddd'>
-                            <View>
-                                <Text style={styles.textLarge}>
-                                    New record
-                                </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-                    </View>
-                    <View>
-                        <TouchableHighlight
-                            onPress={() => this.deleteItemDialog()}
-                            underlayColor='darkblue'
-                        >
-                            <View>
-                                <Text style={styles.textSmall}>
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
+            <ScrollView>
+                <View style={{
+                    flex: 1,
+                    padding: 10,
+                    justifyContent: 'flex-start'
+                }}>
+
+                    <TextInput
+                        onChangeText={(text) => this.setState({
+                            name: text,
+                            invalidValue: false
+                        })}
+                        style={styles.loginInput}
+                        value={this.state.name}
+                        placeholder="Login">
+                    </TextInput>
+
+                    <TextInput
+                        onChangeText={(text) => this.setState({
+                            pass: text,
+                            invalidValue: false
+                        })}
+                        style={styles.loginInput}
+                        value={this.state.pass}
+                        placeholder="Password">
+                    </TextInput>
+
+                    <TextInput
+                        multiline={true}
+                        onChangeText={(text) => this.setState({
+                            description: text,
+                            invalidValue: false
+                        })}
+                        style={styles.formInputArea}
+                        value={this.state.description}
+                        placeholder="Description">
+                    </TextInput>
+
+                    {validCtrl}
+
+                    <TouchableHighlight
+                        onPress={() => this.addItem()}
+                        style={styles.button}>
+                        <Text style={styles.buttonText}>Add</Text>
+                    </TouchableHighlight>
+
+                    {errorCtrl}
+
+                    <ActivityIndicator
+                        animating={this.state.showProgress}
+                        size="large"
+                        style={styles.loader}
+                    />
                 </View>
-
-                <ScrollView keyboardShouldPersistTaps='always'>
-                    <View style={{
-                        flex: 1,
-                        padding: 10,
-                        justifyContent: 'flex-start'
-                    }}>
-
-                        <TextInput
-                            onChangeText={(text) => this.setState({
-                                name: text,
-                                invalidValue: false
-                            })}
-                            style={styles.loginInput}
-                            value={this.state.name}
-                            placeholder="Login">
-                        </TextInput>
-
-                        <TextInput
-                            onChangeText={(text) => this.setState({
-                                pass: text,
-                                invalidValue: false
-                            })}
-                            style={styles.loginInput}
-                            value={this.state.pass}
-                            placeholder="Password">
-                        </TextInput>
-
-                        <TextInput
-                            multiline={true}
-                            onChangeText={(text) => this.setState({
-                                description: text,
-                                invalidValue: false
-                            })}
-                            style={styles.formInputArea}
-                            value={this.state.description}
-                            placeholder="Description">
-                        </TextInput>
-
-                        {validCtrl}
-
-                        <TouchableHighlight
-                            onPress={() => this.addItem()}
-                            style={styles.button}>
-                            <Text style={styles.buttonText}>Add</Text>
-                        </TouchableHighlight>
-
-                        {errorCtrl}
-
-                        <ActivityIndicator
-                            animating={this.state.showProgress}
-                            size="large"
-                            style={styles.loader}
-                        />
-                    </View>
-                </ScrollView>
-            </View>
+            </ScrollView>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        backgroundColor: 'white'
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
-        backgroundColor: 'darkblue',
-        borderWidth: 0,
-        borderColor: 'whitesmoke'
-    },
-    textSmall: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 16,
-        fontWeight: 'bold',
-        color: 'white'
-    },
-    textLarge: {
-        fontSize: 24,
-        textAlign: 'center',
-        margin: 10,
-        marginTop: 12,
-        marginRight: 40,
-        fontWeight: 'bold',
-        color: 'white'
-    },
-    formInputBold: {
-        height: 50,
+    formInputArea: {
+        height: 100,
         marginTop: 10,
         padding: 4,
         fontSize: 18,
         borderWidth: 1,
         borderColor: 'lightgray',
         borderRadius: 5,
-        color: 'black',
-        fontWeight: 'bold'
+        color: 'black'
     },
     loginInput: {
         height: 50,
@@ -231,19 +162,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         color: 'black'
     },
-    formInputArea: {
-        height: 100,
-        marginTop: 10,
-        padding: 4,
-        fontSize: 18,
-        borderWidth: 1,
-        borderColor: 'lightgray',
-        borderRadius: 5,
-        color: 'black'
-    },
     button: {
         height: 50,
-        backgroundColor: 'darkblue',
+        backgroundColor: '#48BBEC',
+        borderColor: '#48BBEC',
         alignSelf: 'stretch',
         marginTop: 10,
         justifyContent: 'center',
