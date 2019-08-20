@@ -7,7 +7,6 @@ import {
     View,
     TouchableHighlight,
     TouchableWithoutFeedback,
-    ListView,
     ScrollView,
     ActivityIndicator,
     TextInput,
@@ -15,6 +14,8 @@ import {
 	Dimensions,
 	RefreshControl
 } from 'react-native';
+
+import ListView from 'deprecated-react-native-listview';
 
 class Inputs extends Component {
     constructor(props) {
@@ -33,10 +34,11 @@ class Inputs extends Component {
             positionY: 0,
 			searchQuery: '',
 			refreshing: false,
-			total: 0
+			total: 0,
+            width: Dimensions.get('window').width
         };
     }
-	
+
 	componentDidMount() {
 		appConfig.inputs.showProgress = true;
 		this.setState({
@@ -44,7 +46,7 @@ class Inputs extends Component {
         });
         this.getItems();
 	}
-	
+
     componentWillUpdate() {
         if (appConfig.inputs.refresh) {
             appConfig.inputs.refresh = false;
@@ -67,8 +69,8 @@ class Inputs extends Component {
 			searchQuery: '',
 			total: 0
         });
-		
-        fetch(appConfig.url + 'api/inputs/get', {			
+
+        fetch(appConfig.url + 'api/inputs/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -111,36 +113,36 @@ class Inputs extends Component {
         }
         return 0;
     }
-	
+
     showDetails(rowData) {
 		this.props.navigator.push({
 			index: 1,
 			data: rowData
 		});
     }
-	
+
     addItem() {
 		appConfig.inputs.showProgress = false;
 		this.props.navigator.push({
 			index: 2
 		});
     }
-	
+
     renderRow(rowData) {
         return (
             <TouchableHighlight
                 onPress={()=> this.showDetails(rowData)}
                 underlayColor='#ddd'
             >
-				<View style={styles.row}>              
+				<View style={styles.row}>
 					<Text style={styles.rowText}>
 						{rowData.invoiceID} - {rowData.project} - {(rowData.date).split(' ')[0]}
-					</Text>						
-					
+					</Text>
+
 					<Text style={styles.rowText}>
 						{rowData.description}
-					</Text>						
-					
+					</Text>
+
 					<Text style={styles.rowText}>
 						{appConfig.language.total}: {((+rowData.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
 					</Text>
@@ -175,7 +177,7 @@ class Inputs extends Component {
         var recordsCount = this.state.recordsCount;
         var positionY = this.state.positionY;
         var items = this.state.filteredItems.slice(0, recordsCount);
-		
+
         if (event.nativeEvent.contentOffset.y >= positionY) {
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(items),
@@ -194,7 +196,7 @@ class Inputs extends Component {
         var items = arr.filter((el) => el.description.toLowerCase().indexOf(text.toLowerCase()) != -1);
 		var total = 0;
 		items.forEach((el) => total += +el.total);
-		
+
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(items.slice(0, 15)),
             resultsCount: items.length,
@@ -203,7 +205,7 @@ class Inputs extends Component {
 			total: total
         })
     }
-	
+
 	refreshDataAndroid() {
 		this.setState({
 			showProgress: true,
@@ -212,7 +214,7 @@ class Inputs extends Component {
 
 		this.getItems();
 	}
-	
+
 	clearSearchQuery() {
 		this.setState({
 			dataSource: this.state.dataSource.cloneWithRows(this.state.responseData.slice(0, 15)),
@@ -224,7 +226,7 @@ class Inputs extends Component {
 			total: 0
 		});
 	}
-	
+
     render() {
         let errorCtrl, loader, image, total;
 
@@ -254,13 +256,13 @@ class Inputs extends Component {
 				}}
 			/>;
 		}
-		
+
 		if (this.state.total > 0) {
 			total = <Text>
-				  {"\u00a0"}({((+this.state.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}) 
+				  {"\u00a0"}({((+this.state.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")})
 			</Text>;
 		}
-		
+
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -282,7 +284,7 @@ class Inputs extends Component {
                         </TouchableWithoutFeedback>
                     </View>
                     <View>
-                        <TouchableHighlight 
+                        <TouchableHighlight
 							onPress={() => this.addItem()}
 							underlayColor='darkblue'
 						>
@@ -294,7 +296,7 @@ class Inputs extends Component {
                         </TouchableHighlight>
                     </View>
                 </View>
-				
+
                 <View style={styles.iconForm}>
 					<View>
 						<TextInput
@@ -321,11 +323,11 @@ class Inputs extends Component {
 						marginLeft: -10,
 						paddingLeft: 5,
 						width: this.state.width * .10,
-					}}>			
+					}}>
 						<TouchableWithoutFeedback
 							onPress={() => this.clearSearchQuery()}
-						>			
-							<View>					
+						>
+							<View>
 								{image}
 							</View>
 						</TouchableWithoutFeedback>
@@ -335,7 +337,7 @@ class Inputs extends Component {
                 {errorCtrl}
 
                 {loader}
-				
+
 				<ScrollView onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}
 					refreshControl={
 						<RefreshControl
@@ -351,10 +353,10 @@ class Inputs extends Component {
 						renderRow={this.renderRow.bind(this)}
 					/>
 				</ScrollView>
-				
+
 				<View>
 					<Text style={styles.countFooter}>
-						{appConfig.language.records} {this.state.resultsCount.toString()} 
+						{appConfig.language.records} {this.state.resultsCount.toString()}
 						{total}
 					</Text>
 				</View>
