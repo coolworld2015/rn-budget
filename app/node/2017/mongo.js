@@ -1,8 +1,6 @@
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://admin:admin@ds015760.mlab.com:15760/ui-budget');
-//mongoose.connect('mongodb://localhost:27017/ui-budget');
-//mongoose.connect('mongodb://admin:admin@ds053728.mongolab.com:53728/warehouse'); //TODO mongolab for mlab is possible
+mongoose.connect('mongodb://admin:admin@ds161179.mlab.com:61179/budget2017');
 
 var db = mongoose.connection;
 
