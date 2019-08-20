@@ -5,7 +5,6 @@ import {
     View,
     TouchableHighlight,
     TouchableWithoutFeedback,
-    ListView,
     ScrollView,
     ActivityIndicator,
     TextInput,
@@ -13,6 +12,8 @@ import {
 	Dimensions,
 	RefreshControl
 } from 'react-native';
+
+import ListView from 'deprecated-react-native-listview';
 
 class Store extends Component {
     constructor(props) {
@@ -30,17 +31,18 @@ class Store extends Component {
             recordsCount: 25,
             positionY: 0,
 			searchQuery: '',
-			refreshing: false
+			refreshing: false,
+            width: Dimensions.get('window').width
         };
     }
-	
+
 	componentDidMount() {
 		this.setState({
             width: Dimensions.get('window').width
         });
         this.getItems();
 	}
-	
+
     componentWillUpdate() {
         if (appConfig.assets.refresh) {
             appConfig.assets.refresh = false;
@@ -53,7 +55,7 @@ class Store extends Component {
             this.getItems();
         }
     }
-	
+
     getItems() {
 		this.setState({
 			serverError: false,
@@ -62,8 +64,8 @@ class Store extends Component {
             positionY: 0,
 			searchQuery: ''
         });
-		
-        fetch(appConfig.url + 'api/goods/get', {			
+
+        fetch(appConfig.url + 'api/goods/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -75,7 +77,7 @@ class Store extends Component {
             .then((responseData)=> {
 				let arr = [].concat(responseData.sort(this.sort));
 				let items = arr.filter((el) => el.store == true);
-				
+
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(items),
                     resultsCount: items.length,
@@ -115,20 +117,20 @@ class Store extends Component {
 			data: rowData
 		});
     }
-	
+
     addItem() {
 		this.props.navigator.push({
 			index: 2
 		});
     }
-	
+
     renderRow(rowData) {
         return (
             <TouchableHighlight>
                 <View style={styles.row}>
                     <Text style={styles.rowText}>
 						{rowData.name}: {((+rowData.quantity).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
-					</Text>						
+					</Text>
 				</View>
             </TouchableHighlight>
         );
@@ -174,7 +176,7 @@ class Store extends Component {
             searchQuery: text
         })
     }
-	
+
 	refreshDataAndroid() {
 		this.setState({
 			showProgress: true,
@@ -183,7 +185,7 @@ class Store extends Component {
 
 		this.getItems();
 	}
-	
+
 	clearSearchQuery() {
 		this.setState({
 			dataSource: this.state.dataSource.cloneWithRows(this.state.responseData),
@@ -192,7 +194,7 @@ class Store extends Component {
 			searchQuery: ''
 		});
 	}
-	
+
     render() {
         let errorCtrl, loader, image;
 
@@ -252,7 +254,7 @@ class Store extends Component {
                         </TouchableWithoutFeedback>
                     </View>
                 </View>
-				
+
                 <View style={styles.iconForm}>
 					<View>
 						<TextInput
@@ -279,11 +281,11 @@ class Store extends Component {
 						marginLeft: -10,
 						paddingLeft: 5,
 						width: this.state.width * .10,
-					}}>			
+					}}>
 						<TouchableWithoutFeedback
 							onPress={() => this.clearSearchQuery()}
-						>			
-							<View>					
+						>
+							<View>
 								{image}
 							</View>
 						</TouchableWithoutFeedback>
@@ -292,8 +294,8 @@ class Store extends Component {
 
                 {errorCtrl}
 
-                {loader}	
-				
+                {loader}
+
 				<ScrollView onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}
 					refreshControl={
 						<RefreshControl
@@ -309,10 +311,10 @@ class Store extends Component {
 						renderRow={this.renderRow.bind(this)}
 					/>
 				</ScrollView>
-				
+
 				<View style={{marginBottom: 0}}>
 					<Text style={styles.countFooter}>
-						{appConfig.language.records} {this.state.resultsCount.toString()} 
+						{appConfig.language.records} {this.state.resultsCount.toString()}
 					</Text>
 				</View>
 

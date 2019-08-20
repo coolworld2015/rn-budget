@@ -19,16 +19,11 @@ class Login extends Component {
 
         this.state = {
             showProgress: false,
-            //username: '2',
-            //password: '2',
-            bugANDROID: ''
-        }
-    }
-
-    componentDidMount() {
-        this.setState({
+            username: '1',
+            password: '1',
+            bugANDROID: '',
             width: Dimensions.get('window').width
-        });
+        }
     }
 
     onLogin() {
@@ -94,7 +89,7 @@ class Login extends Component {
     }
 
     render() {
-        let errorCtrl;
+        let errorCtrl, showProgress;
 
         if (this.state.badCredentials) {
             errorCtrl = <Text style={styles.error}>
@@ -102,20 +97,29 @@ class Login extends Component {
             </Text>;
         }
 
+        if (this.state.showProgress) {
+            showProgress =  <ActivityIndicator
+                animating={this.state.showProgress}
+                size="large"
+                color="darkblue"
+                style={styles.loader}
+            />;
+        }
+
         return (
             <ScrollView style={{backgroundColor: 'whitesmoke'}} keyboardShouldPersistTaps={true}>
                 <View style={styles.container}>
-				
+
                     <View style={styles.headerContainer}>
                         <Text style={styles.heading}>
                             {appConfig.language.title}
                         </Text>
                     </View>
-									
+
                     <Image style={styles.logo}
                            source={require('../../../img/logo.jpg')}
                     />
-					
+
                     <TextInput
                         underlineColorAndroid='rgba(0,0,0,0)'
                         onChangeText={(text) => this.setState({
@@ -172,12 +176,7 @@ class Login extends Component {
 
                     {errorCtrl}
 
-                    <ActivityIndicator
-                        animating={this.state.showProgress}
-                        size="large"
-						color="darkblue"
-                        style={styles.loader}
-                    />
+                    {showProgress}
 
                     <Text>{this.state.bugANDROID}</Text>
                 </View>

@@ -1,9 +1,22 @@
 import React, {Component} from 'react';
 
 import {
-    Navigator
+    StyleSheet,
+    Text,
+    View,
+    TouchableHighlight,
+    TouchableWithoutFeedback,
+    ListView,
+    ScrollView,
+    ActivityIndicator,
+    TextInput,
+    Image,
+    Dimensions,
+    RefreshControl,
+    DrawerLayoutAndroid
 } from 'react-native';
 
+import NavigationExperimental from 'react-native-deprecated-custom-components';
 import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view';
 
 import Audit from '../audit/audit';
@@ -59,9 +72,9 @@ class AppContainer extends Component {
     render() {
         return (
             <ScrollableTabView
-                renderTabBar={() => <DefaultTabBar 
-					activeTextColor='darkblue' 
-					inactiveTextColor='darkblue' 
+                renderTabBar={() => <DefaultTabBar
+					activeTextColor='darkblue'
+					inactiveTextColor='darkblue'
  					underlineStyle={{backgroundColor: 'darkblue'}}
 					backgroundColor='white'/>}
             >
@@ -309,14 +322,12 @@ class AssetsTab extends Component {
 
     render() {
         return (
-            <Navigator
+            <NavigationExperimental.Navigator
                 initialRoute={this.routes[0]}
                 initialRouteStack={this.routes}
                 renderScene={this.renderScene.bind(this)}
-                style={{padding: 0}}
-
                 configureScene={(route, routeStack) =>
-                    Navigator.SceneConfigs.PushFromRight}
+                    NavigationExperimental.Navigator.SceneConfigs.PushFromRight}
             />
         )
     }

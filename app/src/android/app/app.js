@@ -5,7 +5,7 @@ import {
     StyleSheet,
     View,
     ActivityIndicator,
-    BackAndroid,
+    BackHandler,
     AsyncStorage
 } from 'react-native';
 
@@ -18,7 +18,7 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        BackAndroid.addEventListener('hardwareBackPress', () => {
+        BackHandler.addEventListener('hardwareBackPress', () => {
             if (this.props.navigator) {
                 this.props.navigator.pop();
             }
