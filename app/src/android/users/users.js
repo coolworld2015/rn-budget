@@ -239,7 +239,7 @@ class Users extends Component {
                         <TouchableWithoutFeedback>
                             <View>
                                 <Text style={styles.textLarge}>
-                                    Users
+                                    {appConfig.language.users}
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
@@ -250,7 +250,7 @@ class Users extends Component {
                             underlayColor='darkblue'>
                             <View>
                                 <Text style={styles.textSmall}>
-                                    New
+                                    {appConfig.language.add}
                                 </Text>
                             </View>
                         </TouchableHighlight>
@@ -264,7 +264,7 @@ class Users extends Component {
                             onChangeText={this.onChangeText.bind(this)}
                             style={styles.searchLarge}
                             value={this.state.searchQuery}
-                            placeholder="Search here">
+                            placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
                     <View style={styles.searchSmall}>
@@ -304,7 +304,7 @@ class Users extends Component {
                         onPress={() => this.clearSearchQuery()}>
                         <View>
                             <Text style={styles.countFooter}>
-                                Records: {this.state.resultsCount}
+                                {appConfig.language.records} {this.state.resultsCount}
                             </Text>
                         </View>
                     </TouchableWithoutFeedback>

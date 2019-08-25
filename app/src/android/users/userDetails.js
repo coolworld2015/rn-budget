@@ -94,17 +94,17 @@ class UserDetails extends Component {
 
     deleteItemDialog() {
         Alert.alert(
-            'Delete record',
-            'Are you sure you want to delete ' + this.state.name + '?',
+            appConfig.language.delrec,
+            appConfig.language.conform + this.state.name + '?',
             [
                 {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
                 {
                     text: 'OK', onPress: () => {
                         this.deleteItem();
-                    },
-                },
-            ],
-        );
+                    }
+                }
+            ]
+        )
     }
 
     deleteItem() {
@@ -185,7 +185,7 @@ class UserDetails extends Component {
                             underlayColor='darkblue'>
                             <View>
                                 <Text style={styles.textSmall}>
-                                    Back
+                                    {appConfig.language.back}
                                 </Text>
                             </View>
                         </TouchableHighlight>
@@ -205,7 +205,7 @@ class UserDetails extends Component {
                             underlayColor='darkblue'>
                             <View>
                                 <Text style={styles.textSmall}>
-                                    Delete
+                                    {appConfig.language.delete}
                                 </Text>
                             </View>
                         </TouchableHighlight>
@@ -222,7 +222,7 @@ class UserDetails extends Component {
                             })}
                             style={styles.formInputBold}
                             value={this.state.name}
-                            placeholder='Login'>
+                            placeholder={appConfig.language.login}>
                         </TextInput>
 
                         <TextInput
@@ -233,7 +233,7 @@ class UserDetails extends Component {
                             })}
                             style={styles.formInput}
                             value={this.state.pass}
-                            placeholder='Password'>
+                            placeholder={appConfig.language.pass}>
                         </TextInput>
 
                         <TextInput
@@ -245,7 +245,7 @@ class UserDetails extends Component {
                             })}
                             style={styles.formInputArea}
                             value={this.state.description}
-                            placeholder='Description'>
+                            placeholder={appConfig.language.description}>
                         </TextInput>
 
                         {validCtrl}
@@ -254,7 +254,7 @@ class UserDetails extends Component {
                             onPress={() => this.updateItem()}
                             style={styles.button}>
                             <Text style={styles.buttonText}>
-                                Submit
+                                {appConfig.language.submit}
                             </Text>
                         </TouchableHighlight>
 

@@ -114,7 +114,7 @@ class UserAdd extends Component {
                             underlayColor='darkblue'>
                             <View>
                                 <Text style={styles.textSmall}>
-                                    Back
+                                    {appConfig.language.back}
                                 </Text>
                             </View>
                         </TouchableHighlight>
@@ -123,7 +123,7 @@ class UserAdd extends Component {
                         <TouchableWithoutFeedback underlayColor='#ddd'>
                             <View>
                                 <Text style={styles.textLarge}>
-                                    New record
+                                    {appConfig.language.newrec}
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
@@ -148,7 +148,7 @@ class UserAdd extends Component {
                             })}
                             style={styles.formInput}
                             value={this.state.name}
-                            placeholder='Login'>
+                            placeholder={appConfig.language.login}>
                         </TextInput>
 
                         <TextInput
@@ -159,7 +159,7 @@ class UserAdd extends Component {
                             })}
                             style={styles.formInput}
                             value={this.state.pass}
-                            placeholder='Password'>
+                            placeholder={appConfig.language.pass}>
                         </TextInput>
 
                         <TextInput
@@ -171,7 +171,7 @@ class UserAdd extends Component {
                             })}
                             style={styles.formInputArea}
                             value={this.state.description}
-                            placeholder='Description'>
+                            placeholder={appConfig.language.description}>
                         </TextInput>
 
                         {validCtrl}
@@ -180,7 +180,7 @@ class UserAdd extends Component {
                             onPress={() => this.addItem()}
                             style={styles.button}>
                             <Text style={styles.buttonText}>
-                                Add
+                                {appConfig.language.add}
                             </Text>
                         </TouchableHighlight>
 
