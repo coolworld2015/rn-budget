@@ -21,7 +21,6 @@ import ScrollableTabView, {DefaultTabBar} from 'react-native-scrollable-tab-view
 
 import Audit from '../audit/audit';
 import AuditDetails from '../audit/auditDetails';
-import AuditAdd from '../audit/auditAdd';
 
 import Users from '../users/users';
 import UserDetails from '../users/userDetails';
@@ -194,7 +193,7 @@ class OtherTab extends Component {
             case 52:
                 return <UserAdd data={route.data} routes={this.routes} navigator={navigator}/>;
                 break;
-/*
+
             case 60:
                 return <Audit routes={this.routes} navigator={navigator}/>;
                 break;
@@ -203,7 +202,7 @@ class OtherTab extends Component {
                 break;
             case 62:
                 return <AuditAdd data={route.data} routes={this.routes} navigator={navigator}/>;
-                break;*/
+                break;
 
             case 70:
                 return <Config onLogOut={this.onLogOut.bind(this)} routes={this.routes} navigator={navigator}/>;

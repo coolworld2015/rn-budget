@@ -3,66 +3,58 @@
 import React, {Component} from 'react';
 
 import Login from './login';
-import AppContainer from './appContainer';
+import AppContainer from './navigation';
 
 console.disableYellowBox = true;
 
 class App extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            isLoggedIn: false
-        };
+    this.state = {
+      isLoggedIn: false
+    };
 
-        window.appConfig = {
-            access_token: '',
-            url: 'http://jwt-budget.herokuapp.com/',
-            onLogOut: this.onLogOut.bind(this),
-            search: {
-                refresh: true,
-                items: [],
-                item: {}
-            },
-            users: {
-                refresh: true,
-                items: [],
-                item: {}
-            },
-            projects: {
-                refresh: true,
-                items: [],
-                item: {}
-            },
-            audit: {
-                refresh: true,
-                items: [],
-                item: {}
-            }
-        };
+    window.appConfig = {
+      access_token: '',
+      url: 'http://jwt-base.herokuapp.com/',
+      onLogOut: this.onLogOut.bind(this),
+      phones: {
+        items: [],
+        item: {},
+      },
+      users: {
+        items: [],
+        item: {},
+      },
+      audit: {
+        items: [],
+        item: {},
+      }
+    };
+  }
+
+  render() {
+    if (this.state.isLoggedIn) {
+      return (
+        <AppContainer onLogOut={this.onLogOut.bind(this)}/>
+      )
+    } else {
+      return (
+        <Login onLogin={this.onLogin.bind(this)}/>
+      )
     }
+  }
 
-    render() {
-        if (this.state.isLoggedIn) {
-            return (
-                <AppContainer onLogOut={this.onLogOut.bind(this)}/>
-            )
-        } else {
-            return (
-                <Login onLogin={this.onLogin.bind(this)}/>
-            )
-        }
-    }
+  onLogin() {
+    console.log('onLogin');
+    this.setState({isLoggedIn: true});
+  }
 
-    onLogin() {
-        console.log('onLogin');
-        this.setState({isLoggedIn: true});
-    }
-
-    onLogOut() {
-        console.log('onLogOut');
-        this.setState({isLoggedIn: false});
-    }
+  onLogOut() {
+    console.log('onLogOut');
+    this.setState({isLoggedIn: false});
+  }
 }
 
 export default App;

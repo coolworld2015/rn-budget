@@ -2,204 +2,263 @@
 
 import React, {Component} from 'react';
 import {
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    TouchableHighlight,
-    TouchableWithoutFeedback,
-    ListView,
-    ScrollView,
-    ActivityIndicator,
-    TextInput,
-    Switch
+  StyleSheet,
+  Text,
+  View,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+  ScrollView,
+  TextInput,
+  Switch,
+  Dimensions
 } from 'react-native';
 
-import searchResults from './searchResults';
-
 class Search extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            showProgress: false,
-            eventSwitchTitle: true,
-            eventSwitchBase: true,
-            textSwitchBase: 'Search by phone',
-        }
+    this.state = {
+      showProgress: false,
+      eventSwitchTitle: false,
+      eventSwitchBase: true,
+      textSwitchBase: 'Search by name',
+      bugANDROID: ''
+    };
+  }
+
+  clearSearch() {
+    this.setState({
+      searchQuery: '',
+      invalidValue: false
+    });
+  }
+
+  onSearchPressed() {
+    if (this.state.searchQuery === undefined ||
+      this.state.searchQuery === '') {
+      this.setState({
+        invalidValue: true,
+      });
+      return;
     }
 
-    clearSearch() {
-        this.setState({
-            searchQuery: '',
-            invalidValue: false
-        })
+    this.props.navigation.navigate('SearchResults', {
+      data: {
+        searchQuery: this.state.searchQuery,
+        searchType: this.state.textSwitchBase,
+      }
+    });
+  }
+
+  toggleTypeChange() {
+    if (this.state.eventSwitchBase) {
+      this.setState({
+        textSwitchBase: 'Search by phone',
+      });
+    } else {
+      this.setState({
+        textSwitchBase: 'Search by name',
+      });
+    }
+  }
+
+  goBack() {
+    this.props.navigation.navigate('Phones');
+  }
+
+  render() {
+    let validCtrl;
+
+    if (this.state.invalidValue) {
+      validCtrl = <Text style={styles.error}>
+        Value required - please provide.
+      </Text>
     }
 
-    onSearchPressed() {
-        if (this.state.searchQuery == undefined ||
-            this.state.searchQuery == '') {
-            this.setState({
-                invalidValue: true
-            });
-            return;
-        }
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View>
+            <TouchableHighlight
+              onPress={() => this.goBack()}
+              underlayColor='darkblue'>
+              <View>
+                <Text style={styles.textSmall}>
+                  Back
+                </Text>
+              </View>
+            </TouchableHighlight>
+          </View>
+          <View>
+            <TouchableWithoutFeedback>
+              <View>
+                <Text style={styles.textLarge}>
+                  Search
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+          <View>
+            <TouchableHighlight
+              onPress={() => this.clearSearch()}
+              underlayColor='darkblue'>
+              <View>
+                <Text style={styles.textSmall}>
+                  Clear
+                </Text>
+              </View>
+            </TouchableHighlight>
+          </View>
+        </View>
 
-        this.props.navigator.push({
-            component: searchResults,
-            title: this.state.searchQuery,
-            passProps: {
-                searchQuery: this.state.searchQuery,
-                searchType: this.state.textSwitchBase
-            }
-        });
-    }
+        <ScrollView keyboardShouldPersistTaps='always'>
+          <View style={styles.scrollBlock}>
+            <View style={styles.switchBlock}>
+              <View>
+                <Text style={styles.switchItemText}>
+                  {this.state.textSwitchBase}
+                </Text>
+              </View>
 
-    toggleTypeChange() {
-        if (!this.state.eventSwitchBase) {
-            this.setState({
-                textSwitchBase: 'Search by phone',
-                eventSwitchBase: true
-            });
-        } else {
-            this.setState({
-                textSwitchBase: 'Search by name',
-                eventSwitchBase: false
-            });
-        }
-    }
+              <View style={styles.switchItem}>
+                <Switch
+                  onValueChange={(value) => {
+                    this.toggleTypeChange();
+                    this.setState({
+                      eventSwitchBase: value,
+                    })
+                  }}
+                  value={this.state.eventSwitchBase}
+                />
+              </View>
+            </View>
 
-    render() {
-        let validCtrl;
+            <View style={styles.inputBlock}>
+              <TextInput
+                underlineColorAndroid='rgba(0,0,0,0)'
+                onChangeText={(text) => this.setState({
+                  searchQuery: text,
+                  invalidValue: false
+                })}
+                value={this.state.searchQuery}
+                style={styles.search}
+                placeholderTextColor="darkblue"
+                placeholder="Search here">
+              </TextInput>
+            </View>
 
-        if (this.state.invalidValue) {
-            validCtrl = <Text style={styles.error}>
-                Value required - please provide.
-            </Text>;
-        }
+            {validCtrl}
 
-        return (
-            <ScrollView>
-                <View style={styles.container}>
-                    <TouchableHighlight
-                        onPress={this.clearSearch.bind(this)}
-                        style={styles.button}>
-                        <Text style={styles.buttonText}>
-                            Search
-                        </Text>
-                    </TouchableHighlight>
-
-                    <View style={styles.form}>
-                        <View style={styles.textForm}>
-                            <Text style={styles.text}>
-                                {this.state.textSwitchBase}
-                            </Text>
-                        </View>
-
-                        <View>
-                            <Switch
-                                onValueChange={(value) => {
-                                    this.toggleTypeChange();
-                                    this.setState({
-                                        eventSwitchTitle: value
-                                    });
-                                }}
-                                value={this.state.eventSwitchTitle}
-                            />
-                        </View>
-                    </View>
-
-                    <TextInput
-                        onChangeText={(text) => this.setState({
-                            searchQuery: text,
-                            invalidValue: false
-                        })}
-                        value={this.state.searchQuery}
-                        style={styles.loginInput}
-                        placeholder="Search here">
-                    </TextInput>
-
-                    {validCtrl}
-
-                    <TouchableHighlight
-                        onPress={this.onSearchPressed.bind(this)}
-                        style={styles.button}>
-                        <Text style={styles.buttonText}>
-                            Submit
-                        </Text>
-                    </TouchableHighlight>
-
-                    <ActivityIndicator
-                        animating={this.state.showProgress}
-                        size="large"
-                        style={styles.loader}
-                    />
-                </View>
-            </ScrollView>
-        )
-    }
+            <TouchableHighlight
+              onPress={() => this.onSearchPressed()}
+              style={styles.button}>
+              <Text style={styles.buttonText}>
+                Submit
+              </Text>
+            </TouchableHighlight>
+          </View>
+        </ScrollView>
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        padding: 10,
-        alignItems: 'center',
-        flex: 1
-    },
-    form: {
-        height: 50,
-        marginTop: 10,
-        padding: 10,
-        borderWidth: 1,
-        borderColor: '#48BBEC',
-        alignSelf: 'stretch',
-        flex: 1,
-        flexDirection: 'row',
-        borderRadius: 5,
-        fontSize: 18
-    },
-    textForm: {
-        marginTop: 3,
-        flex: 1
-    },
-    text: {
-        fontSize: 18,
-        color: 'gray'
-    },
-    loginInput: {
-        height: 50,
-        marginTop: 10,
-        paddingLeft: 10,
-        padding: 4,
-        fontSize: 18,
-        borderWidth: 1,
-        borderColor: '#48BBEC',
-        borderRadius: 5,
-        color: 'black'
-    },
-    button: {
-        height: 50,
-        backgroundColor: '#48BBEC',
-        borderColor: '#48BBEC',
-        alignSelf: 'stretch',
-        marginTop: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 5
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold'
-    },
-    loader: {
-        marginTop: 20
-    },
-    error: {
-        color: 'red',
-        paddingTop: 10,
-        textAlign: 'center'
-    }
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'darkblue',
+    borderWidth: 0,
+    borderColor: 'whitesmoke',
+  },
+  search: {
+    height: 50,
+    width: Dimensions.get('window').width * .94,
+    fontSize: 18,
+    color: 'darkblue',
+    paddingTop: 0
+  },
+  textSmall: {
+    fontSize: 16,
+    textAlign: 'center',
+    margin: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  textLarge: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+    marginRight: 20,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  scrollBlock: {
+    flex: 1,
+    padding: 10,
+    marginTop: 10,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  switchBlock: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: 'darkblue',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderRadius: 5,
+  },
+  switchItem: {
+    marginTop: 10,
+    margin: 10,
+  },
+  switchItemText: {
+    fontSize: 18,
+    marginTop: 14,
+    margin: 10,
+    color: 'darkblue',
+  },
+  inputBlock: {
+    height: 50,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: 'darkblue',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderRadius: 5,
+    paddingLeft: 6,
+  },
+  button: {
+    height: 50,
+    backgroundColor: 'darkblue',
+    borderColor: '#48BBEC',
+    alignSelf: 'stretch',
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  loader: {
+    justifyContent: 'center',
+    height: 100,
+  },
+  error: {
+    color: 'red',
+    paddingTop: 10,
+    textAlign: 'center',
+  }
 });
 
 export default Search;
