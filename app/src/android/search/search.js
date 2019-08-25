@@ -7,29 +7,28 @@ import {
     View,
     TouchableHighlight,
 	TouchableWithoutFeedback,
-    ListView,
     ScrollView,
     ActivityIndicator,
-    TextInput,
-    Switch,
 	Dimensions,
 	Picker,
 	DatePickerAndroid
 } from 'react-native';
 
+import ListView from 'deprecated-react-native-listview';
+
 class Search extends Component {
     constructor(props) {
         super(props);
-		
+
 		var width = Dimensions.get('window').width;
-		
+
         var ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 != r2
         });
-		
+
 		let d = new Date;
 		var todayDate = d.toLocaleDateString();
-		
+
         this.state = {
             showProgress: false,
 			serverError: false,
@@ -44,14 +43,14 @@ class Search extends Component {
             departments: [],
             employees: [],
             dataSource: ds.cloneWithRows([]),
-			
+
 			presetDate: new Date(),
 			simpleDate: new Date(),
 			spinnerDate: new Date(),
 			calendarDate: new Date(),
 			defaultDate: new Date(),
 			allDate: new Date(),
-			startText: '01/01/18',
+			startText: '01/01/19',
 			endText: todayDate,
 			simpleText: 'pick a date',
 			spinnerText: 'pick a date',
@@ -63,7 +62,7 @@ class Search extends Component {
 			allText: 'pick a date between 2020/5/1 and 2020/5/10'
         }
     }
-	
+
 	componentDidMount() {
 		this.setState({
 			width: Dimensions.get('window').width
@@ -72,9 +71,9 @@ class Search extends Component {
 		this.getDepartments();
 		this.getEmployees();
 	}
-	
+
 	getProjects() {
-        fetch(appConfig.url + 'api/projects/get', {			
+        fetch(appConfig.url + 'api/projects/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -107,7 +106,7 @@ class Search extends Component {
     }
 
     getDepartments() {
-        fetch(appConfig.url + 'api/departments/get', {			
+        fetch(appConfig.url + 'api/departments/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -137,7 +136,7 @@ class Search extends Component {
     }
 
 	getEmployees() {
-        fetch(appConfig.url + 'api/employees/get', {			
+        fetch(appConfig.url + 'api/employees/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -165,7 +164,7 @@ class Search extends Component {
                 });
             });
     }
-	
+
     sort(a, b) {
         var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
         if (nameA < nameB) {
@@ -176,11 +175,11 @@ class Search extends Component {
         }
         return 0;
     }
-	
+
     goBack() {
 		this.props.navigator.pop();
 	}
-	
+
     clearSearch() {
         this.setState({
             searchQuery: '',
@@ -188,7 +187,7 @@ class Search extends Component {
         })
     }
 
-    onSearchPressed() { 
+    onSearchPressed() {
 		this.props.navigator.push({
 			index: 2,
 			data: {
@@ -200,7 +199,7 @@ class Search extends Component {
 			}
 		});
     }
-	
+
     toggleTypeChange() {
         if (!this.state.eventSwitchBase) {
             this.setState({
@@ -212,7 +211,7 @@ class Search extends Component {
             });
         }
     }
-	
+
 	showPicker = async (stateKey, options) => {
 		try {
 			var newState = {};
@@ -252,7 +251,7 @@ class Search extends Component {
 				size="large"
 			/>
 		}
-		
+
         return (
 			<View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
 				<View style={{
@@ -278,7 +277,7 @@ class Search extends Component {
 									{appConfig.language.back}
 								</Text>
 							</View>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 					<View>
 						<TouchableWithoutFeedback>
@@ -292,11 +291,11 @@ class Search extends Component {
 									fontWeight: 'bold',
 									color: 'white'
 								}}>
-									{appConfig.language.reports} 
+									{appConfig.language.reports}
 								</Text>
 							</View>
-						</TouchableWithoutFeedback>	
-					</View>						
+						</TouchableWithoutFeedback>
+					</View>
 					<View>
 						<TouchableWithoutFeedback>
 							<View>
@@ -308,16 +307,16 @@ class Search extends Component {
 								}}>
 								</Text>
 							</View>
-						</TouchableWithoutFeedback>	
+						</TouchableWithoutFeedback>
 					</View>
 				</View>
-				
+
 				<ScrollView>
 					<View style={{backgroundColor: 'white'}}>
 						{errorCtrl}
-						
+
 						{loader}
-						
+
 						<View style={{
 							borderColor: 'darkblue',
 							borderWidth: 5,
@@ -332,7 +331,7 @@ class Search extends Component {
 								onValueChange={(value) => {
 									let arr = [].concat(this.state.projects);
 									let project = arr.filter((el) => el.id == value);
-									
+
 									this.setState({
 										project: value,
 										projectID: project[0].id,
@@ -347,7 +346,7 @@ class Search extends Component {
 							</Picker>
 						</View>
 					</View>
-					
+
 					<View style={{backgroundColor: 'white'}}>
 						<View style={{
 							borderColor: 'darkblue',
@@ -363,7 +362,7 @@ class Search extends Component {
 								onValueChange={(value) => {
 									let arr = [].concat(this.state.departments);
 									let department = arr.filter((el) => el.id == value);
-									
+
 									this.setState({
 										department: value,
 										departmentID: department[0].id,
@@ -378,7 +377,7 @@ class Search extends Component {
 							</Picker>
 						</View>
 					</View>
-					
+
 					<View style={{backgroundColor: 'white'}}>
 						<View style={{
 							borderColor: 'darkblue',
@@ -394,7 +393,7 @@ class Search extends Component {
 								onValueChange={(value) => {
 									let arr = [].concat(this.state.employees);
 									let employee = arr.filter((el) => el.id == value);
- 
+
 									this.setState({
 										employee: value,
 										employeeID: employee[0].id,
@@ -408,26 +407,26 @@ class Search extends Component {
 								)}
 							</Picker>
 						</View>
-					</View>					
+					</View>
 
 					<View style={{
 						flex: 1,
 						flexDirection: 'column',
 						justifyContent: 'center',
 						alignItems: 'center'
-					}}>				
+					}}>
 						<TouchableHighlight
 							onPress={this.showPicker.bind(this, 'start', {date: this.state.simpleDate})}
 							style={styles.button1}>
 							<Text style={styles.buttonText1}>{appConfig.language.firstday}: {this.state.startText}</Text>
-						</TouchableHighlight>						
-						
+						</TouchableHighlight>
+
 						<TouchableHighlight
 							onPress={this.showPicker.bind(this, 'end', {date: this.state.simpleDate})}
 							style={styles.button1}>
 							<Text style={styles.buttonText1}>{appConfig.language.lastday}: {this.state.endText}</Text>
-						</TouchableHighlight>	
-										
+						</TouchableHighlight>
+
 						{validCtrl}
 
 						<TouchableHighlight
@@ -519,12 +518,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         //alignItems: 'center',
         borderRadius: 5
-    },    
+    },
     buttonText: {
         color: '#fff',
         fontSize: 20,
 		fontWeight: 'bold'
-    },    
+    },
 	buttonText1: {
         fontSize: 20,
 		fontWeight: 'bold',

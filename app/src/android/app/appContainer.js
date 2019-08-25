@@ -144,7 +144,7 @@ class OtherTab extends Component {
             case 3:
                 return <SearchDetails data={route.data} routes={this.routes} navigator={navigator}/>;
                 break;
-
+/*
             case 10:
                 return <Projects routes={this.routes} navigator={navigator}/>;
                 break;
@@ -203,7 +203,7 @@ class OtherTab extends Component {
                 break;
             case 62:
                 return <AuditAdd data={route.data} routes={this.routes} navigator={navigator}/>;
-                break;
+                break;*/
 
             case 70:
                 return <Config onLogOut={this.onLogOut.bind(this)} routes={this.routes} navigator={navigator}/>;
@@ -213,14 +213,14 @@ class OtherTab extends Component {
 
     render() {
         return (
-            <Navigator
+            <NavigationExperimental.Navigator
                 initialRoute={this.routes[0]}
                 initialRouteStack={this.routes}
                 renderScene={this.renderScene.bind(this)}
                 style={{padding: 0}}
 
                 configureScene={(route, routeStack) =>
-                    Navigator.SceneConfigs.PushFromRight}
+                    NavigationExperimental.Navigator.SceneConfigs.PushFromRight}
             />
         )
     }

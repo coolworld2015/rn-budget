@@ -2,77 +2,72 @@
 
 import React, {Component} from 'react';
 import {
-    AppRegistry,
     StyleSheet,
     Text,
     View,
-    Image,
     TouchableHighlight,
-    ListView,
     ScrollView,
     ActivityIndicator,
-    TabBarIOS,
-    NavigatorIOS,
-    TextInput,
-	BackAndroid
 } from 'react-native';
+
+import ListView from 'deprecated-react-native-listview';
 
 class SearchResults extends Component {
     constructor(props) {
         super(props);
-		
-		BackAndroid.addEventListener('hardwareBackPress', () => {
+
+/*		BackAndroid.addEventListener('hardwareBackPress', () => {
 			if (this.props.navigator) {
 				this.props.navigator.pop();
 			}
 			return true;
-		});
-		
+		});*/
+
         var ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 != r2
         });
-		
+
 		this.state = {
 			dataSource1: ds.cloneWithRows([]),
 			dataSource2: ds.cloneWithRows([]),
 			resultsCount1: 0,
 			resultsCount2: 0
-		}	
-		
+		}
+
 		if (props.data) {
 			this.state = {
 				dataSource1: ds.cloneWithRows([]),
 				dataSource2: ds.cloneWithRows([]),
-				
+
 				projectName: props.data.projectName,
 				departmentName: props.data.departmentName,
 				employeeName: props.data.employeeName,
-				
+
 				startDate: props.data.startDate,
 				endDate: props.data.endDate,
-				
+
 				searchType: props.data.searchType,
 				showProgress: true,
-				
+
 				resultsCount1: 0,
 				recordsCount1: 15,
 				positionY1: 0,
-								
+
 				resultsCount2: 0,
 				recordsCount2: 15,
 				positionY2: 0,
-				
+
 				inputsTotal: 0,
 				outputsTotal: 0
 			};
 		}
     }
-	
+
 	componentDidMount() {
 		this.getInputs();
 		this.getOutputs();
 	}
-	
+
 	dateCheck(dateFrom, dateTo, dateCheck) {
 		var start = Date.parse(dateFrom);
 		var end = Date.parse(dateTo);
@@ -83,7 +78,7 @@ class SearchResults extends Component {
 	}
 
     getInputs() {
-        fetch(appConfig.url + 'api/inputs/get', {			
+        fetch(appConfig.url + 'api/inputs/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -94,20 +89,20 @@ class SearchResults extends Component {
             .then((response)=> response.json())
             .then((responseData)=> {
 				var itemsDate, itemsProject, itemsDepartment, itemsEmployee, items;
-				
-				itemsDate = [].concat(responseData.sort(this.sort));	
+
+				itemsDate = [].concat(responseData.sort(this.sort));
 				itemsDate = itemsDate.filter((el) => this.dateCheck(this.state.startDate, this.state.endDate, el.date.split(' ')[0]));
-				
-				itemsProject = [].concat(itemsDate);	
+
+				itemsProject = [].concat(itemsDate);
 				if (this.state.projectName != appConfig.language.allproj) {
 					itemsProject = itemsDate.filter((el) => el.project.toLowerCase() == this.state.projectName.toLowerCase());
-				}	
-					
+				}
+
 				itemsDepartment = [].concat(itemsProject);
 				if (this.state.departmentName != appConfig.language.alldep) {
 					itemsDepartment = itemsProject.filter((el) => el.department.toLowerCase() == this.state.departmentName.toLowerCase());
-				}					
-				
+				}
+
 				itemsEmployee = [].concat(itemsDepartment);
 				if (this.state.employeeName != appConfig.language.allemp) {
 					itemsEmployee = itemsDepartment.filter((el) => el.employee.toLowerCase() == this.state.employeeName.toLowerCase());
@@ -115,7 +110,7 @@ class SearchResults extends Component {
 
 				items = [].concat(itemsEmployee);
 				items.forEach((el) => this.state.inputsTotal = +this.state.inputsTotal + +el.total)
-				
+
                 this.setState({
 				    dataSource1: this.state.dataSource1.cloneWithRows(items.slice(0, 25)),
                     resultsCount1: items.length,
@@ -137,7 +132,7 @@ class SearchResults extends Component {
     }
 
     getOutputs() {
-        fetch(appConfig.url + 'api/outputs/get', {			
+        fetch(appConfig.url + 'api/outputs/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -148,20 +143,20 @@ class SearchResults extends Component {
             .then((response)=> response.json())
             .then((responseData)=> {
 				var itemsDate, itemsProject, itemsDepartment, itemsEmployee, items;
-				
-				itemsDate = [].concat(responseData.sort(this.sort));	
+
+				itemsDate = [].concat(responseData.sort(this.sort));
 				itemsDate = itemsDate.filter((el) => this.dateCheck(this.state.startDate, this.state.endDate, el.date.split(' ')[0]));
-				
-				itemsProject = [].concat(itemsDate);	
+
+				itemsProject = [].concat(itemsDate);
 				if (this.state.projectName != appConfig.language.allproj) {
 					itemsProject = itemsDate.filter((el) => el.project.toLowerCase() == this.state.projectName.toLowerCase());
-				}	
-					
+				}
+
 				itemsDepartment = [].concat(itemsProject);
 				if (this.state.departmentName != appConfig.language.alldep) {
 					itemsDepartment = itemsProject.filter((el) => el.department.toLowerCase() == this.state.departmentName.toLowerCase());
-				}					
-				
+				}
+
 				itemsEmployee = [].concat(itemsDepartment);
 				if (this.state.employeeName != appConfig.language.allemp) {
 					itemsEmployee = itemsDepartment.filter((el) => el.employee.toLowerCase() == this.state.employeeName.toLowerCase());
@@ -169,7 +164,7 @@ class SearchResults extends Component {
 
 				items = [].concat(itemsEmployee);
 				items.forEach((el) => this.state.outputsTotal = +this.state.outputsTotal + +el.total)
-								
+
                 this.setState({
 				    dataSource2: this.state.dataSource2.cloneWithRows(items.slice(0, 25)),
                     resultsCount2: items.length,
@@ -189,7 +184,7 @@ class SearchResults extends Component {
                 });
             });
     }
-	
+
     sort(a, b) {
         var nameA = +a.invoiceID.toLowerCase(), nameB = +b.invoiceID.toLowerCase();
         if (nameA < nameB) {
@@ -221,15 +216,15 @@ class SearchResults extends Component {
 					borderColor: '#D7D7D7',
 					borderBottomWidth: 1,
 					backgroundColor: '#fff'
-				}}>              
+				}}>
 					<Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
 						{rowData.invoiceID} - {rowData.project} - {(rowData.date).split(' ')[0]}
-					</Text>						
-					
+					</Text>
+
 					<Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
 						{rowData.description}
-					</Text>						
-					
+					</Text>
+
 					<Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
 						{appConfig.language.total}: {((+rowData.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
 					</Text>
@@ -256,7 +251,7 @@ class SearchResults extends Component {
             });
         }
     }
-	
+
     refreshData2(event) {
         if (this.state.showProgress == true) {
             return;
@@ -275,11 +270,11 @@ class SearchResults extends Component {
             });
         }
     }
-	
+
     goBack() {
 		this.props.navigator.pop();
 	}
-	
+
     render() {
         var errorCtrl, loader;
 
@@ -322,7 +317,7 @@ class SearchResults extends Component {
 							}}>
 								{appConfig.language.back}
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 					<View>
 						<TouchableHighlight
@@ -338,8 +333,8 @@ class SearchResults extends Component {
 							}}>
 								{this.state.projectName}
 							</Text>
-						</TouchableHighlight>	
-					</View>						
+						</TouchableHighlight>
+					</View>
 					<View>
 						<TouchableHighlight
 							onPress={()=> this.goBack()}
@@ -352,45 +347,45 @@ class SearchResults extends Component {
 								fontWeight: 'bold',
 								color: 'white'
 							}}>
-								
+
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 				</View>
-									
+
 				{errorCtrl}
-				
+
 				{loader}
-				
+
 				<View style={{
 						flex: 1,
 						flexDirection: 'row',
 						justifyContent: 'space-between'
 					}}>
-	
+
 					<ScrollView
 						onScroll={this.refreshData2.bind(this)} scrollEventThrottle={16}>
-	
+
 						<ListView
 							enableEmptySections={true}
 							style={{marginTop: 0, marginBottom: 0}}
 							dataSource={this.state.dataSource2}
 							renderRow={this.renderRow.bind(this)}
 						/>
-					</ScrollView>				
- 
+					</ScrollView>
+
 					<ScrollView
 						onScroll={this.refreshData1.bind(this)} scrollEventThrottle={16}>
-					
+
 						<ListView
 							enableEmptySections={true}
 							style={{marginTop: 0, marginBottom: 0}}
 							dataSource={this.state.dataSource1}
 							renderRow={this.renderRow.bind(this)}
 						/>
-					</ScrollView>				
+					</ScrollView>
 				</View>
-				
+
 				<View style={{
 						flexDirection: 'row',
 						justifyContent: 'space-between',
@@ -402,24 +397,24 @@ class SearchResults extends Component {
 						</Text>
 						<Text style={styles.countFooter1}>
 							{((+this.state.outputsTotal).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
-						</Text>						
-					</View>	
+						</Text>
+					</View>
 					<View style={{marginBottom: 0}}>
 						<Text style={styles.countFooter2}>
 							{appConfig.language.total}:
-						</Text>						
+						</Text>
 						<Text style={styles.countFooter2}>
 							{((+this.state.inputsTotal - +this.state.outputsTotal).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
 						</Text>
-					</View>					
+					</View>
 					<View style={{marginBottom: 0}}>
 						<Text style={styles.countFooter3}>
 							{appConfig.language.inputs}: {this.state.resultsCount1.toString()}
-						</Text>						
+						</Text>
 						<Text style={styles.countFooter3}>
 							{((+this.state.inputsTotal).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
 						</Text>
-					</View>	
+					</View>
 				</View>
             </View>
         );
@@ -446,25 +441,25 @@ const styles = StyleSheet.create({
         borderColor: '#D7D7D7',
 		color: 'white',
 		fontWeight: 'bold'
-    },    
+    },
 	countFooter1: {
         fontSize: 16,
         textAlign: 'left',
-		marginTop: 1,   
+		marginTop: 1,
         marginLeft: 10,
         borderColor: '#D7D7D7',
 		color: 'white',
 		fontWeight: 'bold'
-    },	
+    },
 	countFooter2: {
         fontSize: 16,
         textAlign: 'center',
-        marginTop: 1,        
+        marginTop: 1,
 		//margin: 3,
         borderColor: '#D7D7D7',
 		color: 'white',
 		fontWeight: 'bold'
-    },	
+    },
 	countFooter3: {
         fontSize: 16,
         textAlign: 'right',

@@ -7,9 +7,10 @@ import {
     View,
     TouchableHighlight,
 	TouchableWithoutFeedback,
-    ListView,
     ScrollView
 } from 'react-native';
+
+import ListView from 'deprecated-react-native-listview';
 
 class Other extends Component {
     constructor(props) {
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
         marginRight: 0,
         fontWeight: 'bold',
         color: 'white'
-    }	
+    }
 });
 
 export default Other;
