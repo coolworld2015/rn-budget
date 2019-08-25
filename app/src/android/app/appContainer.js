@@ -144,7 +144,7 @@ class OtherTab extends Component {
             case 3:
                 return <SearchDetails data={route.data} routes={this.routes} navigator={navigator}/>;
                 break;
-/*
+
             case 10:
                 return <Projects routes={this.routes} navigator={navigator}/>;
                 break;
@@ -154,7 +154,7 @@ class OtherTab extends Component {
             case 12:
                 return <ProjectAdd data={route.data} routes={this.routes} navigator={navigator}/>;
                 break;
-
+/*
             case 20:
                 return <Resources routes={this.routes} navigator={navigator}/>;
                 break;

@@ -18,14 +18,14 @@ import {
 class ProjectAdd extends Component {
     constructor(props) {
         super(props);
-		
-		BackAndroid.addEventListener('hardwareBackPress', () => {
+
+/*		BackAndroid.addEventListener('hardwareBackPress', () => {
 			if (this.props.navigator) {
 				this.props.navigator.pop();
 			}
 			return true;
-		});
-		
+		});*/
+
         this.state = {
             showProgress: false,
 			bugANDROID: ''
@@ -36,7 +36,7 @@ class ProjectAdd extends Component {
 		if (appConfig.projects.showProgress == true) {
             return;
         }
-		
+
         if (this.state.name == undefined ||
             this.state.address == undefined ||
             this.state.phone == undefined ||
@@ -51,9 +51,9 @@ class ProjectAdd extends Component {
             showProgress: true,
 			bugANDROID: ' '
         });
-		
+
 		appConfig.projects.showProgress = true;
-		
+
         fetch(appConfig.url + 'api/projects/add', {
             method: 'post',
             body: JSON.stringify({
@@ -86,11 +86,11 @@ class ProjectAdd extends Component {
                 });
             });
     }
-	
+
 	goBack() {
 		this.props.navigator.pop();
 	}
-	
+
     render() {
         let errorCtrl, validCtrl, loader;
 
@@ -99,13 +99,13 @@ class ProjectAdd extends Component {
                 Something went wrong.
             </Text>;
         }
-		
+
         if (this.state.invalidValue) {
             validCtrl = <Text style={styles.error}>
                 Value required - please provide.
             </Text>;
         }
-		
+
         if (this.state.showProgress) {
             loader = <View style={styles.loader}>
                 <ActivityIndicator
@@ -139,7 +139,7 @@ class ProjectAdd extends Component {
 							}}>
 								{appConfig.language.back}
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 					<View>
 						<TouchableHighlight
@@ -155,8 +155,8 @@ class ProjectAdd extends Component {
 							}}>
 								{appConfig.language.newrec}
 							</Text>
-						</TouchableHighlight>	
-					</View>						
+						</TouchableHighlight>
+					</View>
 					<View>
 						<TouchableHighlight
 							underlayColor='#ddd'
@@ -167,16 +167,16 @@ class ProjectAdd extends Component {
 								margin: 14,
 								fontWeight: 'bold'
 							}}>
-								 
+
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 				</View>
-					
+
 				<ScrollView keyboardShouldPersistTaps={true}>
-					{errorCtrl}						
+					{errorCtrl}
 					{loader}
-					
+
 					<View style={{
 						flex: 1,
 						padding: 10,
@@ -204,8 +204,8 @@ class ProjectAdd extends Component {
 							style={styles.loginInput}
 							value={this.state.address}
 							placeholder={appConfig.language.address}>
-						</TextInput>						
-						
+						</TextInput>
+
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
 							onChangeText={(text)=> this.setState({
@@ -215,7 +215,7 @@ class ProjectAdd extends Component {
 							style={styles.loginInput}
 							value={this.state.phone}
 							placeholder={appConfig.language.phone}>
-						</TextInput>						
+						</TextInput>
 
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
@@ -236,7 +236,7 @@ class ProjectAdd extends Component {
 							style={styles.button}>
 							<Text style={styles.buttonText}>{appConfig.language.add}</Text>
 						</TouchableHighlight>
-						
+
 						<Text>{this.state.bugANDROID}</Text>
 					</View>
 				</ScrollView>
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
         borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black'
-    },		
+    },
     button: {
         height: 50,
         //backgroundColor: '#48BBEC',
