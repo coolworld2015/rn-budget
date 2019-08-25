@@ -19,18 +19,18 @@ import {
 class UserDetails extends Component {
     constructor(props) {
         super(props);
-		
-		BackAndroid.addEventListener('hardwareBackPress', () => {
+
+/*		BackAndroid.addEventListener('hardwareBackPress', () => {
 			if (this.props.navigator) {
 				this.props.navigator.pop();
 			}
 			return true;
-		});			
-		
+		});	*/
+
 		this.state = {
 			serverError: false
-		}	
-		
+		}
+
 		if (props.data) {
 			this.state = {
 				id: props.data.id,
@@ -39,7 +39,7 @@ class UserDetails extends Component {
 				description: props.data.description,
 				showProgress: false
 			};
-		}		
+		}
     }
 
     updateUser() {
@@ -106,15 +106,15 @@ class UserDetails extends Component {
 					}
 				},
 			]
-		);	
+		);
 	}
-	
-    deleteItem() {		
+
+    deleteItem() {
         this.setState({
             showProgress: true,
 			bugANDROID: ' '
         });
-		
+
         fetch(appConfig.url + 'api/users/delete', {
             method: 'post',
             body: JSON.stringify({
@@ -151,11 +151,11 @@ class UserDetails extends Component {
             });
 
     }
-    
+
 	goBack() {
 		this.props.navigator.pop();
 	}
-	
+
     render() {
         let errorCtrl, validCtrl, loader;
 
@@ -164,13 +164,13 @@ class UserDetails extends Component {
                 Something went wrong.
             </Text>;
         }
-		
+
         if (this.state.invalidValue) {
             validCtrl = <Text style={styles.error}>
                 Value required - please provide.
             </Text>;
         }
-		
+
         if (this.state.showProgress) {
             loader = <View style={styles.loader}>
                 <ActivityIndicator
@@ -204,7 +204,7 @@ class UserDetails extends Component {
 							}}>
 								{appConfig.language.back}
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 					<View>
 						<TouchableHighlight
@@ -219,8 +219,8 @@ class UserDetails extends Component {
 							}}>
 								{this.state.name}
 							</Text>
-						</TouchableHighlight>	
-					</View>						
+						</TouchableHighlight>
+					</View>
 					<View>
 						<TouchableHighlight
 							onPress={()=> this.deleteItemDialog()}
@@ -235,21 +235,21 @@ class UserDetails extends Component {
 							}}>
 								{appConfig.language.delete}
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 				</View>
-					
+
 				<ScrollView keyboardShouldPersistTaps={true}>
-					{errorCtrl}							
+					{errorCtrl}
 					{loader}
-					
+
 					<View style={{
 						flex: 1,
 						padding: 10,
 						paddingBottom: 70,
 						justifyContent: 'flex-start',
 						backgroundColor: 'white'
-					}}>						
+					}}>
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
 							onChangeText={(text)=> this.setState({
@@ -292,15 +292,15 @@ class UserDetails extends Component {
 							style={styles.button}>
 							<Text style={styles.buttonText}>{appConfig.language.submit}</Text>
 						</TouchableHighlight>
-						
+
 						{errorCtrl}
-						
+
 						<ActivityIndicator
 							animating={this.state.showProgress}
 							size="large"
 							style={styles.loader}
 						/>
-						
+
 						<Text>{this.state.bugANDROID}</Text>
 					</View>
 				</ScrollView>
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         color: 'black',
 		fontWeight: 'bold'
-    },		
+    },
 	loginInput1: {
         height: 100,
         marginTop: 10,
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
         borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black'
-    },		
+    },
     button: {
         height: 50,
         //backgroundColor: '#48BBEC',

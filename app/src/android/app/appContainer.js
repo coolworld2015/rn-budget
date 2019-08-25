@@ -184,7 +184,7 @@ class OtherTab extends Component {
             case 42:
                 return <EmployeeAdd data={route.data} routes={this.routes} navigator={navigator}/>;
                 break;
-/*
+
             case 50:
                 return <Users routes={this.routes} navigator={navigator}/>;
                 break;
@@ -194,7 +194,7 @@ class OtherTab extends Component {
             case 52:
                 return <UserAdd data={route.data} routes={this.routes} navigator={navigator}/>;
                 break;
-
+/*
             case 60:
                 return <Audit routes={this.routes} navigator={navigator}/>;
                 break;

@@ -7,7 +7,6 @@ import {
     View,
     TouchableHighlight,
     TouchableWithoutFeedback,
-    ListView,
     ScrollView,
     ActivityIndicator,
     TextInput,
@@ -15,6 +14,8 @@ import {
 	Dimensions,
 	RefreshControl
 } from 'react-native';
+
+import ListView from 'deprecated-react-native-listview';
 
 class Users extends Component {
     constructor(props) {
@@ -32,10 +33,11 @@ class Users extends Component {
             recordsCount: 15,
             positionY: 0,
 			searchQuery: '',
-			refreshing: false
+			refreshing: false,
+            width: Dimensions.get('window').width
         };
     }
-	
+
 	componentDidMount() {
 		appConfig.users.showProgress = true;
 		this.setState({
@@ -43,7 +45,7 @@ class Users extends Component {
         });
         this.getItems();
 	}
-	
+
     componentWillUpdate() {
         if (appConfig.users.refresh) {
             appConfig.users.refresh = false;
@@ -64,9 +66,9 @@ class Users extends Component {
             recordsCount: 15,
             positionY: 0,
 			searchQuery: ''
-        });		
-		
-        fetch(appConfig.url + 'api/users/get', {			
+        });
+
+        fetch(appConfig.url + 'api/users/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -116,14 +118,14 @@ class Users extends Component {
 			data: rowData
 		});
     }
-	
+
     addItem() {
 		appConfig.users.showProgress = false;
 		this.props.navigator.push({
 			index: 52
 		});
     }
-	
+
     renderRow(rowData) {
         return (
             <TouchableHighlight
@@ -190,7 +192,7 @@ class Users extends Component {
             searchQuery: text
         })
     }
-	
+
 	refreshDataAndroid() {
 		this.setState({
 			showProgress: true,
@@ -199,11 +201,11 @@ class Users extends Component {
 
 		this.getItems();
 	}
-	
+
 	goBack() {
 		this.props.navigator.pop();
 	}
-	
+
 	clearSearchQuery() {
 		this.setState({
 			dataSource: this.state.dataSource.cloneWithRows(this.state.responseData.slice(0, 15)),
@@ -214,7 +216,7 @@ class Users extends Component {
 			searchQuery: ''
 		});
 	}
-	
+
     render() {
         let errorCtrl, loader, image;
 
@@ -282,7 +284,7 @@ class Users extends Component {
                         </TouchableHighlight>
                     </View>
                 </View>
-				
+
                 <View style={styles.iconForm}>
 					<View>
 						<TextInput
@@ -309,11 +311,11 @@ class Users extends Component {
 						marginLeft: -10,
 						paddingLeft: 5,
 						width: this.state.width * .10,
-					}}>			
+					}}>
 						<TouchableWithoutFeedback
 							onPress={() => this.clearSearchQuery()}
-						>			
-							<View>					
+						>
+							<View>
 								{image}
 							</View>
 						</TouchableWithoutFeedback>
@@ -323,7 +325,7 @@ class Users extends Component {
                 {errorCtrl}
 
                 {loader}
-				
+
 				<ScrollView onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}
 					refreshControl={
 						<RefreshControl
@@ -339,10 +341,10 @@ class Users extends Component {
 						renderRow={this.renderRow.bind(this)}
 					/>
 				</ScrollView>
-				
+
 				<View>
 					<Text style={styles.countFooter}>
-						{appConfig.language.records} {this.state.resultsCount.toString()} 
+						{appConfig.language.records} {this.state.resultsCount.toString()}
 					</Text>
 				</View>
             </View>
