@@ -210,7 +210,7 @@ class Audit extends Component {
                         <TouchableWithoutFeedback>
                             <View>
                                 <Text style={styles.textLarge}>
-                                    Audit
+                                    {appConfig.language.audit}
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
@@ -219,7 +219,6 @@ class Audit extends Component {
                         <TouchableWithoutFeedback>
                             <View>
                                 <Text style={styles.textSmall}>
-                                    New
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
@@ -233,7 +232,7 @@ class Audit extends Component {
                             onChangeText={this.onChangeText.bind(this)}
                             style={styles.searchLarge}
                             value={this.state.searchQuery}
-                            placeholder="Search here">
+                            placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
                     <View style={styles.searchSmall}>
@@ -269,7 +268,7 @@ class Audit extends Component {
 
                 <View>
                     <Text style={styles.countFooter}>
-                        Records: {this.state.resultsCount.toString()}
+                        {appConfig.language.records} {this.state.resultsCount.toString()}
                     </Text>
                 </View>
             </View>
@@ -325,7 +324,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
         marginTop: 12,
-        paddingLeft: 10,
+        marginLeft: -40,
         fontWeight: 'bold',
         color: 'white',
     },

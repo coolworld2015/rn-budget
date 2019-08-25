@@ -54,7 +54,7 @@ class AuditDetails extends Component {
                             underlayColor='darkblue'>
                             <View>
                                 <Text style={styles.textSmall}>
-                                    Back
+                                    {appConfig.language.back}
                                 </Text>
                             </View>
                         </TouchableHighlight>
@@ -82,7 +82,7 @@ class AuditDetails extends Component {
                     <View style={styles.form}>
                         <View style={styles.itemBlock}>
                             <Text style={styles.itemTextBold}>
-                                User:
+                                {appConfig.language.user}:
                             </Text>
                             <Text style={styles.itemText}>
                                 {this.state.name}
@@ -91,7 +91,7 @@ class AuditDetails extends Component {
 
                         <View style={styles.itemBlock}>
                             <Text style={styles.itemTextBold}>
-                                Date:
+                                {appConfig.language.date}:
                             </Text>
                             <Text style={styles.itemText}>
                                 {this.state.date}
@@ -128,11 +128,10 @@ class AuditDetails extends Component {
                             onPress={() => this.goBack()}
                             style={styles.button}>
                             <Text style={styles.buttonText}>
-                                Back
+                                {appConfig.language.back}
                             </Text>
                         </TouchableHighlight>
 
-                        <Text>{this.state.bugANDROID}</Text>
                     </View>
                 </ScrollView>
             </View>
