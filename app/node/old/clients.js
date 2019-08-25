@@ -10,7 +10,7 @@ var Clients = {
     findClient: findClient,
     findPostClient: findPostClient,
     editClient: editClient,
-	editPostClient: editPostClient,
+    editPostClient: editPostClient,
     updateClient: updateClient,
     addClient: addClient,
     saveClient: saveClient,

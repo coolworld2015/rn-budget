@@ -6,7 +6,7 @@ import {
     Text,
     View,
     TouchableHighlight,
-	TouchableWithoutFeedback,
+    TouchableWithoutFeedback,
     ScrollView,
     Switch,
     Dimensions,
@@ -80,47 +80,47 @@ class Config extends Component {
                     borderWidth: 0,
                     borderColor: 'whitesmoke'
                 }}>
-					<View>
-						<TouchableHighlight
-							onPress={()=> this.goBack()}
-							underlayColor='darkblue'
-						>
+                    <View>
+                        <TouchableHighlight
+                            onPress={() => this.goBack()}
+                            underlayColor='darkblue'
+                        >
                             <View>
                                 <Text style={styles.textSmall}>
-									{appConfig.language.back}
+                                    {appConfig.language.back}
                                 </Text>
                             </View>
                         </TouchableHighlight>
-					</View>
-					<View>
-						<TouchableWithoutFeedback>
-							<View>
-								<Text style={{
-									fontSize: 20,
-									textAlign: 'center',
-									margin: 10,
-									marginRight: 40,
-									fontWeight: 'bold',
-									color: 'white'
-								}}>
-									{appConfig.language.config}
-								</Text>
-							</View>
-						</TouchableWithoutFeedback>	
-					</View>
-					<View>
-						<TouchableWithoutFeedback>
-							<View>
-								<Text style={{
-									fontSize: 16,
-									textAlign: 'center',
-									margin: 14,
-									fontWeight: 'bold'
-								}}>
-								</Text>
-							</View>
-						</TouchableWithoutFeedback>	
-					</View>
+                    </View>
+                    <View>
+                        <TouchableWithoutFeedback>
+                            <View>
+                                <Text style={{
+                                    fontSize: 20,
+                                    textAlign: 'center',
+                                    margin: 10,
+                                    marginRight: 40,
+                                    fontWeight: 'bold',
+                                    color: 'white'
+                                }}>
+                                    {appConfig.language.config}
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
+                    <View>
+                        <TouchableWithoutFeedback>
+                            <View>
+                                <Text style={{
+                                    fontSize: 16,
+                                    textAlign: 'center',
+                                    margin: 14,
+                                    fontWeight: 'bold'
+                                }}>
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
                 </View>
 
                 <ScrollView>
@@ -147,7 +147,7 @@ class Config extends Component {
                             }}>
                                 <Text style={{
                                     fontSize: 18,
-									color: 'darkblue'
+                                    color: 'darkblue'
                                 }}>
                                     {this.state.textSwitchBase}
                                 </Text>
@@ -186,7 +186,7 @@ class Config extends Component {
 }
 
 const styles = StyleSheet.create({
-	textSmall: {
+    textSmall: {
         fontSize: 16,
         textAlign: 'center',
         margin: 14,

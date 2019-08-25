@@ -1,83 +1,83 @@
 import React, {Component} from 'react';
 import {
-	StyleSheet,
-	Text,
-	View,
-	TouchableHighlight,
-	ScrollView,
-	ActivityIndicator,
-	TextInput,
-	Picker,
-	BackHandler
+    StyleSheet,
+    Text,
+    View,
+    TouchableHighlight,
+    ScrollView,
+    ActivityIndicator,
+    TextInput,
+    Picker,
+    BackHandler
 } from 'react-native';
 
 class InputAdd extends Component {
     constructor(props) {
         super(props);
 
-		BackHandler.addEventListener('hardwareBackPress', () => {
-			if (this.props.navigator) {
-				this.props.navigator.pop();
-			}
-			return true;
-		});
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.props.navigator) {
+                this.props.navigator.pop();
+            }
+            return true;
+        });
 
         let d = new Date;
         let todayDate = d.getMonth() + 1 + '/' + (d.getDate()) + '/' + d.getFullYear();
-		let time = d.toTimeString().split(' ');
-		let date = todayDate + ' ' + time[0];
+        let time = d.toTimeString().split(' ');
+        let date = todayDate + ' ' + time[0];
 
         this.state = {
             showProgress: true,
             showProgressAdd: true,
-			serverError: false,
+            serverError: false,
             projects: [],
             departments: [],
             employees: [],
             employeesFiltered: [{name: appConfig.language.selectemp}],
             goods: [],
-			invoiceID: (appConfig.inputs.inputsCount).toString(),
-			date: date,
-			id: +new Date,
-			total: '0.00'
+            invoiceID: (appConfig.inputs.inputsCount).toString(),
+            date: date,
+            id: +new Date,
+            total: '0.00'
         };
 
     }
 
-	componentDidMount() {
-		this.getProjects();
-		this.getDepartments();
-		this.getEmployees();
-		this.getGoods();
-	}
+    componentDidMount() {
+        this.getProjects();
+        this.getDepartments();
+        this.getEmployees();
+        this.getGoods();
+    }
 
-	getGoods() {
+    getGoods() {
         fetch(appConfig.url + 'api/goods/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-				'Authorization': appConfig.access_token
+                'Authorization': appConfig.access_token
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
-				var items = responseData.sort(this.sort);
-				items.unshift({name: appConfig.language.selectres});
+            .then((response) => response.json())
+            .then((responseData) => {
+                var items = responseData.sort(this.sort);
+                items.unshift({name: appConfig.language.selectres});
                 this.setState({
                     goods: items,
-					serverError: false
+                    serverError: false
                 });
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
-				setTimeout(() => {
-					appConfig.onLogOut();
-				}, 1000);
+                setTimeout(() => {
+                    appConfig.onLogOut();
+                }, 1000);
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     showProgress: false,
                     showProgressAdd: false
@@ -85,60 +85,60 @@ class InputAdd extends Component {
             });
     }
 
-	getEmployees() {
+    getEmployees() {
         fetch(appConfig.url + 'api/employees/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-				'Authorization': appConfig.access_token
+                'Authorization': appConfig.access_token
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
-				var items = responseData.sort(this.sort);
-				items.unshift({name: appConfig.language.selectemp});
+            .then((response) => response.json())
+            .then((responseData) => {
+                var items = responseData.sort(this.sort);
+                items.unshift({name: appConfig.language.selectemp});
                 this.setState({
                     employees: items,
-					serverError: false
+                    serverError: false
                 });
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     //showProgress: false
                 });
             });
     }
 
-	getProjects() {
+    getProjects() {
         fetch(appConfig.url + 'api/projects/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-				'Authorization': appConfig.access_token
+                'Authorization': appConfig.access_token
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
-				var items = responseData.sort(this.sort);
-				items.unshift({name: appConfig.language.selectproj});
+            .then((response) => response.json())
+            .then((responseData) => {
+                var items = responseData.sort(this.sort);
+                items.unshift({name: appConfig.language.selectproj});
                 this.setState({
                     projects: items,
-					serverError: false
+                    serverError: false
                 });
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     //showProgress: false
                 });
@@ -151,24 +151,24 @@ class InputAdd extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-				'Authorization': appConfig.access_token
+                'Authorization': appConfig.access_token
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
-				var items = responseData.sort(this.sort);
-				items.unshift({name: appConfig.language.selectdep});
+            .then((response) => response.json())
+            .then((responseData) => {
+                var items = responseData.sort(this.sort);
+                items.unshift({name: appConfig.language.selectdep});
                 this.setState({
                     departments: items,
-					serverError: false
+                    serverError: false
                 });
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     //showProgress: false
                 });
@@ -186,12 +186,12 @@ class InputAdd extends Component {
         return 0;
     }
 
-	isNumber(n) {
-		return !isNaN(parseFloat(n)) && isFinite(n);
-	}
+    isNumber(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
 
     addItem() {
-		if (appConfig.inputs.showProgress == true) {
+        if (appConfig.inputs.showProgress == true) {
             return;
         }
 
@@ -209,7 +209,7 @@ class InputAdd extends Component {
             this.state.quantity == undefined ||
             this.state.description == undefined ||
 
-			this.isNumber(this.state.quantity) != true) {
+            this.isNumber(this.state.quantity) != true) {
             this.setState({
                 invalidValue: true
             });
@@ -218,65 +218,65 @@ class InputAdd extends Component {
 
         this.setState({
             showProgressAdd: true,
-			bugANDROID: ' '
+            bugANDROID: ' '
         });
 
-		appConfig.inputs.showProgress = true;
+        appConfig.inputs.showProgress = true;
 
         fetch(appConfig.url + 'api/inputs/add', {
             method: 'post',
             body: JSON.stringify({
-                id: + new Date,
-				invoiceID: this.state.invoiceID,
-				date: this.state.date,
-				price: this.state.price,
-				quantity: this.state.quantity,
-				description: this.state.description,
-				total: this.state.total,
+                id: +new Date,
+                invoiceID: this.state.invoiceID,
+                date: this.state.date,
+                price: this.state.price,
+                quantity: this.state.quantity,
+                description: this.state.description,
+                total: this.state.total,
 
-				projectID: this.state.projectID,
-				project: this.state.projectName,
-				employeeID: this.state.employeeID,
-				employee: this.state.employeeName,
-				departmentID: this.state.departmentID,
-				department: this.state.departmentName,
-				productID: this.state.productID,
-				product: this.state.productName,
+                projectID: this.state.projectID,
+                project: this.state.projectName,
+                employeeID: this.state.employeeID,
+                employee: this.state.employeeName,
+                departmentID: this.state.departmentID,
+                department: this.state.departmentName,
+                productID: this.state.productID,
+                product: this.state.productName,
 
-				authorization: appConfig.access_token
+                authorization: appConfig.access_token
             }),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
+            .then((response) => response.json())
+            .then((responseData) => {
                 appConfig.inputs.refresh = true;
                 appConfig.assets.refresh = true;
-				appConfig.projects.refresh = true;
-				appConfig.departments.refresh = true;
-				appConfig.employees.refresh = true;
+                appConfig.projects.refresh = true;
+                appConfig.departments.refresh = true;
+                appConfig.employees.refresh = true;
                 this.props.navigator.pop();
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     showProgress: false
                 });
             });
     }
 
-	goBack() {
-		this.props.navigator.pop();
-	}
+    goBack() {
+        this.props.navigator.pop();
+    }
 
     render() {
-        var errorCtrl = <View />;
+        var errorCtrl = <View/>;
 
         if (this.state.serverError) {
             errorCtrl = <Text style={styles.error}>
@@ -284,7 +284,7 @@ class InputAdd extends Component {
             </Text>;
         }
 
-        var validCtrl = <View />;
+        var validCtrl = <View/>;
 
         if (this.state.invalidValue) {
             validCtrl = <Text style={styles.error}>
@@ -292,307 +292,307 @@ class InputAdd extends Component {
             </Text>;
         }
 
-		var loader = <View />;
+        var loader = <View/>;
 
         if (this.state.showProgress) {
-			loader = <ActivityIndicator
-				animating={true}
-				size="large"
-				color="darkblue"
-				style={{marginTop: 10}}
-			/>
-		}
+            loader = <ActivityIndicator
+                animating={true}
+                size="large"
+                color="darkblue"
+                style={{marginTop: 10}}
+            />
+        }
 
         return (
             <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
-				<View style={{
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-					backgroundColor: 'darkblue',
-					borderWidth: 0,
-					borderColor: 'whitesmoke'
-				}}>
-					<View>
-						<TouchableHighlight
-							onPress={()=> this.goBack()}
-							underlayColor='darkblue'
-						>
-							<Text style={{
-								fontSize: 16,
-								textAlign: 'center',
-								margin: 14,
-								fontWeight: 'bold',
-								color: 'white'
-							}}>
-								{appConfig.language.back}
-							</Text>
-						</TouchableHighlight>
-					</View>
-					<View>
-						<TouchableHighlight
-							underlayColor='#ddd'
-						>
-							<Text style={{
-								fontSize: 20,
-								textAlign: 'center',
-								margin: 10,
-								marginRight: 40,
-								fontWeight: 'bold',
-								color: 'white'
-							}}>
-								{appConfig.language.newrec}
-							</Text>
-						</TouchableHighlight>
-					</View>
-					<View>
-						<TouchableHighlight
-							underlayColor='#ddd'
-						>
-							<Text style={{
-								fontSize: 16,
-								textAlign: 'center',
-								margin: 14,
-								fontWeight: 'bold'
-							}}>
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    backgroundColor: 'darkblue',
+                    borderWidth: 0,
+                    borderColor: 'whitesmoke'
+                }}>
+                    <View>
+                        <TouchableHighlight
+                            onPress={() => this.goBack()}
+                            underlayColor='darkblue'
+                        >
+                            <Text style={{
+                                fontSize: 16,
+                                textAlign: 'center',
+                                margin: 14,
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }}>
+                                {appConfig.language.back}
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                    <View>
+                        <TouchableHighlight
+                            underlayColor='#ddd'
+                        >
+                            <Text style={{
+                                fontSize: 20,
+                                textAlign: 'center',
+                                margin: 10,
+                                marginRight: 40,
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }}>
+                                {appConfig.language.newrec}
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                    <View>
+                        <TouchableHighlight
+                            underlayColor='#ddd'
+                        >
+                            <Text style={{
+                                fontSize: 16,
+                                textAlign: 'center',
+                                margin: 14,
+                                fontWeight: 'bold'
+                            }}>
 
-							</Text>
-						</TouchableHighlight>
-					</View>
-				</View>
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
 
-				<ScrollView keyboardShouldPersistTaps={true}>
-					<View style={{
-						flex: 1,
-						padding: 10,
-						paddingTop: 0,
-						paddingBottom: 0,
-						marginTop: 0,
-						marginBottom: 0,
-						backgroundColor: 'white'
-					}}>
-						{errorCtrl}
+                <ScrollView keyboardShouldPersistTaps={true}>
+                    <View style={{
+                        flex: 1,
+                        padding: 10,
+                        paddingTop: 0,
+                        paddingBottom: 0,
+                        marginTop: 0,
+                        marginBottom: 0,
+                        backgroundColor: 'white'
+                    }}>
+                        {errorCtrl}
 
-						{loader}
+                        {loader}
 
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							onChangeText={(text)=> this.setState({
-								invoiceID: text,
-								invalidValue: false
-							})}
-							style={styles.loginInputBold}
-							value={this.state.invoiceID}
-							placeholder="ID">
-						</TextInput>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            onChangeText={(text) => this.setState({
+                                invoiceID: text,
+                                invalidValue: false
+                            })}
+                            style={styles.loginInputBold}
+                            value={this.state.invoiceID}
+                            placeholder="ID">
+                        </TextInput>
 
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							editable={false}
-							style={styles.loginInputBold}
-							value={this.state.date}
-							placeholder="date">
-						</TextInput>
-					</View>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            editable={false}
+                            style={styles.loginInputBold}
+                            value={this.state.date}
+                            placeholder="date">
+                        </TextInput>
+                    </View>
 
-					<View style={{backgroundColor: 'white'}}>
-						<View style={{
-							borderColor: 'darkblue',
-							borderWidth: 5,
-							marginTop: 10,
-							margin: 10,
-							marginBottom: 0,
-							flex: 1,
-						}}>
-							<Picker style={{marginTop: 0}}
-                                selectedValue={this.state.project}
+                    <View style={{backgroundColor: 'white'}}>
+                        <View style={{
+                            borderColor: 'darkblue',
+                            borderWidth: 5,
+                            marginTop: 10,
+                            margin: 10,
+                            marginBottom: 0,
+                            flex: 1,
+                        }}>
+                            <Picker style={{marginTop: 0}}
+                                    selectedValue={this.state.project}
 
-                                onValueChange={(value) => {
-									let arr = [].concat(this.state.projects);
- 									let project = arr.filter((el) => el.id == value);
-                                    this.setState({
-                                        project: value,
-                                        projectID: project[0].id,
-                                        projectName: project[0].name,
-										invalidValue: false
-                                    })
-                                }}>
+                                    onValueChange={(value) => {
+                                        let arr = [].concat(this.state.projects);
+                                        let project = arr.filter((el) => el.id == value);
+                                        this.setState({
+                                            project: value,
+                                            projectID: project[0].id,
+                                            projectName: project[0].name,
+                                            invalidValue: false
+                                        })
+                                    }}>
 
-								{this.state.projects.map((item, i) =>
-									<Picker.Item value={item.id} label={item.name} key={i}/>
-								)}
-							</Picker>
-						</View>
-					</View>
+                                {this.state.projects.map((item, i) =>
+                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                )}
+                            </Picker>
+                        </View>
+                    </View>
 
-					<View style={{backgroundColor: 'white'}}>
-						<View style={{
-							borderColor: 'darkblue',
-							borderWidth: 5,
-							marginTop: 10,
-							margin: 10,
-							marginBottom: 0,
-							flex: 1,
-						}}>
-							<Picker style={{marginTop: 0}}
-                                selectedValue={this.state.department}
+                    <View style={{backgroundColor: 'white'}}>
+                        <View style={{
+                            borderColor: 'darkblue',
+                            borderWidth: 5,
+                            marginTop: 10,
+                            margin: 10,
+                            marginBottom: 0,
+                            flex: 1,
+                        }}>
+                            <Picker style={{marginTop: 0}}
+                                    selectedValue={this.state.department}
 
-                                onValueChange={(value) => {
-									let arr = [].concat(this.state.departments);
- 									let department = arr.filter((el) => el.id == value);
+                                    onValueChange={(value) => {
+                                        let arr = [].concat(this.state.departments);
+                                        let department = arr.filter((el) => el.id == value);
 
-									let arrEmployees = [].concat(this.state.employees);
- 									let employees = arrEmployees.filter((el) => el.departmentID == value);
+                                        let arrEmployees = [].concat(this.state.employees);
+                                        let employees = arrEmployees.filter((el) => el.departmentID == value);
 
-                                    this.setState({
-                                        department: value,
-                                        departmentID: department[0].id,
-                                        departmentName: department[0].name,
-										invalidValue: false,
-										employeesFiltered: employees
-                                    })
-                                }}>
+                                        this.setState({
+                                            department: value,
+                                            departmentID: department[0].id,
+                                            departmentName: department[0].name,
+                                            invalidValue: false,
+                                            employeesFiltered: employees
+                                        })
+                                    }}>
 
-								{this.state.departments.map((item, i) =>
-									<Picker.Item value={item.id} label={item.name} key={i}/>
-								)}
-							</Picker>
-						</View>
-					</View>
+                                {this.state.departments.map((item, i) =>
+                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                )}
+                            </Picker>
+                        </View>
+                    </View>
 
-					<View style={{backgroundColor: 'white'}}>
-						<View style={{
-							borderColor: 'darkblue',
-							borderWidth: 5,
-							marginTop: 10,
-							margin: 10,
-							marginBottom: 0,
-							flex: 1,
-						}}>
-							<Picker style={{marginTop: 0}}
-                                selectedValue={this.state.employee}
+                    <View style={{backgroundColor: 'white'}}>
+                        <View style={{
+                            borderColor: 'darkblue',
+                            borderWidth: 5,
+                            marginTop: 10,
+                            margin: 10,
+                            marginBottom: 0,
+                            flex: 1,
+                        }}>
+                            <Picker style={{marginTop: 0}}
+                                    selectedValue={this.state.employee}
 
-                                onValueChange={(value) => {
-									let arr = [].concat(this.state.employeesFiltered);
- 									let employee = arr.filter((el) => el.id == value);
+                                    onValueChange={(value) => {
+                                        let arr = [].concat(this.state.employeesFiltered);
+                                        let employee = arr.filter((el) => el.id == value);
 
-                                    this.setState({
-                                        employee: value,
-                                        employeeID: employee[0].id,
-                                        employeeName: employee[0].name,
-										invalidValue: false
-                                    })
-                                }}>
+                                        this.setState({
+                                            employee: value,
+                                            employeeID: employee[0].id,
+                                            employeeName: employee[0].name,
+                                            invalidValue: false
+                                        })
+                                    }}>
 
-								{this.state.employeesFiltered.map((item, i) =>
-									<Picker.Item value={item.id} label={item.name} key={i}/>
-								)}
-							</Picker>
-						</View>
-					</View>
+                                {this.state.employeesFiltered.map((item, i) =>
+                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                )}
+                            </Picker>
+                        </View>
+                    </View>
 
-					<View style={{backgroundColor: 'white'}}>
-						<View style={{
-							borderColor: 'darkblue',
-							borderWidth: 5,
-							marginTop: 10,
-							margin: 10,
-							marginBottom: 0,
-							flex: 1,
-						}}>
-							<Picker style={{marginTop: 0}}
-                                selectedValue={this.state.good}
+                    <View style={{backgroundColor: 'white'}}>
+                        <View style={{
+                            borderColor: 'darkblue',
+                            borderWidth: 5,
+                            marginTop: 10,
+                            margin: 10,
+                            marginBottom: 0,
+                            flex: 1,
+                        }}>
+                            <Picker style={{marginTop: 0}}
+                                    selectedValue={this.state.good}
 
-                                onValueChange={(value) => {
-									let arr = [].concat(this.state.goods);
- 									let good = arr.filter((el) => el.id == value);
+                                    onValueChange={(value) => {
+                                        let arr = [].concat(this.state.goods);
+                                        let good = arr.filter((el) => el.id == value);
 
-                                    this.setState({
-                                        good: value,
-                                        productID: good[0].id,
-                                        productName: good[0].name,
-                                        price: (+good[0].price).toFixed(2),
-										total: ((+good[0].price)*(+this.state.quantity)).toFixed(2).toString(),
-										invalidValue: false
-                                    })
-                                }}>
+                                        this.setState({
+                                            good: value,
+                                            productID: good[0].id,
+                                            productName: good[0].name,
+                                            price: (+good[0].price).toFixed(2),
+                                            total: ((+good[0].price) * (+this.state.quantity)).toFixed(2).toString(),
+                                            invalidValue: false
+                                        })
+                                    }}>
 
-								{this.state.goods.map((item, i) =>
-									<Picker.Item value={item.id} label={item.name} key={i}/>
-								)}
-							</Picker>
-						</View>
-					</View>
+                                {this.state.goods.map((item, i) =>
+                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                )}
+                            </Picker>
+                        </View>
+                    </View>
 
-					<View style={{
-						flex: 1,
-						padding: 10,
-						paddingTop: 0,
-						marginTop: 0,
-						backgroundColor: 'white'
-					}}>
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							editable={false}
-							style={styles.loginInputBold}
-							value={this.state.price}
-							placeholder={appConfig.language.price}>
-						</TextInput>
+                    <View style={{
+                        flex: 1,
+                        padding: 10,
+                        paddingTop: 0,
+                        marginTop: 0,
+                        backgroundColor: 'white'
+                    }}>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            editable={false}
+                            style={styles.loginInputBold}
+                            value={this.state.price}
+                            placeholder={appConfig.language.price}>
+                        </TextInput>
 
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							onChangeText={(text)=> this.setState({
-								quantity: text,
-								total: ((+this.state.price)*(+text)).toFixed(2).toString(),
-								invalidValue: false
-							})}
-							style={styles.loginInputBold}
-							value={this.state.quantity}
-							placeholder={appConfig.language.quantity}>
-						</TextInput>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            onChangeText={(text) => this.setState({
+                                quantity: text,
+                                total: ((+this.state.price) * (+text)).toFixed(2).toString(),
+                                invalidValue: false
+                            })}
+                            style={styles.loginInputBold}
+                            value={this.state.quantity}
+                            placeholder={appConfig.language.quantity}>
+                        </TextInput>
 
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							multiline={true}
-							onChangeText={(text)=> this.setState({
-								description: text,
-								invalidValue: false
-							})}
-							style={styles.loginInput1}
-							value={this.state.description}
-							placeholder={appConfig.language.description}>
-						</TextInput>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            multiline={true}
+                            onChangeText={(text) => this.setState({
+                                description: text,
+                                invalidValue: false
+                            })}
+                            style={styles.loginInput1}
+                            value={this.state.description}
+                            placeholder={appConfig.language.description}>
+                        </TextInput>
 
-						<View style={{
-							flexDirection: 'row',
-							marginTop: 10,
-							marginBottom: -15
-						}}>
-							<Text style={styles.itemTextBold}>
-								{appConfig.language.total}: {this.state.total}
-							</Text>
-						</View>
+                        <View style={{
+                            flexDirection: 'row',
+                            marginTop: 10,
+                            marginBottom: -15
+                        }}>
+                            <Text style={styles.itemTextBold}>
+                                {appConfig.language.total}: {this.state.total}
+                            </Text>
+                        </View>
 
-						{validCtrl}
+                        {validCtrl}
 
-						<TouchableHighlight
-							onPress={()=> this.addItem()}
-							style={styles.button}>
-							<Text style={styles.buttonText}>
-								{appConfig.language.submit}
-							</Text>
-						</TouchableHighlight>
+                        <TouchableHighlight
+                            onPress={() => this.addItem()}
+                            style={styles.button}>
+                            <Text style={styles.buttonText}>
+                                {appConfig.language.submit}
+                            </Text>
+                        </TouchableHighlight>
 
-						{errorCtrl}
+                        {errorCtrl}
 
-						<ActivityIndicator
-							animating={this.state.showProgressAdd}
-							size="large"
-							color="darkblue"
-							style={styles.loader}
-						/>
-					</View>
-				</ScrollView>
-			</View>
+                        <ActivityIndicator
+                            animating={this.state.showProgressAdd}
+                            size="large"
+                            color="darkblue"
+                            style={styles.loader}
+                        />
+                    </View>
+                </ScrollView>
+            </View>
         )
     }
 }
@@ -608,11 +608,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff'
     },
     itemTextBold: {
-		fontSize: 20,
-		textAlign: 'left',
-		margin: 5,
-		fontWeight: 'bold',
-		color: 'black'
+        fontSize: 20,
+        textAlign: 'left',
+        margin: 5,
+        fontWeight: 'bold',
+        color: 'black'
     },
     countHeader: {
         fontSize: 16,
@@ -642,7 +642,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         color: 'black'
     },
-	loginInputBold: {
+    loginInputBold: {
         height: 50,
         marginTop: 10,
         padding: 4,
@@ -651,9 +651,9 @@ const styles = StyleSheet.create({
         borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black',
-		fontWeight: 'bold'
+        fontWeight: 'bold'
     },
-	loginInput1: {
+    loginInput1: {
         height: 100,
         marginTop: 10,
         padding: 4,
@@ -662,7 +662,7 @@ const styles = StyleSheet.create({
         borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black',
-		fontWeight: 'bold'
+        fontWeight: 'bold'
     },
     button: {
         height: 50,
@@ -678,15 +678,15 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 20,
-		fontWeight: 'bold'
+        fontWeight: 'bold'
     },
     loader: {
-		marginTop: 20
+        marginTop: 20
     },
     error: {
         color: 'red',
         paddingTop: 20,
-		marginBottom: -10,
+        marginBottom: -10,
         textAlign: 'center'
     },
     img: {

@@ -16,66 +16,66 @@ class SearchResults extends Component {
     constructor(props) {
         super(props);
 
-/*		BackAndroid.addEventListener('hardwareBackPress', () => {
-			if (this.props.navigator) {
-				this.props.navigator.pop();
-			}
-			return true;
-		});*/
+        /*		BackAndroid.addEventListener('hardwareBackPress', () => {
+                    if (this.props.navigator) {
+                        this.props.navigator.pop();
+                    }
+                    return true;
+                });*/
 
         var ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 != r2
         });
 
-		this.state = {
-			dataSource1: ds.cloneWithRows([]),
-			dataSource2: ds.cloneWithRows([]),
-			resultsCount1: 0,
-			resultsCount2: 0
-		}
+        this.state = {
+            dataSource1: ds.cloneWithRows([]),
+            dataSource2: ds.cloneWithRows([]),
+            resultsCount1: 0,
+            resultsCount2: 0
+        }
 
-		if (props.data) {
-			this.state = {
-				dataSource1: ds.cloneWithRows([]),
-				dataSource2: ds.cloneWithRows([]),
+        if (props.data) {
+            this.state = {
+                dataSource1: ds.cloneWithRows([]),
+                dataSource2: ds.cloneWithRows([]),
 
-				projectName: props.data.projectName,
-				departmentName: props.data.departmentName,
-				employeeName: props.data.employeeName,
+                projectName: props.data.projectName,
+                departmentName: props.data.departmentName,
+                employeeName: props.data.employeeName,
 
-				startDate: props.data.startDate,
-				endDate: props.data.endDate,
+                startDate: props.data.startDate,
+                endDate: props.data.endDate,
 
-				searchType: props.data.searchType,
-				showProgress: true,
+                searchType: props.data.searchType,
+                showProgress: true,
 
-				resultsCount1: 0,
-				recordsCount1: 15,
-				positionY1: 0,
+                resultsCount1: 0,
+                recordsCount1: 15,
+                positionY1: 0,
 
-				resultsCount2: 0,
-				recordsCount2: 15,
-				positionY2: 0,
+                resultsCount2: 0,
+                recordsCount2: 15,
+                positionY2: 0,
 
-				inputsTotal: 0,
-				outputsTotal: 0
-			};
-		}
+                inputsTotal: 0,
+                outputsTotal: 0
+            };
+        }
     }
 
-	componentDidMount() {
-		this.getInputs();
-		this.getOutputs();
-	}
+    componentDidMount() {
+        this.getInputs();
+        this.getOutputs();
+    }
 
-	dateCheck(dateFrom, dateTo, dateCheck) {
-		var start = Date.parse(dateFrom);
-		var end = Date.parse(dateTo);
-		var check = Date.parse(dateCheck );
-		if((check <= end && check >= start)) {
-			return true;
-		}
-	}
+    dateCheck(dateFrom, dateTo, dateCheck) {
+        var start = Date.parse(dateFrom);
+        var end = Date.parse(dateTo);
+        var check = Date.parse(dateCheck);
+        if ((check <= end && check >= start)) {
+            return true;
+        }
+    }
 
     getInputs() {
         fetch(appConfig.url + 'api/inputs/get', {
@@ -83,48 +83,48 @@ class SearchResults extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-				'Authorization': appConfig.access_token
+                'Authorization': appConfig.access_token
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
-				var itemsDate, itemsProject, itemsDepartment, itemsEmployee, items;
+            .then((response) => response.json())
+            .then((responseData) => {
+                var itemsDate, itemsProject, itemsDepartment, itemsEmployee, items;
 
-				itemsDate = [].concat(responseData.sort(this.sort));
-				itemsDate = itemsDate.filter((el) => this.dateCheck(this.state.startDate, this.state.endDate, el.date.split(' ')[0]));
+                itemsDate = [].concat(responseData.sort(this.sort));
+                itemsDate = itemsDate.filter((el) => this.dateCheck(this.state.startDate, this.state.endDate, el.date.split(' ')[0]));
 
-				itemsProject = [].concat(itemsDate);
-				if (this.state.projectName != appConfig.language.allproj) {
-					itemsProject = itemsDate.filter((el) => el.project.toLowerCase() == this.state.projectName.toLowerCase());
-				}
+                itemsProject = [].concat(itemsDate);
+                if (this.state.projectName != appConfig.language.allproj) {
+                    itemsProject = itemsDate.filter((el) => el.project.toLowerCase() == this.state.projectName.toLowerCase());
+                }
 
-				itemsDepartment = [].concat(itemsProject);
-				if (this.state.departmentName != appConfig.language.alldep) {
-					itemsDepartment = itemsProject.filter((el) => el.department.toLowerCase() == this.state.departmentName.toLowerCase());
-				}
+                itemsDepartment = [].concat(itemsProject);
+                if (this.state.departmentName != appConfig.language.alldep) {
+                    itemsDepartment = itemsProject.filter((el) => el.department.toLowerCase() == this.state.departmentName.toLowerCase());
+                }
 
-				itemsEmployee = [].concat(itemsDepartment);
-				if (this.state.employeeName != appConfig.language.allemp) {
-					itemsEmployee = itemsDepartment.filter((el) => el.employee.toLowerCase() == this.state.employeeName.toLowerCase());
-				}
+                itemsEmployee = [].concat(itemsDepartment);
+                if (this.state.employeeName != appConfig.language.allemp) {
+                    itemsEmployee = itemsDepartment.filter((el) => el.employee.toLowerCase() == this.state.employeeName.toLowerCase());
+                }
 
-				items = [].concat(itemsEmployee);
-				items.forEach((el) => this.state.inputsTotal = +this.state.inputsTotal + +el.total)
+                items = [].concat(itemsEmployee);
+                items.forEach((el) => this.state.inputsTotal = +this.state.inputsTotal + +el.total)
 
                 this.setState({
-				    dataSource1: this.state.dataSource1.cloneWithRows(items.slice(0, 25)),
+                    dataSource1: this.state.dataSource1.cloneWithRows(items.slice(0, 25)),
                     resultsCount1: items.length,
-					recordsCount1: 15,
+                    recordsCount1: 15,
                     responseData1: items,
                     filteredItems1: items
                 });
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     showProgress: false
                 });
@@ -137,48 +137,48 @@ class SearchResults extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-				'Authorization': appConfig.access_token
+                'Authorization': appConfig.access_token
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
-				var itemsDate, itemsProject, itemsDepartment, itemsEmployee, items;
+            .then((response) => response.json())
+            .then((responseData) => {
+                var itemsDate, itemsProject, itemsDepartment, itemsEmployee, items;
 
-				itemsDate = [].concat(responseData.sort(this.sort));
-				itemsDate = itemsDate.filter((el) => this.dateCheck(this.state.startDate, this.state.endDate, el.date.split(' ')[0]));
+                itemsDate = [].concat(responseData.sort(this.sort));
+                itemsDate = itemsDate.filter((el) => this.dateCheck(this.state.startDate, this.state.endDate, el.date.split(' ')[0]));
 
-				itemsProject = [].concat(itemsDate);
-				if (this.state.projectName != appConfig.language.allproj) {
-					itemsProject = itemsDate.filter((el) => el.project.toLowerCase() == this.state.projectName.toLowerCase());
-				}
+                itemsProject = [].concat(itemsDate);
+                if (this.state.projectName != appConfig.language.allproj) {
+                    itemsProject = itemsDate.filter((el) => el.project.toLowerCase() == this.state.projectName.toLowerCase());
+                }
 
-				itemsDepartment = [].concat(itemsProject);
-				if (this.state.departmentName != appConfig.language.alldep) {
-					itemsDepartment = itemsProject.filter((el) => el.department.toLowerCase() == this.state.departmentName.toLowerCase());
-				}
+                itemsDepartment = [].concat(itemsProject);
+                if (this.state.departmentName != appConfig.language.alldep) {
+                    itemsDepartment = itemsProject.filter((el) => el.department.toLowerCase() == this.state.departmentName.toLowerCase());
+                }
 
-				itemsEmployee = [].concat(itemsDepartment);
-				if (this.state.employeeName != appConfig.language.allemp) {
-					itemsEmployee = itemsDepartment.filter((el) => el.employee.toLowerCase() == this.state.employeeName.toLowerCase());
-				}
+                itemsEmployee = [].concat(itemsDepartment);
+                if (this.state.employeeName != appConfig.language.allemp) {
+                    itemsEmployee = itemsDepartment.filter((el) => el.employee.toLowerCase() == this.state.employeeName.toLowerCase());
+                }
 
-				items = [].concat(itemsEmployee);
-				items.forEach((el) => this.state.outputsTotal = +this.state.outputsTotal + +el.total)
+                items = [].concat(itemsEmployee);
+                items.forEach((el) => this.state.outputsTotal = +this.state.outputsTotal + +el.total)
 
                 this.setState({
-				    dataSource2: this.state.dataSource2.cloneWithRows(items.slice(0, 25)),
+                    dataSource2: this.state.dataSource2.cloneWithRows(items.slice(0, 25)),
                     resultsCount2: items.length,
-					recordsCount2: 15,
+                    recordsCount2: 15,
                     responseData2: items,
                     filteredItems2: items
                 });
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     showProgress: false
                 });
@@ -197,38 +197,38 @@ class SearchResults extends Component {
     }
 
     showDetails(rowData) {
-		this.props.navigator.push({
-			index: 3,
-			data: rowData
-		});
+        this.props.navigator.push({
+            index: 3,
+            data: rowData
+        });
     }
 
     renderRow(rowData) {
         return (
             <TouchableHighlight
-				onPress={()=> this.showDetails(rowData)}
+                onPress={() => this.showDetails(rowData)}
                 underlayColor='#ddd'
             >
-				<View style={{
-					flex: 1,
-					flexDirection: 'column',
-					padding: 12,
-					borderColor: '#D7D7D7',
-					borderBottomWidth: 1,
-					backgroundColor: '#fff'
-				}}>
-					<Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
-						{rowData.invoiceID} - {rowData.project} - {(rowData.date).split(' ')[0]}
-					</Text>
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    padding: 12,
+                    borderColor: '#D7D7D7',
+                    borderBottomWidth: 1,
+                    backgroundColor: '#fff'
+                }}>
+                    <Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
+                        {rowData.invoiceID} - {rowData.project} - {(rowData.date).split(' ')[0]}
+                    </Text>
 
-					<Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
-						{rowData.description}
-					</Text>
+                    <Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
+                        {rowData.description}
+                    </Text>
 
-					<Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
-						{appConfig.language.total}: {((+rowData.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
-					</Text>
-				</View>
+                    <Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
+                        {appConfig.language.total}: {((+rowData.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
+                    </Text>
+                </View>
             </TouchableHighlight>
         );
     }
@@ -272,8 +272,8 @@ class SearchResults extends Component {
     }
 
     goBack() {
-		this.props.navigator.pop();
-	}
+        this.props.navigator.pop();
+    }
 
     render() {
         var errorCtrl, loader;
@@ -291,131 +291,131 @@ class SearchResults extends Component {
             }}>
                 <ActivityIndicator
                     size="large"
-					color="darkblue"
+                    color="darkblue"
                     animating={true}/>
             </View>;
         }
 
         return (
             <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
-				<View style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						backgroundColor: 'darkblue'
-					}}>
-					<View>
-						<TouchableHighlight
-							onPress={()=> this.goBack()}
-							underlayColor='darkblue'
-						>
-							<Text style={{
-								fontSize: 16,
-								textAlign: 'center',
-								margin: 14,
-								fontWeight: 'bold',
-								color: 'white'
-							}}>
-								{appConfig.language.back}
-							</Text>
-						</TouchableHighlight>
-					</View>
-					<View>
-						<TouchableHighlight
-							underlayColor='#ddd'
-						>
-							<Text style={{
-								fontSize: 20,
-								textAlign: 'center',
-								margin: 10,
-								marginRight: 40,
-								fontWeight: 'bold',
-								color: 'white'
-							}}>
-								{this.state.projectName}
-							</Text>
-						</TouchableHighlight>
-					</View>
-					<View>
-						<TouchableHighlight
-							onPress={()=> this.goBack()}
-							underlayColor='#ddd'
-						>
-							<Text style={{
-								fontSize: 16,
-								textAlign: 'center',
-								margin: 14,
-								fontWeight: 'bold',
-								color: 'white'
-							}}>
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    backgroundColor: 'darkblue'
+                }}>
+                    <View>
+                        <TouchableHighlight
+                            onPress={() => this.goBack()}
+                            underlayColor='darkblue'
+                        >
+                            <Text style={{
+                                fontSize: 16,
+                                textAlign: 'center',
+                                margin: 14,
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }}>
+                                {appConfig.language.back}
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                    <View>
+                        <TouchableHighlight
+                            underlayColor='#ddd'
+                        >
+                            <Text style={{
+                                fontSize: 20,
+                                textAlign: 'center',
+                                margin: 10,
+                                marginRight: 40,
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }}>
+                                {this.state.projectName}
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                    <View>
+                        <TouchableHighlight
+                            onPress={() => this.goBack()}
+                            underlayColor='#ddd'
+                        >
+                            <Text style={{
+                                fontSize: 16,
+                                textAlign: 'center',
+                                margin: 14,
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }}>
 
-							</Text>
-						</TouchableHighlight>
-					</View>
-				</View>
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
 
-				{errorCtrl}
+                {errorCtrl}
 
-				{loader}
+                {loader}
 
-				<View style={{
-						flex: 1,
-						flexDirection: 'row',
-						justifyContent: 'space-between'
-					}}>
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between'
+                }}>
 
-					<ScrollView
-						onScroll={this.refreshData2.bind(this)} scrollEventThrottle={16}>
+                    <ScrollView
+                        onScroll={this.refreshData2.bind(this)} scrollEventThrottle={16}>
 
-						<ListView
-							enableEmptySections={true}
-							style={{marginTop: 0, marginBottom: 0}}
-							dataSource={this.state.dataSource2}
-							renderRow={this.renderRow.bind(this)}
-						/>
-					</ScrollView>
+                        <ListView
+                            enableEmptySections={true}
+                            style={{marginTop: 0, marginBottom: 0}}
+                            dataSource={this.state.dataSource2}
+                            renderRow={this.renderRow.bind(this)}
+                        />
+                    </ScrollView>
 
-					<ScrollView
-						onScroll={this.refreshData1.bind(this)} scrollEventThrottle={16}>
+                    <ScrollView
+                        onScroll={this.refreshData1.bind(this)} scrollEventThrottle={16}>
 
-						<ListView
-							enableEmptySections={true}
-							style={{marginTop: 0, marginBottom: 0}}
-							dataSource={this.state.dataSource1}
-							renderRow={this.renderRow.bind(this)}
-						/>
-					</ScrollView>
-				</View>
+                        <ListView
+                            enableEmptySections={true}
+                            style={{marginTop: 0, marginBottom: 0}}
+                            dataSource={this.state.dataSource1}
+                            renderRow={this.renderRow.bind(this)}
+                        />
+                    </ScrollView>
+                </View>
 
-				<View style={{
-						flexDirection: 'row',
-						justifyContent: 'space-between',
-						backgroundColor: 'darkblue'
-					}}>
-					<View style={{marginBottom: 0}}>
-						<Text style={styles.countFooter1}>
-							{appConfig.language.outputs}: {this.state.resultsCount2.toString()}
-						</Text>
-						<Text style={styles.countFooter1}>
-							{((+this.state.outputsTotal).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
-						</Text>
-					</View>
-					<View style={{marginBottom: 0}}>
-						<Text style={styles.countFooter2}>
-							{appConfig.language.total}:
-						</Text>
-						<Text style={styles.countFooter2}>
-							{((+this.state.inputsTotal - +this.state.outputsTotal).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
-						</Text>
-					</View>
-					<View style={{marginBottom: 0}}>
-						<Text style={styles.countFooter3}>
-							{appConfig.language.inputs}: {this.state.resultsCount1.toString()}
-						</Text>
-						<Text style={styles.countFooter3}>
-							{((+this.state.inputsTotal).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
-						</Text>
-					</View>
-				</View>
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    backgroundColor: 'darkblue'
+                }}>
+                    <View style={{marginBottom: 0}}>
+                        <Text style={styles.countFooter1}>
+                            {appConfig.language.outputs}: {this.state.resultsCount2.toString()}
+                        </Text>
+                        <Text style={styles.countFooter1}>
+                            {((+this.state.outputsTotal).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
+                        </Text>
+                    </View>
+                    <View style={{marginBottom: 0}}>
+                        <Text style={styles.countFooter2}>
+                            {appConfig.language.total}:
+                        </Text>
+                        <Text style={styles.countFooter2}>
+                            {((+this.state.inputsTotal - +this.state.outputsTotal).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
+                        </Text>
+                    </View>
+                    <View style={{marginBottom: 0}}>
+                        <Text style={styles.countFooter3}>
+                            {appConfig.language.inputs}: {this.state.resultsCount1.toString()}
+                        </Text>
+                        <Text style={styles.countFooter3}>
+                            {((+this.state.inputsTotal).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
+                        </Text>
+                    </View>
+                </View>
             </View>
         );
     }
@@ -439,35 +439,35 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         padding: 10,
         borderColor: '#D7D7D7',
-		color: 'white',
-		fontWeight: 'bold'
+        color: 'white',
+        fontWeight: 'bold'
     },
-	countFooter1: {
+    countFooter1: {
         fontSize: 16,
         textAlign: 'left',
-		marginTop: 1,
+        marginTop: 1,
         marginLeft: 10,
         borderColor: '#D7D7D7',
-		color: 'white',
-		fontWeight: 'bold'
+        color: 'white',
+        fontWeight: 'bold'
     },
-	countFooter2: {
+    countFooter2: {
         fontSize: 16,
         textAlign: 'center',
         marginTop: 1,
-		//margin: 3,
+        //margin: 3,
         borderColor: '#D7D7D7',
-		color: 'white',
-		fontWeight: 'bold'
+        color: 'white',
+        fontWeight: 'bold'
     },
-	countFooter3: {
+    countFooter3: {
         fontSize: 16,
         textAlign: 'right',
-		marginTop: 1,
+        marginTop: 1,
         marginRight: 10,
         borderColor: '#D7D7D7',
-		color: 'white',
-		fontWeight: 'bold'
+        color: 'white',
+        fontWeight: 'bold'
     },
     countHeader1: {
         fontSize: 16,

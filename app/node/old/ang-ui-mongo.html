@@ -17,44 +17,44 @@
 <script>
     (function () {
         angular
-			.module('app', ['ui.router']);
+            .module('app', ['ui.router']);
 
         angular
-			.module('app')
-			.run(myConfig);
+            .module('app')
+            .run(myConfig);
 
         function myConfig($rootScope) {
             $rootScope.myConfig = {
                 heroku: 'http://coolworld.herokuapp.com/',
                 local: 'http://localhost:3000/'
             };
-			var mode = localStorage.getItem('warehouse_mode');
-			mode = JSON.parse(mode);
-			//$rootScope.mode = mode;
+            var mode = localStorage.getItem('warehouse_mode');
+            mode = JSON.parse(mode);
+            //$rootScope.mode = mode;
         }
 
         angular
-			.module('app')
-			.config(routeConfig);
-				
-		routeConfig.$inject = ['$stateProvider', '$urlRouterProvider'];
-		
+            .module('app')
+            .config(routeConfig);
+
+        routeConfig.$inject = ['$stateProvider', '$urlRouterProvider'];
+
         function routeConfig($stateProvider, $urlRouterProvider) {
 
             $urlRouterProvider.otherwise('/root');
             $stateProvider
-                    .state('root', {
-                        url: '/root',
-                        data: {
-                            requireLogin: true
-                        },
-                        views: {
-                            '': {
-                                template: '<div ui-view="main"></div>' +
+                .state('root', {
+                    url: '/root',
+                    data: {
+                        requireLogin: true
+                    },
+                    views: {
+                        '': {
+                            template: '<div ui-view="main"></div>' +
                                 '<div ui-view="display"></div>'
-                            },
-                            'main@root': {
-                                template: '<center>' +
+                        },
+                        'main@root': {
+                            template: '<center>' +
                                 '<hr>{{ ctx.name }}<hr>' +
                                 '<select ng-model="ctx.selectedItem"' +
                                 'ng-options="option.name for option in ctx.options"' +
@@ -73,20 +73,45 @@
                                 '<div ng-show="ctx.error" style="font-size:25px;">' +
                                 'Something went wrong' +
                                 '</div>',
-                                controller: 'mainCtrl',
-                                controllerAs: 'ctx'
+                            controller: 'mainCtrl',
+                            controllerAs: 'ctx'
+                        },
+                        'display@root': {
+                            template: ''
+                        }
+                    }
+                })
+
+                .state('root.clients', {
+                    url: '/clients',
+                    views: {
+                        'display': {
+                            template: '<div><center>' +
+                                '<table border=1>' +
+                                '<tr ng-repeat="item in usersCtrl.items">' +
+                                '<td ng-click="usersCtrl.updateUser(item)">&nbsp E &nbsp</td>' +
+                                '<td ng-click="usersCtrl.findUser(item)">{{item.id}}</td>' +
+                                '<td ng-click="usersCtrl.findUser(item)">{{item.name}}</td>' +
+                                '<td ng-click="usersCtrl.findUser(item)">{{item.pass}}</td>' +
+                                '<td ng-click="usersCtrl.delUser(item)">&nbsp X &nbsp</td>' +
+                                '</tr>' +
+                                '</table>' +
+                                '</div>',
+                            resolve: {
+                                results: resolveResource('http://coolworld.herokuapp.com/api/clients/get'),
+                                goods: resolveResource('http://coolworld.herokuapp.com/api/goods/get')
                             },
-                            'display@root': {
-                                template: ''
-                            }
+                            controller: 'UsersCtrl',
+                            controllerAs: 'usersCtrl'
                         }
-                    })
+                    }
+                })
 
-                    .state('root.clients', {
-                        url: '/clients',
-                        views: {
-                            'display': {
-                                template: '<div><center>' +
+                .state('root.goods', {
+                    url: '/goods',
+                    views: {
+                        'display': {
+                            template: '<div><center>' +
                                 '<table border=1>' +
                                 '<tr ng-repeat="item in usersCtrl.items">' +
                                 '<td ng-click="usersCtrl.updateUser(item)">&nbsp E &nbsp</td>' +
@@ -97,21 +122,20 @@
                                 '</tr>' +
                                 '</table>' +
                                 '</div>',
-                                resolve: {
-                                    results: resolveResource('http://coolworld.herokuapp.com/api/clients/get'),
-                                    goods: resolveResource('http://coolworld.herokuapp.com/api/goods/get')
-                                },
-                                controller: 'UsersCtrl',
-                                controllerAs: 'usersCtrl'
-                            }
+                            resolve: {
+                                results: resolveResource('http://coolworld.herokuapp.com/api/goods/get')
+                            },
+                            controller: 'UsersCtrl',
+                            controllerAs: 'usersCtrl'
                         }
-                    })
+                    }
+                })
 
-                    .state('root.goods', {
-                        url: '/goods',
-                        views: {
-                            'display': {
-                                template: '<div><center>' +
+                .state('root.inputs', {
+                    url: '/inputs',
+                    views: {
+                        'display': {
+                            template: '<div><center>' +
                                 '<table border=1>' +
                                 '<tr ng-repeat="item in usersCtrl.items">' +
                                 '<td ng-click="usersCtrl.updateUser(item)">&nbsp E &nbsp</td>' +
@@ -122,44 +146,20 @@
                                 '</tr>' +
                                 '</table>' +
                                 '</div>',
-                                resolve: {
-                                    results: resolveResource('http://coolworld.herokuapp.com/api/goods/get')
-                                },
-                                controller: 'UsersCtrl',
-                                controllerAs: 'usersCtrl'
-                            }
+                            resolve: {
+                                results: resolveResource('http://coolworld.herokuapp.com/api/inputs/get')
+                            },
+                            controller: 'UsersCtrl',
+                            controllerAs: 'usersCtrl'
                         }
-                    })
+                    }
+                })
 
-                    .state('root.inputs', {
-                        url: '/inputs',
-                        views: {
-                            'display': {
-                                template: '<div><center>' +
-                                '<table border=1>' +
-                                '<tr ng-repeat="item in usersCtrl.items">' +
-                                '<td ng-click="usersCtrl.updateUser(item)">&nbsp E &nbsp</td>' +
-                                '<td ng-click="usersCtrl.findUser(item)">{{item.id}}</td>' +
-                                '<td ng-click="usersCtrl.findUser(item)">{{item.name}}</td>' +
-                                '<td ng-click="usersCtrl.findUser(item)">{{item.pass}}</td>' +
-                                '<td ng-click="usersCtrl.delUser(item)">&nbsp X &nbsp</td>' +
-                                '</tr>' +
-                                '</table>' +
-                                '</div>',
-                                resolve: {
-                                    results: resolveResource('http://coolworld.herokuapp.com/api/inputs/get')
-                                },
-                                controller: 'UsersCtrl',
-                                controllerAs: 'usersCtrl'
-                            }
-                        }
-                    })
-					
-                    .state('root.invoicein', {
-                        url: '/invoicein',
-                        views: {
-                            'display': {
-                                template: '<div><center>' +
+                .state('root.invoicein', {
+                    url: '/invoicein',
+                    views: {
+                        'display': {
+                            template: '<div><center>' +
                                 '<table border=1>' +
                                 '<tr ng-repeat="item in usersCtrl.items">' +
                                 '<td ng-click="usersCtrl.updateUser(item)">&nbsp E &nbsp</td>' +
@@ -170,20 +170,20 @@
                                 '</tr>' +
                                 '</table>' +
                                 '</div>',
-                                resolve: {
-                                    results: resolveResource('http://coolworld.herokuapp.com/api/invoicein/get')
-                                },
-                                controller: 'UsersCtrl',
-                                controllerAs: 'usersCtrl'
-                            }
+                            resolve: {
+                                results: resolveResource('http://coolworld.herokuapp.com/api/invoicein/get')
+                            },
+                            controller: 'UsersCtrl',
+                            controllerAs: 'usersCtrl'
                         }
-                    })
-					
-                    .state('root.outputs', {
-                        url: '/outputs',
-                        views: {
-                            'display': {
-                                template: '<div><center>' +
+                    }
+                })
+
+                .state('root.outputs', {
+                    url: '/outputs',
+                    views: {
+                        'display': {
+                            template: '<div><center>' +
                                 '<table border=1>' +
                                 '<tr ng-repeat="item in usersCtrl.items">' +
                                 '<td ng-click="usersCtrl.updateUser(item)">&nbsp E &nbsp</td>' +
@@ -194,20 +194,20 @@
                                 '</tr>' +
                                 '</table>' +
                                 '</div>',
-                                resolve: {
-                                    results: resolveResource('http://coolworld.herokuapp.com/api/outputs/get')
-                                },
-                                controller: 'UsersCtrl',
-                                controllerAs: 'usersCtrl'
-                            }
+                            resolve: {
+                                results: resolveResource('http://coolworld.herokuapp.com/api/outputs/get')
+                            },
+                            controller: 'UsersCtrl',
+                            controllerAs: 'usersCtrl'
                         }
-                    })
+                    }
+                })
 
-                    .state('root.invoiceout', {
-                        url: '/invoiceout',
-                        views: {
-                            'display': {
-                                template: '<div><center>' +
+                .state('root.invoiceout', {
+                    url: '/invoiceout',
+                    views: {
+                        'display': {
+                            template: '<div><center>' +
                                 '<table border=1>' +
                                 '<tr ng-repeat="item in usersCtrl.items">' +
                                 '<td ng-click="usersCtrl.updateUser(item)">&nbsp E &nbsp</td>' +
@@ -218,44 +218,44 @@
                                 '</tr>' +
                                 '</table>' +
                                 '</div>',
-                                resolve: {
-                                    results: resolveResource('http://coolworld.herokuapp.com/api/invoiceout/get')
-                                },
-                                controller: 'UsersCtrl',
-                                controllerAs: 'usersCtrl'
-                            }
+                            resolve: {
+                                results: resolveResource('http://coolworld.herokuapp.com/api/invoiceout/get')
+                            },
+                            controller: 'UsersCtrl',
+                            controllerAs: 'usersCtrl'
                         }
-                    })	
-					
-					.state('root.user-edit', {
-                        url: '/user-edit',
-						params: {item:{}},
-                        data: {
-                            requireLogin: false
-                        },
-                        views: {
-                            'display': {
-                                template: '<div ui-sref1="root.users" ng-click="userEditCtrl.goBack()"><center>' +
-								'{{userEditCtrl.id}}<br>'+
-								'{{userEditCtrl.name}}<br>'+
-								'{{userEditCtrl.pass}}<br>'+
+                    }
+                })
+
+                .state('root.user-edit', {
+                    url: '/user-edit',
+                    params: {item: {}},
+                    data: {
+                        requireLogin: false
+                    },
+                    views: {
+                        'display': {
+                            template: '<div ui-sref1="root.users" ng-click="userEditCtrl.goBack()"><center>' +
+                                '{{userEditCtrl.id}}<br>' +
+                                '{{userEditCtrl.name}}<br>' +
+                                '{{userEditCtrl.pass}}<br>' +
                                 '</div>',
 
-                                controller: 'UserEditCtrl',
-                                controllerAs: 'userEditCtrl'
-                            }
+                            controller: 'UserEditCtrl',
+                            controllerAs: 'userEditCtrl'
                         }
-                    })		
-					
-                    .state('root.users', {
-                        url: '/users',
-                        params: {myParam: null},
-                        data: {
-                            requireLogin: false
-                        },
-                        views: {
-                            'display': {
-                                template: '<div><center>' +
+                    }
+                })
+
+                .state('root.users', {
+                    url: '/users',
+                    params: {myParam: null},
+                    data: {
+                        requireLogin: false
+                    },
+                    views: {
+                        'display': {
+                            template: '<div><center>' +
                                 '<table border=1>' +
                                 '<tr ng-repeat="item in usersCtrl.items">' +
                                 '<td ng-click="usersCtrl.updateUser(item)">&nbsp E &nbsp</td>' +
@@ -266,28 +266,29 @@
                                 '</tr>' +
                                 '</table>' +
                                 '</div>',
-                                resolve: {
-                                    results: resolveResource('http://coolworld.herokuapp.com/api/users/get1')
-                                },
-                                controller: 'UsersCtrl',
-                                controllerAs: 'usersCtrl'
-                            }
+                            resolve: {
+                                results: resolveResource('http://coolworld.herokuapp.com/api/users/get1')
+                            },
+                            controller: 'UsersCtrl',
+                            controllerAs: 'usersCtrl'
                         }
-                    });
-		
+                    }
+                });
+
             function resolveResource(url) {
                 resolver.$inject = ['$http', '$q', '$rootScope'];
+
                 function resolver($http, $q, $rootScope) {
                     return $http.get(url)
-                            .then(function (result) {
-                                $rootScope.loading = false;
-                                return result.data;
-                            })
-                            .catch(function (reject) {
-                                $rootScope.loading = false;
-                                $rootScope.error = true;
-                                return $q.reject(reject);
-                            });
+                        .then(function (result) {
+                            $rootScope.loading = false;
+                            return result.data;
+                        })
+                        .catch(function (reject) {
+                            $rootScope.loading = false;
+                            $rootScope.error = true;
+                            return $q.reject(reject);
+                        });
                 }
 
                 return resolver;
@@ -296,9 +297,10 @@
         }
 
         angular.module('app')
-			.controller('mainCtrl', mainCtrl);
+            .controller('mainCtrl', mainCtrl);
 
         mainCtrl.$inject = ['$rootScope', '$state'];
+
         function mainCtrl($rootScope, $state) {
             var vm = this;
             angular.extend(vm, {
@@ -339,15 +341,15 @@
                 $rootScope.error = false;
                 switch (val.name) {
                     case 'Local':
-						var mode = 'OFF-LINE (LocalStorage)';
-						localStorage.setItem('warehouse_mode', JSON.stringify(mode));
-						$rootScope.mode = mode;
+                        var mode = 'OFF-LINE (LocalStorage)';
+                        localStorage.setItem('warehouse_mode', JSON.stringify(mode));
+                        $rootScope.mode = mode;
                         $rootScope.loading = false;
                         break;
                     case 'Heroku':
-						var mode = 'ON-LINE (Heroku)';
-						localStorage.setItem('warehouse_mode', JSON.stringify(mode));
-						$rootScope.mode = mode;
+                        var mode = 'ON-LINE (Heroku)';
+                        localStorage.setItem('warehouse_mode', JSON.stringify(mode));
+                        $rootScope.mode = mode;
                         $rootScope.loading = false;
                         break;
                     case 'Select table':
@@ -381,65 +383,65 @@
         }
 
         angular
-			.module('app')
-			.controller('UsersCtrl', UsersCtrl);
-				
-		UsersCtrl.$inject = ['$state', 'results', '$rootScope'];
-		
+            .module('app')
+            .controller('UsersCtrl', UsersCtrl);
+
+        UsersCtrl.$inject = ['$state', 'results', '$rootScope'];
+
         function UsersCtrl($state, results, $rootScope) {
             var vm = this;
-			
-			angular.extend(vm, {
-            items: results,
-			init: init,
-            itemEditForm: itemEditForm
-			});
-			
-			init();
-			
-			function init() {
-				vm.items = [];
-				if ($rootScope.mode == 'ON-LINE (Heroku)') {
-					vm.items = results;
-				} 				
-				
-				if ($rootScope.mode == 'OFF-LINE (LocalStorage)') {
-					getUsersOFF();
-				} 
-			}
 
-			function getUsersOFF() {
-				$rootScope.error = false;
-				var users = localStorage.getItem('warehouse_users');
-				users = JSON.parse(users);
-				vm.items = users;
- 			}
-			
-			function itemEditForm(item) {
-				$state.go('root.user-edit', {item: item});
-			}
+            angular.extend(vm, {
+                items: results,
+                init: init,
+                itemEditForm: itemEditForm
+            });
+
+            init();
+
+            function init() {
+                vm.items = [];
+                if ($rootScope.mode == 'ON-LINE (Heroku)') {
+                    vm.items = results;
+                }
+
+                if ($rootScope.mode == 'OFF-LINE (LocalStorage)') {
+                    getUsersOFF();
+                }
+            }
+
+            function getUsersOFF() {
+                $rootScope.error = false;
+                var users = localStorage.getItem('warehouse_users');
+                users = JSON.parse(users);
+                vm.items = users;
+            }
+
+            function itemEditForm(item) {
+                $state.go('root.user-edit', {item: item});
+            }
         }
-		
+
         angular
-			.module('app')
-			.controller('UserEditCtrl', UserEditCtrl);
-				
-		UserEditCtrl.$inject = ['$state', '$stateParams', '$window'];
-        
-		function UserEditCtrl($state, $stateParams, $window) {
+            .module('app')
+            .controller('UserEditCtrl', UserEditCtrl);
+
+        UserEditCtrl.$inject = ['$state', '$stateParams', '$window'];
+
+        function UserEditCtrl($state, $stateParams, $window) {
             var vm = this;
-			
-			angular.extend(vm, $stateParams.item);
-			
-			angular.extend(vm, {
-            goBack: goBack
-			});
-			
-			function goBack(item) {
-				$window.history.back();
-				//$state.go('root.users');
-			}
+
+            angular.extend(vm, $stateParams.item);
+
+            angular.extend(vm, {
+                goBack: goBack
+            });
+
+            function goBack(item) {
+                $window.history.back();
+                //$state.go('root.users');
+            }
         }
-		
+
     })();
 </script>

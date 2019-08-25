@@ -6,12 +6,12 @@ import {
     Text,
     View,
     TouchableHighlight,
-	TouchableWithoutFeedback,
+    TouchableWithoutFeedback,
     ScrollView,
     ActivityIndicator,
-	Dimensions,
-	Picker,
-	DatePickerAndroid
+    Dimensions,
+    Picker,
+    DatePickerAndroid
 } from 'react-native';
 
 import ListView from 'deprecated-react-native-listview';
@@ -20,85 +20,85 @@ class Search extends Component {
     constructor(props) {
         super(props);
 
-		var width = Dimensions.get('window').width;
+        var width = Dimensions.get('window').width;
 
         var ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 != r2
         });
 
-		let d = new Date;
-		var todayDate = d.toLocaleDateString();
+        let d = new Date;
+        var todayDate = d.toLocaleDateString();
 
         this.state = {
             showProgress: false,
-			serverError: false,
+            serverError: false,
             eventSwitchTitle: true,
-			eventSwitchBase: true,
+            eventSwitchBase: true,
             textSwitchBase: 'Choose project',
-			projectName: appConfig.language.allproj,
-			departmentName: appConfig.language.alldep,
-			employeeName: appConfig.language.allemp,
-			bugANDROID: '',
+            projectName: appConfig.language.allproj,
+            departmentName: appConfig.language.alldep,
+            employeeName: appConfig.language.allemp,
+            bugANDROID: '',
             projects: [],
             departments: [],
             employees: [],
             dataSource: ds.cloneWithRows([]),
 
-			presetDate: new Date(),
-			simpleDate: new Date(),
-			spinnerDate: new Date(),
-			calendarDate: new Date(),
-			defaultDate: new Date(),
-			allDate: new Date(),
-			startText: '01/01/19',
-			endText: todayDate,
-			simpleText: 'pick a date',
-			spinnerText: 'pick a date',
-			calendarText: 'pick a date',
-			defaultText: 'pick a date',
-			minText: 'pick a date, no earlier than today',
-			maxText: 'pick a date, no later than today',
-			presetText: 'pick a date, preset to 2020/5/5',
-			allText: 'pick a date between 2020/5/1 and 2020/5/10'
+            presetDate: new Date(),
+            simpleDate: new Date(),
+            spinnerDate: new Date(),
+            calendarDate: new Date(),
+            defaultDate: new Date(),
+            allDate: new Date(),
+            startText: '01/01/19',
+            endText: todayDate,
+            simpleText: 'pick a date',
+            spinnerText: 'pick a date',
+            calendarText: 'pick a date',
+            defaultText: 'pick a date',
+            minText: 'pick a date, no earlier than today',
+            maxText: 'pick a date, no later than today',
+            presetText: 'pick a date, preset to 2020/5/5',
+            allText: 'pick a date between 2020/5/1 and 2020/5/10'
         }
     }
 
-	componentDidMount() {
-		this.setState({
-			width: Dimensions.get('window').width
+    componentDidMount() {
+        this.setState({
+            width: Dimensions.get('window').width
         });
-		this.getProjects();
-		this.getDepartments();
-		this.getEmployees();
-	}
+        this.getProjects();
+        this.getDepartments();
+        this.getEmployees();
+    }
 
-	getProjects() {
+    getProjects() {
         fetch(appConfig.url + 'api/projects/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-				'Authorization': appConfig.access_token
+                'Authorization': appConfig.access_token
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
-				var items = responseData.sort(this.sort);
-				items.unshift({name: appConfig.language.allproj});
+            .then((response) => response.json())
+            .then((responseData) => {
+                var items = responseData.sort(this.sort);
+                items.unshift({name: appConfig.language.allproj});
                 this.setState({
                     projects: items,
-					serverError: false
+                    serverError: false
                 });
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
-				setTimeout(() => {
-					appConfig.onLogOut();
-				}, 1000);
+                setTimeout(() => {
+                    appConfig.onLogOut();
+                }, 1000);
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     //showProgress: false
                 });
@@ -111,54 +111,54 @@ class Search extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-				'Authorization': appConfig.access_token
+                'Authorization': appConfig.access_token
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
-				var items = responseData.sort(this.sort);
-				items.unshift({name: appConfig.language.alldep});
+            .then((response) => response.json())
+            .then((responseData) => {
+                var items = responseData.sort(this.sort);
+                items.unshift({name: appConfig.language.alldep});
                 this.setState({
                     departments: items,
-					serverError: false
+                    serverError: false
                 });
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     //showProgress: false
                 });
             });
     }
 
-	getEmployees() {
+    getEmployees() {
         fetch(appConfig.url + 'api/employees/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-				'Authorization': appConfig.access_token
+                'Authorization': appConfig.access_token
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
-				var items = responseData.sort(this.sort);
-				items.unshift({name: appConfig.language.allemp});
+            .then((response) => response.json())
+            .then((responseData) => {
+                var items = responseData.sort(this.sort);
+                items.unshift({name: appConfig.language.allemp});
                 this.setState({
                     employees: items,
-					serverError: false
+                    serverError: false
                 });
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     //showProgress: false
                 });
@@ -177,8 +177,8 @@ class Search extends Component {
     }
 
     goBack() {
-		this.props.navigator.pop();
-	}
+        this.props.navigator.pop();
+    }
 
     clearSearch() {
         this.setState({
@@ -188,16 +188,16 @@ class Search extends Component {
     }
 
     onSearchPressed() {
-		this.props.navigator.push({
-			index: 2,
-			data: {
-				projectName: this.state.projectName,
-				departmentName: this.state.departmentName,
-				employeeName: this.state.employeeName,
-				startDate: this.state.startText,
-				endDate: this.state.endText
-			}
-		});
+        this.props.navigator.push({
+            index: 2,
+            data: {
+                projectName: this.state.projectName,
+                departmentName: this.state.departmentName,
+                employeeName: this.state.employeeName,
+                startDate: this.state.startText,
+                endDate: this.state.endText
+            }
+        });
     }
 
     toggleTypeChange() {
@@ -212,22 +212,22 @@ class Search extends Component {
         }
     }
 
-	showPicker = async (stateKey, options) => {
-		try {
-			var newState = {};
-			const {action, year, month, day} = await DatePickerAndroid.open(options);
-			if (action === DatePickerAndroid.dismissedAction) {
-				//newState[stateKey + 'Text'] = 'dismissed';
-			} else {
-				var date = new Date(year, month, day);
-				newState[stateKey + 'Text'] = date.toLocaleDateString();
-				newState[stateKey + 'Date'] = date;
-			}
-			this.setState(newState);
-		} catch ({code, message}) {
-			console.warn(`Error in example '${stateKey}': `, message);
-		}
-	};
+    showPicker = async (stateKey, options) => {
+        try {
+            var newState = {};
+            const {action, year, month, day} = await DatePickerAndroid.open(options);
+            if (action === DatePickerAndroid.dismissedAction) {
+                //newState[stateKey + 'Text'] = 'dismissed';
+            } else {
+                var date = new Date(year, month, day);
+                newState[stateKey + 'Text'] = date.toLocaleDateString();
+                newState[stateKey + 'Date'] = date;
+            }
+            this.setState(newState);
+        } catch ({code, message}) {
+            console.warn(`Error in example '${stateKey}': `, message);
+        }
+    };
 
     render() {
         let errorCtrl, validCtrl, loader;
@@ -245,206 +245,207 @@ class Search extends Component {
         }
 
         if (this.state.showProgress) {
-			loader = <ActivityIndicator
-				animating={true}
-				color="darkblue"
-				size="large"
-			/>
-		}
+            loader = <ActivityIndicator
+                animating={true}
+                color="darkblue"
+                size="large"
+            />
+        }
 
         return (
-			<View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
-				<View style={{
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-					backgroundColor: 'darkblue',
-					borderWidth: 0,
-					borderColor: 'whitesmoke'
-				}}>
-					<View>
-						<TouchableHighlight
-							onPress={()=> this.goBack()}
-							underlayColor='darkblue'
-						>
-							<View>
-								<Text style={{
-									fontSize: 16,
-									textAlign: 'center',
-									margin: 14,
-									fontWeight: 'bold',
-									color: 'white'
-								}}>
-									{appConfig.language.back}
-								</Text>
-							</View>
-						</TouchableHighlight>
-					</View>
-					<View>
-						<TouchableWithoutFeedback>
-							<View>
-								<Text style={{
-									fontSize: 20,
-									textAlign: 'center',
-									margin: 10,
-									marginRight: 40,
-									//marginRight: 40,
-									fontWeight: 'bold',
-									color: 'white'
-								}}>
-									{appConfig.language.reports}
-								</Text>
-							</View>
-						</TouchableWithoutFeedback>
-					</View>
-					<View>
-						<TouchableWithoutFeedback>
-							<View>
-								<Text style={{
-									fontSize: 16,
-									textAlign: 'center',
-									margin: 14,
-									fontWeight: 'bold'
-								}}>
-								</Text>
-							</View>
-						</TouchableWithoutFeedback>
-					</View>
-				</View>
+            <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    backgroundColor: 'darkblue',
+                    borderWidth: 0,
+                    borderColor: 'whitesmoke'
+                }}>
+                    <View>
+                        <TouchableHighlight
+                            onPress={() => this.goBack()}
+                            underlayColor='darkblue'
+                        >
+                            <View>
+                                <Text style={{
+                                    fontSize: 16,
+                                    textAlign: 'center',
+                                    margin: 14,
+                                    fontWeight: 'bold',
+                                    color: 'white'
+                                }}>
+                                    {appConfig.language.back}
+                                </Text>
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+                    <View>
+                        <TouchableWithoutFeedback>
+                            <View>
+                                <Text style={{
+                                    fontSize: 20,
+                                    textAlign: 'center',
+                                    margin: 10,
+                                    marginRight: 40,
+                                    //marginRight: 40,
+                                    fontWeight: 'bold',
+                                    color: 'white'
+                                }}>
+                                    {appConfig.language.reports}
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
+                    <View>
+                        <TouchableWithoutFeedback>
+                            <View>
+                                <Text style={{
+                                    fontSize: 16,
+                                    textAlign: 'center',
+                                    margin: 14,
+                                    fontWeight: 'bold'
+                                }}>
+                                </Text>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
+                </View>
 
-				<ScrollView>
-					<View style={{backgroundColor: 'white'}}>
-						{errorCtrl}
+                <ScrollView>
+                    <View style={{backgroundColor: 'white'}}>
+                        {errorCtrl}
 
-						{loader}
+                        {loader}
 
-						<View style={{
-							borderColor: 'darkblue',
-							borderWidth: 5,
-							marginTop: 10,
-							margin: 10,
-							marginBottom: 0,
-							flex: 1,
-						}}>
-							<Picker style={{marginTop: 0}}
-								selectedValue={this.state.project}
+                        <View style={{
+                            borderColor: 'darkblue',
+                            borderWidth: 5,
+                            marginTop: 10,
+                            margin: 10,
+                            marginBottom: 0,
+                            flex: 1,
+                        }}>
+                            <Picker style={{marginTop: 0}}
+                                    selectedValue={this.state.project}
 
-								onValueChange={(value) => {
-									let arr = [].concat(this.state.projects);
-									let project = arr.filter((el) => el.id == value);
+                                    onValueChange={(value) => {
+                                        let arr = [].concat(this.state.projects);
+                                        let project = arr.filter((el) => el.id == value);
 
-									this.setState({
-										project: value,
-										projectID: project[0].id,
-										projectName: project[0].name,
-										invalidValue: false
-									})
-								}}>
+                                        this.setState({
+                                            project: value,
+                                            projectID: project[0].id,
+                                            projectName: project[0].name,
+                                            invalidValue: false
+                                        })
+                                    }}>
 
-								{this.state.projects.map((item, i) =>
-									<Picker.Item value={item.id} label={item.name} key={i}/>
-								)}
-							</Picker>
-						</View>
-					</View>
+                                {this.state.projects.map((item, i) =>
+                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                )}
+                            </Picker>
+                        </View>
+                    </View>
 
-					<View style={{backgroundColor: 'white'}}>
-						<View style={{
-							borderColor: 'darkblue',
-							borderWidth: 5,
-							marginTop: 10,
-							margin: 10,
-							marginBottom: 0,
-							flex: 1,
-						}}>
-							<Picker style={{marginTop: 0}}
-								selectedValue={this.state.department}
+                    <View style={{backgroundColor: 'white'}}>
+                        <View style={{
+                            borderColor: 'darkblue',
+                            borderWidth: 5,
+                            marginTop: 10,
+                            margin: 10,
+                            marginBottom: 0,
+                            flex: 1,
+                        }}>
+                            <Picker style={{marginTop: 0}}
+                                    selectedValue={this.state.department}
 
-								onValueChange={(value) => {
-									let arr = [].concat(this.state.departments);
-									let department = arr.filter((el) => el.id == value);
+                                    onValueChange={(value) => {
+                                        let arr = [].concat(this.state.departments);
+                                        let department = arr.filter((el) => el.id == value);
 
-									this.setState({
-										department: value,
-										departmentID: department[0].id,
-										departmentName: department[0].name,
-										invalidValue: false
-									})
-								}}>
+                                        this.setState({
+                                            department: value,
+                                            departmentID: department[0].id,
+                                            departmentName: department[0].name,
+                                            invalidValue: false
+                                        })
+                                    }}>
 
-								{this.state.departments.map((item, i) =>
-									<Picker.Item value={item.id} label={item.name} key={i}/>
-								)}
-							</Picker>
-						</View>
-					</View>
+                                {this.state.departments.map((item, i) =>
+                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                )}
+                            </Picker>
+                        </View>
+                    </View>
 
-					<View style={{backgroundColor: 'white'}}>
-						<View style={{
-							borderColor: 'darkblue',
-							borderWidth: 5,
-							marginTop: 10,
-							margin: 10,
-							marginBottom: 0,
-							flex: 1,
-						}}>
-							<Picker style={{marginTop: 0}}
-								selectedValue={this.state.employee}
+                    <View style={{backgroundColor: 'white'}}>
+                        <View style={{
+                            borderColor: 'darkblue',
+                            borderWidth: 5,
+                            marginTop: 10,
+                            margin: 10,
+                            marginBottom: 0,
+                            flex: 1,
+                        }}>
+                            <Picker style={{marginTop: 0}}
+                                    selectedValue={this.state.employee}
 
-								onValueChange={(value) => {
-									let arr = [].concat(this.state.employees);
-									let employee = arr.filter((el) => el.id == value);
+                                    onValueChange={(value) => {
+                                        let arr = [].concat(this.state.employees);
+                                        let employee = arr.filter((el) => el.id == value);
 
-									this.setState({
-										employee: value,
-										employeeID: employee[0].id,
-										employeeName: employee[0].name,
-										invalidValue: false
-									})
-								}}>
+                                        this.setState({
+                                            employee: value,
+                                            employeeID: employee[0].id,
+                                            employeeName: employee[0].name,
+                                            invalidValue: false
+                                        })
+                                    }}>
 
-								{this.state.employees.map((item, i) =>
-									<Picker.Item value={item.id} label={item.name} key={i}/>
-								)}
-							</Picker>
-						</View>
-					</View>
+                                {this.state.employees.map((item, i) =>
+                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                )}
+                            </Picker>
+                        </View>
+                    </View>
 
-					<View style={{
-						flex: 1,
-						flexDirection: 'column',
-						justifyContent: 'center',
-						alignItems: 'center'
-					}}>
-						<TouchableHighlight
-							onPress={this.showPicker.bind(this, 'start', {date: this.state.simpleDate})}
-							style={styles.button1}>
-							<Text style={styles.buttonText1}>{appConfig.language.firstday}: {this.state.startText}</Text>
-						</TouchableHighlight>
+                    <View style={{
+                        flex: 1,
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+                        <TouchableHighlight
+                            onPress={this.showPicker.bind(this, 'start', {date: this.state.simpleDate})}
+                            style={styles.button1}>
+                            <Text
+                                style={styles.buttonText1}>{appConfig.language.firstday}: {this.state.startText}</Text>
+                        </TouchableHighlight>
 
-						<TouchableHighlight
-							onPress={this.showPicker.bind(this, 'end', {date: this.state.simpleDate})}
-							style={styles.button1}>
-							<Text style={styles.buttonText1}>{appConfig.language.lastday}: {this.state.endText}</Text>
-						</TouchableHighlight>
+                        <TouchableHighlight
+                            onPress={this.showPicker.bind(this, 'end', {date: this.state.simpleDate})}
+                            style={styles.button1}>
+                            <Text style={styles.buttonText1}>{appConfig.language.lastday}: {this.state.endText}</Text>
+                        </TouchableHighlight>
 
-						{validCtrl}
+                        {validCtrl}
 
-						<TouchableHighlight
-							onPress={this.onSearchPressed.bind(this)}
-							style={styles.button}>
-							<Text style={styles.buttonText}>{appConfig.language.submit}</Text>
-						</TouchableHighlight>
-					</View>
-				</ScrollView>
-			</View>
+                        <TouchableHighlight
+                            onPress={this.onSearchPressed.bind(this)}
+                            style={styles.button}>
+                            <Text style={styles.buttonText}>{appConfig.language.submit}</Text>
+                        </TouchableHighlight>
+                    </View>
+                </ScrollView>
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-	text: {
-		color: 'black',
-	},
+    text: {
+        color: 'black',
+    },
     countHeader: {
         fontSize: 16,
         textAlign: 'center',
@@ -470,11 +471,11 @@ const styles = StyleSheet.create({
         margin: 20,
     },
     container: {
-		padding: 10,
+        padding: 10,
         paddingBottom: 210,
         alignItems: 'center',
         flex: 1,
-		backgroundColor: 'white',
+        backgroundColor: 'white',
     },
     logo: {
         width: 66,
@@ -487,7 +488,7 @@ const styles = StyleSheet.create({
     },
     loginInput: {
         height: 50,
-		width: 360,
+        width: 360,
         marginTop: 10,
         padding: 4,
         fontSize: 18,
@@ -496,7 +497,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         color: 'black'
     },
-	button: {
+    button: {
         height: 50,
         //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
@@ -522,14 +523,14 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 20,
-		fontWeight: 'bold'
+        fontWeight: 'bold'
     },
-	buttonText1: {
+    buttonText1: {
         fontSize: 20,
-		fontWeight: 'bold',
-		color: 'darkblue',
-		textAlign: 'left',
-		marginLeft: 5,
+        fontWeight: 'bold',
+        color: 'darkblue',
+        textAlign: 'left',
+        marginLeft: 5,
     },
     loader: {
         marginTop: 40

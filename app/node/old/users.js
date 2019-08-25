@@ -8,12 +8,12 @@ var UsersModel = require('./mongo').UsersModel;
 var Users = {
     getUsers: getUsers,
     findByName: findByName,
-	findPostUser: findPostUser,
-	updateUser: updateUser,
-	
-	addUser: addUser,
-	removeAllUsers: removeAllUsers,
-	removeUser: removeUser
+    findPostUser: findPostUser,
+    updateUser: updateUser,
+
+    addUser: addUser,
+    removeAllUsers: removeAllUsers,
+    removeUser: removeUser
 };
 
 module.exports.Users = Users;

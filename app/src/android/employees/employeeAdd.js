@@ -12,31 +12,31 @@ import {
     TabBarIOS,
     NavigatorIOS,
     TextInput,
-	BackAndroid,
-	Picker
+    BackAndroid,
+    Picker
 } from 'react-native';
 
 class EmployeeAdd extends Component {
     constructor(props) {
         super(props);
 
-/*		BackAndroid.addEventListener('hardwareBackPress', () => {
-			if (this.props.navigator) {
-				this.props.navigator.pop();
-			}
-			return true;
-		});*/
+        /*		BackAndroid.addEventListener('hardwareBackPress', () => {
+                    if (this.props.navigator) {
+                        this.props.navigator.pop();
+                    }
+                    return true;
+                });*/
 
         this.state = {
             showProgress: false,
-			departments: [],
-			bugANDROID: ''
+            departments: [],
+            bugANDROID: ''
         }
     }
 
-	componentDidMount() {
-		this.getDepartments();
-	}
+    componentDidMount() {
+        this.getDepartments();
+    }
 
     getDepartments() {
         fetch(appConfig.url + 'api/departments/get', {
@@ -44,24 +44,24 @@ class EmployeeAdd extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-				'Authorization': appConfig.access_token
+                'Authorization': appConfig.access_token
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
-				var items = responseData.sort(this.sort);
-				items.unshift({name: appConfig.language.selectdep});
+            .then((response) => response.json())
+            .then((responseData) => {
+                var items = responseData.sort(this.sort);
+                items.unshift({name: appConfig.language.selectdep});
                 this.setState({
                     departments: items,
-					serverError: false
+                    serverError: false
                 });
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     //showProgress: false
                 });
@@ -80,7 +80,7 @@ class EmployeeAdd extends Component {
     }
 
     addItem() {
-		if (appConfig.employees.showProgress == true) {
+        if (appConfig.employees.showProgress == true) {
             return;
         }
 
@@ -98,49 +98,49 @@ class EmployeeAdd extends Component {
 
         this.setState({
             showProgress: true,
-			bugANDROID: ' '
+            bugANDROID: ' '
         });
 
-		appConfig.employees.showProgress = true;
+        appConfig.employees.showProgress = true;
 
         fetch(appConfig.url + 'api/employees/add', {
             method: 'post',
             body: JSON.stringify({
-                id: + new Date,
+                id: +new Date,
                 name: this.state.name,
                 address: this.state.address,
                 phone: this.state.phone,
                 description: this.state.description,
                 departmentID: this.state.departmentID,
                 department: this.state.departmentName,
-				sum: 0,
-				authorization: appConfig.access_token
+                sum: 0,
+                authorization: appConfig.access_token
             }),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
+            .then((response) => response.json())
+            .then((responseData) => {
                 appConfig.employees.refresh = true;
                 this.props.navigator.pop();
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     showProgress: false
                 });
             });
     }
 
-	goBack() {
-		this.props.navigator.pop();
-	}
+    goBack() {
+        this.props.navigator.pop();
+    }
 
     render() {
         let errorCtrl, validCtrl, loader;
@@ -161,7 +161,7 @@ class EmployeeAdd extends Component {
             loader = <View style={styles.loader}>
                 <ActivityIndicator
                     size="large"
-					color="darkblue"
+                    color="darkblue"
                     animating={true}
                 />
             </View>;
@@ -169,166 +169,166 @@ class EmployeeAdd extends Component {
 
         return (
             <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
-				<View style={{
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-					backgroundColor: 'darkblue',
-					borderWidth: 0,
-					borderColor: 'whitesmoke'
-				}}>
-					<View>
-						<TouchableHighlight
-							onPress={()=> this.goBack()}
-							underlayColor='darkblue'
-						>
-							<Text style={{
-								fontSize: 16,
-								textAlign: 'center',
-								margin: 14,
-								fontWeight: 'bold',
-								color: 'white'
-							}}>
-								{appConfig.language.back}
-							</Text>
-						</TouchableHighlight>
-					</View>
-					<View>
-						<TouchableHighlight
-							underlayColor='#ddd'
-						>
-							<Text style={{
-								fontSize: 20,
-								textAlign: 'center',
-								margin: 10,
-								marginRight: 40,
-								fontWeight: 'bold',
-								color: 'white'
-							}}>
-								{appConfig.language.newrec}
-							</Text>
-						</TouchableHighlight>
-					</View>
-					<View>
-						<TouchableHighlight
-							underlayColor='#ddd'
-						>
-							<Text style={{
-								fontSize: 16,
-								textAlign: 'center',
-								margin: 14,
-								fontWeight: 'bold'
-							}}>
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    backgroundColor: 'darkblue',
+                    borderWidth: 0,
+                    borderColor: 'whitesmoke'
+                }}>
+                    <View>
+                        <TouchableHighlight
+                            onPress={() => this.goBack()}
+                            underlayColor='darkblue'
+                        >
+                            <Text style={{
+                                fontSize: 16,
+                                textAlign: 'center',
+                                margin: 14,
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }}>
+                                {appConfig.language.back}
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                    <View>
+                        <TouchableHighlight
+                            underlayColor='#ddd'
+                        >
+                            <Text style={{
+                                fontSize: 20,
+                                textAlign: 'center',
+                                margin: 10,
+                                marginRight: 40,
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }}>
+                                {appConfig.language.newrec}
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                    <View>
+                        <TouchableHighlight
+                            underlayColor='#ddd'
+                        >
+                            <Text style={{
+                                fontSize: 16,
+                                textAlign: 'center',
+                                margin: 14,
+                                fontWeight: 'bold'
+                            }}>
 
-							</Text>
-						</TouchableHighlight>
-					</View>
-				</View>
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
 
-				<ScrollView keyboardShouldPersistTaps={true}>
-					{errorCtrl}
-					{loader}
+                <ScrollView keyboardShouldPersistTaps={true}>
+                    {errorCtrl}
+                    {loader}
 
-					<View style={{backgroundColor: 'white'}}>
-						<View style={{
-							borderColor: 'darkblue',
-							borderWidth: 5,
-							marginTop: 10,
-							margin: 10,
-							marginBottom: 0,
-							flex: 1,
-						}}>
-							<Picker style={{marginTop: 0}}
-                                selectedValue={this.state.department}
+                    <View style={{backgroundColor: 'white'}}>
+                        <View style={{
+                            borderColor: 'darkblue',
+                            borderWidth: 5,
+                            marginTop: 10,
+                            margin: 10,
+                            marginBottom: 0,
+                            flex: 1,
+                        }}>
+                            <Picker style={{marginTop: 0}}
+                                    selectedValue={this.state.department}
 
-                                onValueChange={(value) => {
-									let arr = [].concat(this.state.departments);
- 									let department = arr.filter((el) => el.id == value);
+                                    onValueChange={(value) => {
+                                        let arr = [].concat(this.state.departments);
+                                        let department = arr.filter((el) => el.id == value);
 
-                                    this.setState({
-                                        department: value,
-                                        departmentID: department[0].id,
-                                        departmentName: department[0].name,
-										invalidValue: false
-                                    })
-                                }}>
+                                        this.setState({
+                                            department: value,
+                                            departmentID: department[0].id,
+                                            departmentName: department[0].name,
+                                            invalidValue: false
+                                        })
+                                    }}>
 
-								{this.state.departments.map((item, i) =>
-									<Picker.Item value={item.id} label={item.name} key={i}/>
-								)}
-							</Picker>
-						</View>
-					</View>
+                                {this.state.departments.map((item, i) =>
+                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                )}
+                            </Picker>
+                        </View>
+                    </View>
 
-					<View style={{
-						flex: 1,
-						padding: 10,
-						paddingTop: 0,
-						marginTop: 0,
-						backgroundColor: 'white'
-					}}>
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							onChangeText={(text)=> this.setState({
-								name: text,
-								invalidValue: false
-							})}
-							style={styles.loginInput}
-							value={this.state.name}
-							placeholder={appConfig.language.name}>
-						</TextInput>
+                    <View style={{
+                        flex: 1,
+                        padding: 10,
+                        paddingTop: 0,
+                        marginTop: 0,
+                        backgroundColor: 'white'
+                    }}>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            onChangeText={(text) => this.setState({
+                                name: text,
+                                invalidValue: false
+                            })}
+                            style={styles.loginInput}
+                            value={this.state.name}
+                            placeholder={appConfig.language.name}>
+                        </TextInput>
 
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							onChangeText={(text)=> this.setState({
-								address: text,
-								invalidValue: false
-							})}
-							style={styles.loginInput}
-							value={this.state.address}
-							placeholder={appConfig.language.address}>
-						</TextInput>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            onChangeText={(text) => this.setState({
+                                address: text,
+                                invalidValue: false
+                            })}
+                            style={styles.loginInput}
+                            value={this.state.address}
+                            placeholder={appConfig.language.address}>
+                        </TextInput>
 
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							onChangeText={(text)=> this.setState({
-								phone: text,
-								invalidValue: false
-							})}
-							style={styles.loginInput}
-							value={this.state.phone}
-							placeholder={appConfig.language.phone}>
-						</TextInput>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            onChangeText={(text) => this.setState({
+                                phone: text,
+                                invalidValue: false
+                            })}
+                            style={styles.loginInput}
+                            value={this.state.phone}
+                            placeholder={appConfig.language.phone}>
+                        </TextInput>
 
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							multiline={true}
-							onChangeText={(text)=> this.setState({
-								description: text,
-								invalidValue: false
-							})}
-							style={styles.loginInput1}
-							value={this.state.description}
-							placeholder={appConfig.language.description}>
-						</TextInput>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            multiline={true}
+                            onChangeText={(text) => this.setState({
+                                description: text,
+                                invalidValue: false
+                            })}
+                            style={styles.loginInput1}
+                            value={this.state.description}
+                            placeholder={appConfig.language.description}>
+                        </TextInput>
 
-						{validCtrl}
+                        {validCtrl}
 
-						<TouchableHighlight
-							onPress={()=> this.addItem()}
-							style={styles.button}>
-							<Text style={styles.buttonText}>{appConfig.language.add}</Text>
-						</TouchableHighlight>
+                        <TouchableHighlight
+                            onPress={() => this.addItem()}
+                            style={styles.button}>
+                            <Text style={styles.buttonText}>{appConfig.language.add}</Text>
+                        </TouchableHighlight>
 
-						<ActivityIndicator
-							animating={this.state.showProgress}
-							size="large"
-							style={styles.loader}
-						/>
+                        <ActivityIndicator
+                            animating={this.state.showProgress}
+                            size="large"
+                            style={styles.loader}
+                        />
 
-						<Text>{this.state.bugANDROID}</Text>
-					</View>
-				</ScrollView>
-			</View>
+                        <Text>{this.state.bugANDROID}</Text>
+                    </View>
+                </ScrollView>
+            </View>
         )
     }
 }
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 20,
-		fontWeight: 'bold'
+        fontWeight: 'bold'
     },
     loader: {
         marginTop: 20

@@ -41,7 +41,7 @@ class Login extends Component {
 
         this.setState({
             showProgress: true,
-			badCredentials: false,
+            badCredentials: false,
             bugANDROID: ' '
         });
 
@@ -98,7 +98,7 @@ class Login extends Component {
         }
 
         if (this.state.showProgress) {
-            showProgress =  <ActivityIndicator
+            showProgress = <ActivityIndicator
                 animating={this.state.showProgress}
                 size="large"
                 color="darkblue"
@@ -212,13 +212,13 @@ const styles = StyleSheet.create({
         height: 150,
         paddingTop: 140,
         borderRadius: 20,
-		marginBottom: 10
+        marginBottom: 10
     },
-	headerContainer: {
+    headerContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-		marginBottom: 10,
-		marginTop: -10
+        marginBottom: 10,
+        marginTop: -10
     },
     heading: {
         fontSize: 30,

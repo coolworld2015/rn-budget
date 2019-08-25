@@ -10,7 +10,7 @@ var Projects = {
     findProject: findProject,
     findPostProject: findPostProject,
     editProject: editProject,
-	editPostProject: editPostProject,
+    editPostProject: editPostProject,
     updateProject: updateProject,
     addProject: addProject,
     saveProject: saveProject,

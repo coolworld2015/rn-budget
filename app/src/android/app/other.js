@@ -6,7 +6,7 @@ import {
     Text,
     View,
     TouchableHighlight,
-	TouchableWithoutFeedback,
+    TouchableWithoutFeedback,
     ScrollView
 } from 'react-native';
 
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold'
     },
-	textSmall: {
+    textSmall: {
         fontSize: 16,
         textAlign: 'center',
         margin: 14,

@@ -10,9 +10,9 @@ import {
     ScrollView,
     ActivityIndicator,
     TextInput,
-	Image,
-	Dimensions,
-	RefreshControl
+    Image,
+    Dimensions,
+    RefreshControl
 } from 'react-native';
 
 import ListView from 'deprecated-react-native-listview';
@@ -32,19 +32,19 @@ class Resources extends Component {
             resultsCount: 0,
             recordsCount: 15,
             positionY: 0,
-			searchQuery: '',
-			refreshing: false,
+            searchQuery: '',
+            refreshing: false,
             width: Dimensions.get('window').width
         };
     }
 
-	componentDidMount() {
-		appConfig.goods.showProgress = true;
-		this.setState({
+    componentDidMount() {
+        appConfig.goods.showProgress = true;
+        this.setState({
             width: Dimensions.get('window').width
         });
         this.getItems();
-	}
+    }
 
     componentWillUpdate() {
         if (appConfig.goods.refresh) {
@@ -52,7 +52,7 @@ class Resources extends Component {
 
             this.setState({
                 showProgress: true,
-				resultsCount: 0
+                resultsCount: 0
             });
 
             this.getItems();
@@ -60,12 +60,12 @@ class Resources extends Component {
     }
 
     getItems() {
-		this.setState({
-			serverError: false,
+        this.setState({
+            serverError: false,
             resultsCount: 0,
             recordsCount: 15,
             positionY: 0,
-			searchQuery: ''
+            searchQuery: ''
         });
 
         fetch(appConfig.url + 'api/goods/get', {
@@ -73,11 +73,11 @@ class Resources extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-				'Authorization': appConfig.access_token
+                'Authorization': appConfig.access_token
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
+            .then((response) => response.json())
+            .then((responseData) => {
 
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(responseData.sort(this.sort).slice(0, 15)),
@@ -86,15 +86,15 @@ class Resources extends Component {
                     filteredItems: responseData
                 });
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
-				setTimeout(() => {
-					appConfig.onLogOut();
-				}, 1000);
+                setTimeout(() => {
+                    appConfig.onLogOut();
+                }, 1000);
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     showProgress: false
                 });
@@ -113,47 +113,47 @@ class Resources extends Component {
     }
 
     showDetails(rowData) {
-		this.props.navigator.push({
-			index: 21,
-			data: rowData
-		});
+        this.props.navigator.push({
+            index: 21,
+            data: rowData
+        });
     }
 
     addItem() {
-		appConfig.goods.showProgress = false;
-		this.props.navigator.push({
-			index: 22
-		});
+        appConfig.goods.showProgress = false;
+        this.props.navigator.push({
+            index: 22
+        });
     }
 
     renderRow(rowData) {
         return (
             <TouchableHighlight
-                onPress={()=> this.showDetails(rowData)}
+                onPress={() => this.showDetails(rowData)}
                 underlayColor='#ddd'
             >
-				<View style={{
-						flex: 1,
-						flexDirection: 'column',
-						padding: 12,
-						borderColor: '#D7D7D7',
-						borderBottomWidth: 1,
-						backgroundColor: '#fff'
-					}}>
-						<Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
-							{rowData.name}
-						</Text>
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    padding: 12,
+                    borderColor: '#D7D7D7',
+                    borderBottomWidth: 1,
+                    backgroundColor: '#fff'
+                }}>
+                    <Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
+                        {rowData.name}
+                    </Text>
 
-						<Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
-							{appConfig.language.price}: {((+rowData.price).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
-						</Text>
-				</View>
+                    <Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
+                        {appConfig.language.price}: {((+rowData.price).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
+                    </Text>
+                </View>
             </TouchableHighlight>
         );
     }
 
     refreshData(event) {
-		console.log(event.nativeEvent.contentOffset);
+        console.log(event.nativeEvent.contentOffset);
         if (this.state.showProgress == true) {
             return;
         }
@@ -204,29 +204,29 @@ class Resources extends Component {
         })
     }
 
-	refreshDataAndroid() {
-		this.setState({
-			showProgress: true,
-			resultsCount: 0
-		});
+    refreshDataAndroid() {
+        this.setState({
+            showProgress: true,
+            resultsCount: 0
+        });
 
-		this.getItems();
-	}
+        this.getItems();
+    }
 
-	goBack() {
-		this.props.navigator.pop();
-	}
+    goBack() {
+        this.props.navigator.pop();
+    }
 
-	clearSearchQuery() {
-		this.setState({
-			dataSource: this.state.dataSource.cloneWithRows(this.state.responseData.slice(0, 15)),
+    clearSearchQuery() {
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(this.state.responseData.slice(0, 15)),
             resultsCount: this.state.responseData.length,
             filteredItems: this.state.responseData,
-			positionY: 0,
-			recordsCount: 15,
-			searchQuery: ''
-		});
-	}
+            positionY: 0,
+            recordsCount: 15,
+            searchQuery: ''
+        });
+    }
 
     render() {
         let errorCtrl, loader, image;
@@ -241,34 +241,34 @@ class Resources extends Component {
             loader = <View style={styles.loader}>
                 <ActivityIndicator
                     size="large"
-					color="darkblue"
+                    color="darkblue"
                     animating={true}
                 />
             </View>;
         }
 
-		if (this.state.searchQuery.length > 0) {
-			image = <Image
-				source={require('../../../img/cancel.png')}
-				style={{
-					height: 20,
-					width: 20,
-					marginTop: 10
-				}}
-			/>;
-		}
+        if (this.state.searchQuery.length > 0) {
+            image = <Image
+                source={require('../../../img/cancel.png')}
+                style={{
+                    height: 20,
+                    width: 20,
+                    marginTop: 10
+                }}
+            />;
+        }
 
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View>
-						<TouchableHighlight
-							onPress={()=> this.goBack()}
-							underlayColor='darkblue'
-						>
+                        <TouchableHighlight
+                            onPress={() => this.goBack()}
+                            underlayColor='darkblue'
+                        >
                             <View>
                                 <Text style={styles.textSmall}>
-									{appConfig.language.back}
+                                    {appConfig.language.back}
                                 </Text>
                             </View>
                         </TouchableHighlight>
@@ -283,10 +283,10 @@ class Resources extends Component {
                         </TouchableWithoutFeedback>
                     </View>
                     <View>
-						<TouchableHighlight
-							onPress={()=> this.addItem()}
-							underlayColor='darkblue'
-						>
+                        <TouchableHighlight
+                            onPress={() => this.addItem()}
+                            underlayColor='darkblue'
+                        >
                             <View>
                                 <Text style={styles.textSmall}>
                                     {appConfig.language.add}
@@ -297,67 +297,67 @@ class Resources extends Component {
                 </View>
 
                 <View style={styles.iconForm}>
-					<View>
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							onChangeText={this.onChangeText.bind(this)}
-							style={{
-								height: 45,
-								padding: 5,
-								backgroundColor: 'white',
-								borderWidth: 3,
-								borderColor: 'white',
-								borderRadius: 0,
-								width: this.state.width * .90,
-							}}
-							value={this.state.searchQuery}
-							placeholder={appConfig.language.search}>
-						</TextInput>
-					</View>
-					<View style={{
-						height: 45,
-						backgroundColor: 'white',
-						borderWidth: 3,
-						borderColor: 'white',
-						marginLeft: -10,
-						paddingLeft: 5,
-						width: this.state.width * .10,
-					}}>
-						<TouchableWithoutFeedback
-							onPress={() => this.clearSearchQuery()}
-						>
-							<View>
-								{image}
-							</View>
-						</TouchableWithoutFeedback>
-					</View>
+                    <View>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            onChangeText={this.onChangeText.bind(this)}
+                            style={{
+                                height: 45,
+                                padding: 5,
+                                backgroundColor: 'white',
+                                borderWidth: 3,
+                                borderColor: 'white',
+                                borderRadius: 0,
+                                width: this.state.width * .90,
+                            }}
+                            value={this.state.searchQuery}
+                            placeholder={appConfig.language.search}>
+                        </TextInput>
+                    </View>
+                    <View style={{
+                        height: 45,
+                        backgroundColor: 'white',
+                        borderWidth: 3,
+                        borderColor: 'white',
+                        marginLeft: -10,
+                        paddingLeft: 5,
+                        width: this.state.width * .10,
+                    }}>
+                        <TouchableWithoutFeedback
+                            onPress={() => this.clearSearchQuery()}
+                        >
+                            <View>
+                                {image}
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
                 </View>
 
                 {errorCtrl}
 
                 {loader}
 
-				<ScrollView onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}
-					refreshControl={
-						<RefreshControl
-							enabled={true}
-							refreshing={this.state.refreshing}
-							onRefresh={this.refreshDataAndroid.bind(this)}
-						/>
-					}
-				>
-					<ListView
-						enableEmptySections={true}
-						dataSource={this.state.dataSource}
-						renderRow={this.renderRow.bind(this)}
-					/>
-				</ScrollView>
+                <ScrollView onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}
+                            refreshControl={
+                                <RefreshControl
+                                    enabled={true}
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this.refreshDataAndroid.bind(this)}
+                                />
+                            }
+                >
+                    <ListView
+                        enableEmptySections={true}
+                        dataSource={this.state.dataSource}
+                        renderRow={this.renderRow.bind(this)}
+                    />
+                </ScrollView>
 
-				<View>
-					<Text style={styles.countFooter}>
-						{appConfig.language.records} {this.state.resultsCount.toString()}
-					</Text>
-				</View>
+                <View>
+                    <Text style={styles.countFooter}>
+                        {appConfig.language.records} {this.state.resultsCount.toString()}
+                    </Text>
+                </View>
             </View>
         )
     }
@@ -369,12 +369,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'white'
     },
-	iconForm: {
-		flexDirection: 'row',
-		//borderColor: 'lightgray',
-		borderColor: 'darkblue',
-		borderWidth: 3
-	},
+    iconForm: {
+        flexDirection: 'row',
+        //borderColor: 'lightgray',
+        borderColor: 'darkblue',
+        borderWidth: 3
+    },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         margin: 14,
-		marginBottom: 10,
+        marginBottom: 10,
         fontWeight: 'bold',
         color: 'white'
     },

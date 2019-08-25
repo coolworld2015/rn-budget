@@ -10,7 +10,7 @@ var Employees = {
     findEmployee: findEmployee,
     findPostEmployee: findPostEmployee,
     editEmployee: editEmployee,
-	editPostEmployee: editPostEmployee,
+    editPostEmployee: editPostEmployee,
     updateEmployee: updateEmployee,
     addEmployee: addEmployee,
     saveEmployee: saveEmployee,

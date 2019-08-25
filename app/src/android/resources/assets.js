@@ -8,9 +8,9 @@ import {
     ScrollView,
     ActivityIndicator,
     TextInput,
-	Image,
-	Dimensions,
-	RefreshControl
+    Image,
+    Dimensions,
+    RefreshControl
 } from 'react-native';
 
 import ListView from 'deprecated-react-native-listview';
@@ -30,18 +30,18 @@ class Store extends Component {
             resultsCount: 0,
             recordsCount: 25,
             positionY: 0,
-			searchQuery: '',
-			refreshing: false,
+            searchQuery: '',
+            refreshing: false,
             width: Dimensions.get('window').width
         };
     }
 
-	componentDidMount() {
-		this.setState({
+    componentDidMount() {
+        this.setState({
             width: Dimensions.get('window').width
         });
         this.getItems();
-	}
+    }
 
     componentWillUpdate() {
         if (appConfig.assets.refresh) {
@@ -49,7 +49,7 @@ class Store extends Component {
 
             this.setState({
                 showProgress: true,
-				resultsCount: 0
+                resultsCount: 0
             });
 
             this.getItems();
@@ -57,12 +57,12 @@ class Store extends Component {
     }
 
     getItems() {
-		this.setState({
-			serverError: false,
+        this.setState({
+            serverError: false,
             resultsCount: 0,
             recordsCount: 15,
             positionY: 0,
-			searchQuery: ''
+            searchQuery: ''
         });
 
         fetch(appConfig.url + 'api/goods/get', {
@@ -70,13 +70,13 @@ class Store extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-				'Authorization': appConfig.access_token
+                'Authorization': appConfig.access_token
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
-				let arr = [].concat(responseData.sort(this.sort));
-				let items = arr.filter((el) => el.store == true);
+            .then((response) => response.json())
+            .then((responseData) => {
+                let arr = [].concat(responseData.sort(this.sort));
+                let items = arr.filter((el) => el.store == true);
 
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(items),
@@ -85,15 +85,15 @@ class Store extends Component {
                     filteredItems: items
                 });
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
-				setTimeout(() => {
-					appConfig.onLogOut();
-				}, 1000);
+                setTimeout(() => {
+                    appConfig.onLogOut();
+                }, 1000);
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     showProgress: false
                 });
@@ -112,16 +112,16 @@ class Store extends Component {
     }
 
     showDetails(rowData) {
-		this.props.navigator.push({
-			index: 1,
-			data: rowData
-		});
+        this.props.navigator.push({
+            index: 1,
+            data: rowData
+        });
     }
 
     addItem() {
-		this.props.navigator.push({
-			index: 2
-		});
+        this.props.navigator.push({
+            index: 2
+        });
     }
 
     renderRow(rowData) {
@@ -129,9 +129,9 @@ class Store extends Component {
             <TouchableHighlight>
                 <View style={styles.row}>
                     <Text style={styles.rowText}>
-						{rowData.name}: {((+rowData.quantity).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
-					</Text>
-				</View>
+                        {rowData.name}: {((+rowData.quantity).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
+                    </Text>
+                </View>
             </TouchableHighlight>
         );
     }
@@ -177,23 +177,23 @@ class Store extends Component {
         })
     }
 
-	refreshDataAndroid() {
-		this.setState({
-			showProgress: true,
-			resultsCount: 0
-		});
+    refreshDataAndroid() {
+        this.setState({
+            showProgress: true,
+            resultsCount: 0
+        });
 
-		this.getItems();
-	}
+        this.getItems();
+    }
 
-	clearSearchQuery() {
-		this.setState({
-			dataSource: this.state.dataSource.cloneWithRows(this.state.responseData),
+    clearSearchQuery() {
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(this.state.responseData),
             resultsCount: this.state.responseData.length,
             filteredItems: this.state.responseData,
-			searchQuery: ''
-		});
-	}
+            searchQuery: ''
+        });
+    }
 
     render() {
         let errorCtrl, loader, image;
@@ -208,28 +208,28 @@ class Store extends Component {
             loader = <View style={styles.loader}>
                 <ActivityIndicator
                     size="large"
-					color="darkblue"
+                    color="darkblue"
                     animating={true}
                 />
             </View>;
         }
 
-		if (this.state.searchQuery.length > 0) {
-			image = <Image
-				source={require('../../../img/cancel.png')}
-				style={{
-					height: 20,
-					width: 20,
-					marginTop: 10
-				}}
-			/>;
-		}
+        if (this.state.searchQuery.length > 0) {
+            image = <Image
+                source={require('../../../img/cancel.png')}
+                style={{
+                    height: 20,
+                    width: 20,
+                    marginTop: 10
+                }}
+            />;
+        }
 
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View>
-						<TouchableWithoutFeedback>
+                        <TouchableWithoutFeedback>
                             <View>
                                 <Text style={styles.textSmall}>
                                 </Text>
@@ -256,67 +256,67 @@ class Store extends Component {
                 </View>
 
                 <View style={styles.iconForm}>
-					<View>
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							onChangeText={this.onChangeText.bind(this)}
-							style={{
-								height: 45,
-								padding: 5,
-								backgroundColor: 'white',
-								borderWidth: 3,
-								borderColor: 'white',
-								borderRadius: 0,
-								width: this.state.width * .90,
-							}}
-							value={this.state.searchQuery}
-							placeholder={appConfig.language.search}>
-						</TextInput>
-					</View>
-					<View style={{
-						height: 45,
-						backgroundColor: 'white',
-						borderWidth: 3,
-						borderColor: 'white',
-						marginLeft: -10,
-						paddingLeft: 5,
-						width: this.state.width * .10,
-					}}>
-						<TouchableWithoutFeedback
-							onPress={() => this.clearSearchQuery()}
-						>
-							<View>
-								{image}
-							</View>
-						</TouchableWithoutFeedback>
-					</View>
+                    <View>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            onChangeText={this.onChangeText.bind(this)}
+                            style={{
+                                height: 45,
+                                padding: 5,
+                                backgroundColor: 'white',
+                                borderWidth: 3,
+                                borderColor: 'white',
+                                borderRadius: 0,
+                                width: this.state.width * .90,
+                            }}
+                            value={this.state.searchQuery}
+                            placeholder={appConfig.language.search}>
+                        </TextInput>
+                    </View>
+                    <View style={{
+                        height: 45,
+                        backgroundColor: 'white',
+                        borderWidth: 3,
+                        borderColor: 'white',
+                        marginLeft: -10,
+                        paddingLeft: 5,
+                        width: this.state.width * .10,
+                    }}>
+                        <TouchableWithoutFeedback
+                            onPress={() => this.clearSearchQuery()}
+                        >
+                            <View>
+                                {image}
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
                 </View>
 
                 {errorCtrl}
 
                 {loader}
 
-				<ScrollView onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}
-					refreshControl={
-						<RefreshControl
-							enabled={true}
-							refreshing={this.state.refreshing}
-							onRefresh={this.refreshDataAndroid.bind(this)}
-						/>
-					}
-				>
-					<ListView
-						enableEmptySections={true}
-						dataSource={this.state.dataSource}
-						renderRow={this.renderRow.bind(this)}
-					/>
-				</ScrollView>
+                <ScrollView onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}
+                            refreshControl={
+                                <RefreshControl
+                                    enabled={true}
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this.refreshDataAndroid.bind(this)}
+                                />
+                            }
+                >
+                    <ListView
+                        enableEmptySections={true}
+                        dataSource={this.state.dataSource}
+                        renderRow={this.renderRow.bind(this)}
+                    />
+                </ScrollView>
 
-				<View style={{marginBottom: 0}}>
-					<Text style={styles.countFooter}>
-						{appConfig.language.records} {this.state.resultsCount.toString()}
-					</Text>
-				</View>
+                <View style={{marginBottom: 0}}>
+                    <Text style={styles.countFooter}>
+                        {appConfig.language.records} {this.state.resultsCount.toString()}
+                    </Text>
+                </View>
 
             </View>
         )
@@ -329,12 +329,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'white'
     },
-	iconForm: {
-		flexDirection: 'row',
-		//borderColor: 'lightgray',
-		borderColor: 'darkblue',
-		borderWidth: 3
-	},
+    iconForm: {
+        flexDirection: 'row',
+        //borderColor: 'lightgray',
+        borderColor: 'darkblue',
+        borderWidth: 3
+    },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',

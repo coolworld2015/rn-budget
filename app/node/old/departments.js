@@ -10,7 +10,7 @@ var Departments = {
     findDepartment: findDepartment,
     findPostDepartment: findPostDepartment,
     editDepartment: editDepartment,
-	editPostDepartment: editPostDepartment,
+    editPostDepartment: editPostDepartment,
     updateDepartment: updateDepartment,
     addDepartment: addDepartment,
     saveDepartment: saveDepartment,

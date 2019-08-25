@@ -12,32 +12,32 @@ import {
     TabBarIOS,
     NavigatorIOS,
     TextInput,
-	BackAndroid
+    BackAndroid
 } from 'react-native';
 
 class ResourceAdd extends Component {
     constructor(props) {
         super(props);
 
-/*		BackAndroid.addEventListener('hardwareBackPress', () => {
-			if (this.props.navigator) {
-				this.props.navigator.pop();
-			}
-			return true;
-		});*/
+        /*		BackAndroid.addEventListener('hardwareBackPress', () => {
+                    if (this.props.navigator) {
+                        this.props.navigator.pop();
+                    }
+                    return true;
+                });*/
 
         this.state = {
             showProgress: false,
-			bugANDROID: ''
+            bugANDROID: ''
         }
     }
 
-	isNumber(n) {
-		return !isNaN(parseFloat(n)) && isFinite(n);
-	}
+    isNumber(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
 
     addItem() {
-		if (appConfig.goods.showProgress == true) {
+        if (appConfig.goods.showProgress == true) {
             return;
         }
 
@@ -45,7 +45,7 @@ class ResourceAdd extends Component {
             this.state.price == undefined ||
             this.state.description == undefined ||
 
-			this.isNumber(this.state.price) != true) {
+            this.isNumber(this.state.price) != true) {
             this.setState({
                 invalidValue: true
             });
@@ -54,47 +54,47 @@ class ResourceAdd extends Component {
 
         this.setState({
             showProgress: true,
-			bugANDROID: ' '
+            bugANDROID: ' '
         });
 
-		appConfig.goods.showProgress = true;
+        appConfig.goods.showProgress = true;
 
         fetch(appConfig.url + 'api/goods/add', {
             method: 'post',
             body: JSON.stringify({
-                id: + new Date,
+                id: +new Date,
                 name: this.state.name,
                 price: this.state.price,
-				quantity: 0,
-				store: false,
+                quantity: 0,
+                store: false,
                 description: this.state.description,
-				authorization: appConfig.access_token
+                authorization: appConfig.access_token
             }),
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
         })
-            .then((response)=> response.json())
-            .then((responseData)=> {
+            .then((response) => response.json())
+            .then((responseData) => {
                 appConfig.goods.refresh = true;
                 this.props.navigator.pop();
             })
-            .catch((error)=> {
+            .catch((error) => {
                 this.setState({
                     serverError: true
                 });
             })
-            .finally(()=> {
+            .finally(() => {
                 this.setState({
                     showProgress: false
                 });
             });
     }
 
-	goBack() {
-		this.props.navigator.pop();
-	}
+    goBack() {
+        this.props.navigator.pop();
+    }
 
     render() {
         let errorCtrl, validCtrl, loader;
@@ -115,7 +115,7 @@ class ResourceAdd extends Component {
             loader = <View style={styles.loader}>
                 <ActivityIndicator
                     size="large"
-					color="darkblue"
+                    color="darkblue"
                     animating={true}
                 />
             </View>;
@@ -123,124 +123,124 @@ class ResourceAdd extends Component {
 
         return (
             <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
-				<View style={{
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-					backgroundColor: 'darkblue',
-					borderWidth: 0,
-					borderColor: 'whitesmoke'
-				}}>
-					<View>
-						<TouchableHighlight
-							onPress={()=> this.goBack()}
-							underlayColor='darkblue'
-						>
-							<Text style={{
-								fontSize: 16,
-								textAlign: 'center',
-								margin: 14,
-								fontWeight: 'bold',
-								color: 'white'
-							}}>
-								{appConfig.language.back}
-							</Text>
-						</TouchableHighlight>
-					</View>
-					<View>
-						<TouchableHighlight
-							underlayColor='#ddd'
-						>
-							<Text style={{
-								fontSize: 20,
-								textAlign: 'center',
-								margin: 10,
-								marginRight: 40,
-								fontWeight: 'bold',
-								color: 'white'
-							}}>
-								{appConfig.language.newrec}
-							</Text>
-						</TouchableHighlight>
-					</View>
-					<View>
-						<TouchableHighlight
-							underlayColor='#ddd'
-						>
-							<Text style={{
-								fontSize: 16,
-								textAlign: 'center',
-								margin: 14,
-								fontWeight: 'bold'
-							}}>
+                <View style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    backgroundColor: 'darkblue',
+                    borderWidth: 0,
+                    borderColor: 'whitesmoke'
+                }}>
+                    <View>
+                        <TouchableHighlight
+                            onPress={() => this.goBack()}
+                            underlayColor='darkblue'
+                        >
+                            <Text style={{
+                                fontSize: 16,
+                                textAlign: 'center',
+                                margin: 14,
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }}>
+                                {appConfig.language.back}
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                    <View>
+                        <TouchableHighlight
+                            underlayColor='#ddd'
+                        >
+                            <Text style={{
+                                fontSize: 20,
+                                textAlign: 'center',
+                                margin: 10,
+                                marginRight: 40,
+                                fontWeight: 'bold',
+                                color: 'white'
+                            }}>
+                                {appConfig.language.newrec}
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                    <View>
+                        <TouchableHighlight
+                            underlayColor='#ddd'
+                        >
+                            <Text style={{
+                                fontSize: 16,
+                                textAlign: 'center',
+                                margin: 14,
+                                fontWeight: 'bold'
+                            }}>
 
-							</Text>
-						</TouchableHighlight>
-					</View>
-				</View>
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
 
-				<ScrollView keyboardShouldPersistTaps={true}>
-					{errorCtrl}
-					{loader}
+                <ScrollView keyboardShouldPersistTaps={true}>
+                    {errorCtrl}
+                    {loader}
 
-					<View style={{
-						flex: 1,
-						padding: 10,
-						justifyContent: 'flex-start',
-						paddingBottom: 90,
-						backgroundColor: 'white'
-					}}>
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							onChangeText={(text)=> this.setState({
-								name: text,
-								invalidValue: false
-							})}
-							style={styles.loginInput}
-							value={this.state.name}
-							placeholder={appConfig.language.name}>
-						</TextInput>
+                    <View style={{
+                        flex: 1,
+                        padding: 10,
+                        justifyContent: 'flex-start',
+                        paddingBottom: 90,
+                        backgroundColor: 'white'
+                    }}>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            onChangeText={(text) => this.setState({
+                                name: text,
+                                invalidValue: false
+                            })}
+                            style={styles.loginInput}
+                            value={this.state.name}
+                            placeholder={appConfig.language.name}>
+                        </TextInput>
 
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							onChangeText={(text)=> this.setState({
-								price: text,
-								invalidValue: false
-							})}
-							style={styles.loginInput}
-							value={this.state.price}
-							placeholder={appConfig.language.price}>
-						</TextInput>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            onChangeText={(text) => this.setState({
+                                price: text,
+                                invalidValue: false
+                            })}
+                            style={styles.loginInput}
+                            value={this.state.price}
+                            placeholder={appConfig.language.price}>
+                        </TextInput>
 
-						<TextInput
-							underlineColorAndroid='rgba(0,0,0,0)'
-							multiline={true}
-							onChangeText={(text)=> this.setState({
-								description: text,
-								invalidValue: false
-							})}
-							style={styles.loginInput1}
-							value={this.state.description}
-							placeholder={appConfig.language.description}>
-						</TextInput>
+                        <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
+                            multiline={true}
+                            onChangeText={(text) => this.setState({
+                                description: text,
+                                invalidValue: false
+                            })}
+                            style={styles.loginInput1}
+                            value={this.state.description}
+                            placeholder={appConfig.language.description}>
+                        </TextInput>
 
-						{validCtrl}
+                        {validCtrl}
 
-						<TouchableHighlight
-							onPress={()=> this.addItem()}
-							style={styles.button}>
-							<Text style={styles.buttonText}>{appConfig.language.add}</Text>
-						</TouchableHighlight>
+                        <TouchableHighlight
+                            onPress={() => this.addItem()}
+                            style={styles.button}>
+                            <Text style={styles.buttonText}>{appConfig.language.add}</Text>
+                        </TouchableHighlight>
 
-						<ActivityIndicator
-							animating={this.state.showProgress}
-							size="large"
-							style={styles.loader}
-						/>
+                        <ActivityIndicator
+                            animating={this.state.showProgress}
+                            size="large"
+                            style={styles.loader}
+                        />
 
-						<Text>{this.state.bugANDROID}</Text>
-					</View>
-				</ScrollView>
-			</View>
+                        <Text>{this.state.bugANDROID}</Text>
+                    </View>
+                </ScrollView>
+            </View>
         )
     }
 }
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 20,
-		fontWeight: 'bold'
+        fontWeight: 'bold'
     },
     loader: {
         marginTop: 20

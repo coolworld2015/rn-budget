@@ -33,7 +33,7 @@ class App extends Component {
         window.appConfig = {
             access_token: '',
             url: 'http://jwt-budget.herokuapp.com/',
-			onLogOut: this.onLogOut.bind(this),
+            onLogOut: this.onLogOut.bind(this),
             login: {
                 showProgress: false
             },
@@ -257,7 +257,7 @@ class App extends Component {
             return <View style={styles.loader}>
                 <ActivityIndicator
                     animating={true}
-					color="darkblue"
+                    color="darkblue"
                     size="large"
                 />
             </View>;
