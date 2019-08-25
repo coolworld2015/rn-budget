@@ -18,33 +18,33 @@ import {
 class ResourceAdd extends Component {
     constructor(props) {
         super(props);
-		
-		BackAndroid.addEventListener('hardwareBackPress', () => {
+
+/*		BackAndroid.addEventListener('hardwareBackPress', () => {
 			if (this.props.navigator) {
 				this.props.navigator.pop();
 			}
 			return true;
-		});
-		
+		});*/
+
         this.state = {
             showProgress: false,
 			bugANDROID: ''
         }
     }
-	
+
 	isNumber(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	}
-	
+
     addItem() {
 		if (appConfig.goods.showProgress == true) {
             return;
         }
-		
+
         if (this.state.name == undefined ||
             this.state.price == undefined ||
             this.state.description == undefined ||
-			
+
 			this.isNumber(this.state.price) != true) {
             this.setState({
                 invalidValue: true
@@ -56,9 +56,9 @@ class ResourceAdd extends Component {
             showProgress: true,
 			bugANDROID: ' '
         });
-		
+
 		appConfig.goods.showProgress = true;
-		
+
         fetch(appConfig.url + 'api/goods/add', {
             method: 'post',
             body: JSON.stringify({
@@ -91,11 +91,11 @@ class ResourceAdd extends Component {
                 });
             });
     }
-	
+
 	goBack() {
 		this.props.navigator.pop();
 	}
-	
+
     render() {
         let errorCtrl, validCtrl, loader;
 
@@ -104,13 +104,13 @@ class ResourceAdd extends Component {
                 Something went wrong.
             </Text>;
         }
-		
+
         if (this.state.invalidValue) {
             validCtrl = <Text style={styles.error}>
                 Value required - please provide.
             </Text>;
         }
-		
+
         if (this.state.showProgress) {
             loader = <View style={styles.loader}>
                 <ActivityIndicator
@@ -144,7 +144,7 @@ class ResourceAdd extends Component {
 							}}>
 								{appConfig.language.back}
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 					<View>
 						<TouchableHighlight
@@ -160,8 +160,8 @@ class ResourceAdd extends Component {
 							}}>
 								{appConfig.language.newrec}
 							</Text>
-						</TouchableHighlight>	
-					</View>						
+						</TouchableHighlight>
+					</View>
 					<View>
 						<TouchableHighlight
 							underlayColor='#ddd'
@@ -172,16 +172,16 @@ class ResourceAdd extends Component {
 								margin: 14,
 								fontWeight: 'bold'
 							}}>
-								 
+
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 				</View>
-					
+
 				<ScrollView keyboardShouldPersistTaps={true}>
-					{errorCtrl}						
+					{errorCtrl}
 					{loader}
-					
+
 					<View style={{
 						flex: 1,
 						padding: 10,
@@ -236,7 +236,7 @@ class ResourceAdd extends Component {
 							size="large"
 							style={styles.loader}
 						/>
-						
+
 						<Text>{this.state.bugANDROID}</Text>
 					</View>
 				</ScrollView>
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
         borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black'
-    },		
+    },
     button: {
         height: 50,
         //backgroundColor: '#48BBEC',

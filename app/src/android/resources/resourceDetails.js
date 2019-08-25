@@ -19,18 +19,18 @@ import {
 class ResourceDetails extends Component {
     constructor(props) {
         super(props);
-		
-		BackAndroid.addEventListener('hardwareBackPress', () => {
+
+/*		BackAndroid.addEventListener('hardwareBackPress', () => {
 			if (this.props.navigator) {
 				this.props.navigator.pop();
 			}
 			return true;
-		});			
-		
+		});	*/
+
 		this.state = {
 			serverError: false
-		}	
-		
+		}
+
 		if (props.data) {
 			this.state = {
 				id: props.data.id,
@@ -41,18 +41,18 @@ class ResourceDetails extends Component {
 				description: props.data.description,
 				showProgress: false
 			};
-		}		
+		}
     }
-	
+
 	isNumber(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	}
-	
+
     updateItem() {
         if (this.state.name == '' ||
             this.state.price == '' ||
             this.state.description == undefined ||
-			
+
 			this.isNumber(this.state.price) != true) {
             this.setState({
                 invalidValue: true
@@ -116,15 +116,15 @@ class ResourceDetails extends Component {
 					}
 				},
 			]
-		);	
+		);
 	}
-	
-    deleteItem() {		
+
+    deleteItem() {
         this.setState({
             showProgress: true,
 			bugANDROID: ' '
         });
-		
+
         fetch(appConfig.url + 'api/goods/delete', {
             method: 'post',
             body: JSON.stringify({
@@ -161,11 +161,11 @@ class ResourceDetails extends Component {
             });
 
     }
-    
+
 	goBack() {
 		this.props.navigator.pop();
 	}
-	
+
     render() {
         let errorCtrl, validCtrl, loader;
 
@@ -174,13 +174,13 @@ class ResourceDetails extends Component {
                 Something went wrong.
             </Text>;
         }
-		
+
         if (this.state.invalidValue) {
             validCtrl = <Text style={styles.error}>
                 Value required - please provide.
             </Text>;
         }
-		
+
         if (this.state.showProgress) {
             loader = <View style={styles.loader}>
                 <ActivityIndicator
@@ -214,7 +214,7 @@ class ResourceDetails extends Component {
 							}}>
 								{appConfig.language.back}
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 					<View style={{flex:1,flexDirection:'column', flexWrap:'wrap'}}>
 						<TouchableHighlight
@@ -229,8 +229,8 @@ class ResourceDetails extends Component {
 							}}>
 								{this.state.name}
 							</Text>
-						</TouchableHighlight>	
-					</View>						
+						</TouchableHighlight>
+					</View>
 					<View>
 						<TouchableHighlight
 							onPress={()=> this.deleteItemDialog()}
@@ -245,14 +245,14 @@ class ResourceDetails extends Component {
 							}}>
 								{appConfig.language.delete}
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 				</View>
-				
+
 				<ScrollView keyboardShouldPersistTaps={true}>
-					{errorCtrl}							
+					{errorCtrl}
 					{loader}
-					
+
 					<View style={{
 						flex: 1,
 						padding: 10,
@@ -266,9 +266,9 @@ class ResourceDetails extends Component {
 							editable={false}
 							style={styles.loginInputBold}
 							value={this.state.name}
-							placeholder={appConfig.language.name}>						
-						</TextInput>	
-						
+							placeholder={appConfig.language.name}>
+						</TextInput>
+
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
 							onChangeText={(text)=> this.setState({
@@ -300,15 +300,15 @@ class ResourceDetails extends Component {
 							style={styles.button}>
 							<Text style={styles.buttonText}>{appConfig.language.submit}</Text>
 						</TouchableHighlight>
-						
+
 						{errorCtrl}
-						
+
 						<ActivityIndicator
 							animating={this.state.showProgress}
 							size="large"
 							style={styles.loader}
 						/>
-						
+
 						<Text>{this.state.bugANDROID}</Text>
 					</View>
 				</ScrollView>
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
 		margin: 5,
 		fontWeight: 'bold',
 		color: 'black'
-    },    
+    },
 	itemText: {
 		fontSize: 20,
 		textAlign: 'left',
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         color: 'black',
 		fontWeight: 'bold'
-    },	
+    },
     loginInput1: {
         height: 100,
         marginTop: 10,
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
         borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black'
-    },	
+    },
     button: {
         height: 50,
         //backgroundColor: '#48BBEC',
