@@ -19,27 +19,27 @@ import {
 class EmployeeAdd extends Component {
     constructor(props) {
         super(props);
-		
-		BackAndroid.addEventListener('hardwareBackPress', () => {
+
+/*		BackAndroid.addEventListener('hardwareBackPress', () => {
 			if (this.props.navigator) {
 				this.props.navigator.pop();
 			}
 			return true;
-		});
-		
+		});*/
+
         this.state = {
             showProgress: false,
 			departments: [],
 			bugANDROID: ''
         }
     }
-	
+
 	componentDidMount() {
 		this.getDepartments();
 	}
 
     getDepartments() {
-        fetch(appConfig.url + 'api/departments/get', {			
+        fetch(appConfig.url + 'api/departments/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -78,17 +78,17 @@ class EmployeeAdd extends Component {
         }
         return 0;
     }
-	
+
     addItem() {
 		if (appConfig.employees.showProgress == true) {
             return;
         }
-		
+
         if (this.state.name == undefined ||
             this.state.address == undefined ||
             this.state.phone == undefined ||
             this.state.departmentID == undefined ||
-            this.state.departmentName == undefined ||			
+            this.state.departmentName == undefined ||
             this.state.description == undefined) {
             this.setState({
                 invalidValue: true
@@ -100,9 +100,9 @@ class EmployeeAdd extends Component {
             showProgress: true,
 			bugANDROID: ' '
         });
-		
+
 		appConfig.employees.showProgress = true;
-		
+
         fetch(appConfig.url + 'api/employees/add', {
             method: 'post',
             body: JSON.stringify({
@@ -137,11 +137,11 @@ class EmployeeAdd extends Component {
                 });
             });
     }
-	
+
 	goBack() {
 		this.props.navigator.pop();
 	}
-	
+
     render() {
         let errorCtrl, validCtrl, loader;
 
@@ -150,13 +150,13 @@ class EmployeeAdd extends Component {
                 Something went wrong.
             </Text>;
         }
-		
+
         if (this.state.invalidValue) {
             validCtrl = <Text style={styles.error}>
                 Value required - please provide.
             </Text>;
         }
-		
+
         if (this.state.showProgress) {
             loader = <View style={styles.loader}>
                 <ActivityIndicator
@@ -190,7 +190,7 @@ class EmployeeAdd extends Component {
 							}}>
 								{appConfig.language.back}
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 					<View>
 						<TouchableHighlight
@@ -206,8 +206,8 @@ class EmployeeAdd extends Component {
 							}}>
 								{appConfig.language.newrec}
 							</Text>
-						</TouchableHighlight>	
-					</View>						
+						</TouchableHighlight>
+					</View>
 					<View>
 						<TouchableHighlight
 							underlayColor='#ddd'
@@ -218,16 +218,16 @@ class EmployeeAdd extends Component {
 								margin: 14,
 								fontWeight: 'bold'
 							}}>
-								 
+
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 				</View>
-					
+
 				<ScrollView keyboardShouldPersistTaps={true}>
-					{errorCtrl}						
+					{errorCtrl}
 					{loader}
-					
+
 					<View style={{backgroundColor: 'white'}}>
 						<View style={{
 							borderColor: 'darkblue',
@@ -243,7 +243,7 @@ class EmployeeAdd extends Component {
                                 onValueChange={(value) => {
 									let arr = [].concat(this.state.departments);
  									let department = arr.filter((el) => el.id == value);
- 
+
                                     this.setState({
                                         department: value,
                                         departmentID: department[0].id,
@@ -258,7 +258,7 @@ class EmployeeAdd extends Component {
 							</Picker>
 						</View>
 					</View>
-					
+
 					<View style={{
 						flex: 1,
 						padding: 10,
@@ -286,8 +286,8 @@ class EmployeeAdd extends Component {
 							style={styles.loginInput}
 							value={this.state.address}
 							placeholder={appConfig.language.address}>
-						</TextInput>						
-						
+						</TextInput>
+
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
 							onChangeText={(text)=> this.setState({
@@ -297,7 +297,7 @@ class EmployeeAdd extends Component {
 							style={styles.loginInput}
 							value={this.state.phone}
 							placeholder={appConfig.language.phone}>
-						</TextInput>						
+						</TextInput>
 
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
@@ -324,7 +324,7 @@ class EmployeeAdd extends Component {
 							size="large"
 							style={styles.loader}
 						/>
-						
+
 						<Text>{this.state.bugANDROID}</Text>
 					</View>
 				</ScrollView>
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
         borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black'
-    },		
+    },
     button: {
         height: 50,
         //backgroundColor: '#48BBEC',

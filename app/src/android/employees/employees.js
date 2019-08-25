@@ -7,7 +7,6 @@ import {
     View,
     TouchableHighlight,
     TouchableWithoutFeedback,
-    ListView,
     ScrollView,
     ActivityIndicator,
     TextInput,
@@ -15,6 +14,8 @@ import {
 	Dimensions,
 	RefreshControl
 } from 'react-native';
+
+import ListView from 'deprecated-react-native-listview';
 
 class Employees extends Component {
     constructor(props) {
@@ -32,10 +33,11 @@ class Employees extends Component {
             recordsCount: 15,
             positionY: 0,
 			searchQuery: '',
-			refreshing: false
+			refreshing: false,
+            width: Dimensions.get('window').width
         };
     }
-	
+
 	componentDidMount() {
 		appConfig.employees.showProgress = true;
 		this.setState({
@@ -43,7 +45,7 @@ class Employees extends Component {
         });
         this.getItems();
 	}
-	
+
     componentWillUpdate() {
         if (appConfig.employees.refresh) {
             appConfig.employees.refresh = false;
@@ -65,8 +67,8 @@ class Employees extends Component {
             positionY: 0,
 			searchQuery: ''
         });
-		
-        fetch(appConfig.url + 'api/employees/get', {			
+
+        fetch(appConfig.url + 'api/employees/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -116,25 +118,25 @@ class Employees extends Component {
 			data: rowData
 		});
     }
-	
+
     addItem() {
 		appConfig.employees.showProgress = false;
 		this.props.navigator.push({
 			index: 42
 		});
     }
-	
+
     renderRow(rowData) {
         return (
             <TouchableHighlight
                 onPress={()=> this.showDetails(rowData)}
                 underlayColor='#ddd'
             >
-				<View style={styles.row}>              
+				<View style={styles.row}>
 					<Text style={styles.rowText}>
 						{rowData.name} - {rowData.department}
-					</Text>						
-					
+					</Text>
+
 					<Text style={styles.rowText}>
 						{appConfig.language.total}: {((+rowData.sum).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
 					</Text>
@@ -194,7 +196,7 @@ class Employees extends Component {
             searchQuery: text
         })
     }
-	
+
 	refreshDataAndroid() {
 		this.setState({
 			showProgress: true,
@@ -203,11 +205,11 @@ class Employees extends Component {
 
 		this.getItems();
 	}
-	
+
 	goBack() {
 		this.props.navigator.pop();
 	}
-	
+
 	clearSearchQuery() {
 		this.setState({
 			dataSource: this.state.dataSource.cloneWithRows(this.state.responseData.slice(0, 15)),
@@ -218,7 +220,7 @@ class Employees extends Component {
 			searchQuery: ''
 		});
 	}
-	
+
     render() {
         let errorCtrl, loader, image;
 
@@ -286,7 +288,7 @@ class Employees extends Component {
                         </TouchableHighlight>
                     </View>
                 </View>
-				
+
                 <View style={styles.iconForm}>
 					<View>
 						<TextInput
@@ -313,11 +315,11 @@ class Employees extends Component {
 						marginLeft: -10,
 						paddingLeft: 5,
 						width: this.state.width * .10,
-					}}>			
+					}}>
 						<TouchableWithoutFeedback
 							onPress={() => this.clearSearchQuery()}
-						>			
-							<View>					
+						>
+							<View>
 								{image}
 							</View>
 						</TouchableWithoutFeedback>
@@ -327,7 +329,7 @@ class Employees extends Component {
                 {errorCtrl}
 
                 {loader}
-				
+
 				<ScrollView onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}
 					refreshControl={
 						<RefreshControl
@@ -343,10 +345,10 @@ class Employees extends Component {
 						renderRow={this.renderRow.bind(this)}
 					/>
 				</ScrollView>
-				
+
 				<View>
 					<Text style={styles.countFooter}>
-						{appConfig.language.records} {this.state.resultsCount.toString()} 
+						{appConfig.language.records} {this.state.resultsCount.toString()}
 					</Text>
 				</View>
             </View>

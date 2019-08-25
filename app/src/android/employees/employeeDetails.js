@@ -19,18 +19,18 @@ import {
 class EmployeeDetails extends Component {
     constructor(props) {
         super(props);
-		
-		BackAndroid.addEventListener('hardwareBackPress', () => {
+
+/*		BackAndroid.addEventListener('hardwareBackPress', () => {
 			if (this.props.navigator) {
 				this.props.navigator.pop();
 			}
 			return true;
-		});			
-		
+		});	*/
+
 		this.state = {
 			serverError: false
-		}	
-		
+		}
+
 		if (props.data) {
 			this.state = {
 				id: props.data.id,
@@ -45,7 +45,7 @@ class EmployeeDetails extends Component {
 				sum: props.data.sum,
 				showProgress: false
 			};
-		}		
+		}
     }
 
     updateItem() {
@@ -120,15 +120,15 @@ class EmployeeDetails extends Component {
 					}
 				},
 			]
-		);	
+		);
 	}
-	
-    deleteItem() {		
+
+    deleteItem() {
         this.setState({
             showProgress: true,
 			bugANDROID: ' '
         });
-		
+
         fetch(appConfig.url + 'api/employees/delete', {
             method: 'post',
             body: JSON.stringify({
@@ -165,11 +165,11 @@ class EmployeeDetails extends Component {
             });
 
     }
-    
+
 	goBack() {
 		this.props.navigator.pop();
 	}
-	
+
     render() {
         let errorCtrl, validCtrl, loader;
 
@@ -178,13 +178,13 @@ class EmployeeDetails extends Component {
                 Something went wrong.
             </Text>;
         }
-		
+
         if (this.state.invalidValue) {
             validCtrl = <Text style={styles.error}>
                 Value required - please provide.
             </Text>;
         }
-		
+
         if (this.state.showProgress) {
             loader = <View style={styles.loader}>
                 <ActivityIndicator
@@ -233,8 +233,8 @@ class EmployeeDetails extends Component {
 							}}>
 								{this.state.name}
 							</Text>
-						</TouchableHighlight>	
-					</View>						
+						</TouchableHighlight>
+					</View>
 					<View>
 						<TouchableHighlight
 							onPress={()=> this.deleteItemDialog()}
@@ -252,27 +252,27 @@ class EmployeeDetails extends Component {
 						</TouchableHighlight>
 					</View>
 				</View>
-				
+
 				<ScrollView keyboardShouldPersistTaps={true}>
-					{errorCtrl}							
+					{errorCtrl}
 					{loader}
-					
+
 					<View style={{
 						flex: 1,
 						padding: 10,
 						paddingBottom: 0,
 						justifyContent: 'flex-start',
 						backgroundColor: 'white'
-					}}>					
+					}}>
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
 							multiline={true}
 							editable={false}
 							style={styles.loginInputBold}
 							value={this.state.name}
-							placeholder="Name">						
-						</TextInput>	
-						
+							placeholder="Name">
+						</TextInput>
+
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
 							multiline={true}
@@ -281,7 +281,7 @@ class EmployeeDetails extends Component {
 							value={this.state.department}
 							placeholder="Department">
 						</TextInput>
-						
+
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
 							onChangeText={(text)=> this.setState({
@@ -292,7 +292,7 @@ class EmployeeDetails extends Component {
 							value={this.state.address}
 							placeholder={appConfig.language.address}>
 						</TextInput>
-												
+
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
 							onChangeText={(text)=> this.setState({
@@ -303,7 +303,7 @@ class EmployeeDetails extends Component {
 							value={this.state.phone}
 							placeholder={appConfig.language.phone}>
 						</TextInput>
-						
+
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
 							onChangeText={(text)=> this.setState({
@@ -314,16 +314,16 @@ class EmployeeDetails extends Component {
 							value={this.state.description}
 							placeholder={appConfig.language.description}>
 						</TextInput>
-						
+
 						<View style={{
 							flexDirection: 'row',
 							marginTop: 10
 						}}>
 							<Text style={styles.itemTextBold}>
 								Total: {this.state.sumShow}
-							</Text>		
+							</Text>
 						</View>
-						
+
 						{validCtrl}
 
 						<TouchableHighlight
@@ -332,15 +332,15 @@ class EmployeeDetails extends Component {
 							style={styles.button}>
 							<Text style={styles.buttonText}>{appConfig.language.submit}</Text>
 						</TouchableHighlight>
-						
+
 						{errorCtrl}
-						
+
 						<ActivityIndicator
 							animating={this.state.showProgress}
 							size="large"
 							style={styles.loader}
 						/>
-						
+
 						<Text>{this.state.bugANDROID}</Text>
 					</View>
 				</ScrollView>
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
 		margin: 5,
 		fontWeight: 'bold',
 		color: 'black'
-    },    
+    },
 	itemText: {
 		fontSize: 20,
 		textAlign: 'left',
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
         borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black'
-    },    
+    },
 	loginInputBold: {
         height: 50,
         marginTop: 10,
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
         borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black'
-    },	
+    },
     button: {
         height: 50,
         //backgroundColor: '#48BBEC',
