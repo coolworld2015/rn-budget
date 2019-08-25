@@ -18,14 +18,14 @@ import {
 class DepartmentAdd extends Component {
     constructor(props) {
         super(props);
-		
-		BackAndroid.addEventListener('hardwareBackPress', () => {
+
+/*		BackAndroid.addEventListener('hardwareBackPress', () => {
 			if (this.props.navigator) {
 				this.props.navigator.pop();
 			}
 			return true;
-		});
-		
+		});*/
+
         this.state = {
             showProgress: false,
 			bugANDROID: ''
@@ -33,14 +33,14 @@ class DepartmentAdd extends Component {
     }
 
     addItem() {
-		if (appConfig.departments.showProgress == true) {
+		if (appConfig.departments.showProgress === true) {
             return;
         }
-		
-        if (this.state.name == undefined ||
-            this.state.address == undefined ||
-            this.state.phone == undefined ||
-            this.state.description == undefined) {
+
+        if (this.state.name === undefined ||
+            this.state.address === undefined ||
+            this.state.phone === undefined ||
+            this.state.description === undefined) {
             this.setState({
                 invalidValue: true
             });
@@ -51,9 +51,9 @@ class DepartmentAdd extends Component {
             showProgress: true,
 			bugANDROID: ' '
         });
-		
+
 		appConfig.departments.showProgress = true;
-		
+
         fetch(appConfig.url + 'api/departments/add', {
             method: 'post',
             body: JSON.stringify({
@@ -86,11 +86,11 @@ class DepartmentAdd extends Component {
                 });
             });
     }
-	
+
 	goBack() {
 		this.props.navigator.pop();
 	}
-	
+
     render() {
         let errorCtrl, validCtrl, loader;
 
@@ -99,13 +99,13 @@ class DepartmentAdd extends Component {
                 Something went wrong.
             </Text>;
         }
-		
+
         if (this.state.invalidValue) {
             validCtrl = <Text style={styles.error}>
                 Value required - please provide.
             </Text>;
         }
-		
+
         if (this.state.showProgress) {
             loader = <View style={styles.loader}>
                 <ActivityIndicator
@@ -139,7 +139,7 @@ class DepartmentAdd extends Component {
 							}}>
 								{appConfig.language.back}
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 					<View>
 						<TouchableHighlight
@@ -155,8 +155,8 @@ class DepartmentAdd extends Component {
 							}}>
 								{appConfig.language.newrec}
 							</Text>
-						</TouchableHighlight>	
-					</View>						
+						</TouchableHighlight>
+					</View>
 					<View>
 						<TouchableHighlight
 							underlayColor='#ddd'
@@ -167,16 +167,16 @@ class DepartmentAdd extends Component {
 								margin: 14,
 								fontWeight: 'bold'
 							}}>
-								 
+
 							</Text>
-						</TouchableHighlight>	
+						</TouchableHighlight>
 					</View>
 				</View>
-					
+
 				<ScrollView keyboardShouldPersistTaps={true}>
-					{errorCtrl}						
+					{errorCtrl}
 					{loader}
-					
+
 					<View style={{
 						flex: 1,
 						padding: 10,
@@ -204,8 +204,8 @@ class DepartmentAdd extends Component {
 							style={styles.loginInput}
 							value={this.state.address}
 							placeholder={appConfig.language.address}>
-						</TextInput>						
-						
+						</TextInput>
+
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
 							onChangeText={(text)=> this.setState({
@@ -215,7 +215,7 @@ class DepartmentAdd extends Component {
 							style={styles.loginInput}
 							value={this.state.phone}
 							placeholder={appConfig.language.phone}>
-						</TextInput>						
+						</TextInput>
 
 						<TextInput
 							underlineColorAndroid='rgba(0,0,0,0)'
@@ -242,7 +242,7 @@ class DepartmentAdd extends Component {
 							size="large"
 							style={styles.loader}
 						/>
-						
+
 						<Text>{this.state.bugANDROID}</Text>
 					</View>
 				</ScrollView>
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
         borderColor: 'darkblue',
         borderRadius: 5,
         color: 'black'
-    },		
+    },
     button: {
         height: 50,
         //backgroundColor: '#48BBEC',
