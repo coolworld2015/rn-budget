@@ -88,7 +88,7 @@ class Login extends Component {
                     <View style={styles.container}>
                         <View style={styles.headerContainer}>
                             <Text style={styles.heading}>
-                                RN-Base
+                                RN-Budget
                             </Text>
                         </View>
 
