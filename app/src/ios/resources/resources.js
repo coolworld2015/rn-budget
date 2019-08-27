@@ -17,12 +17,12 @@ import {
 
 import ListView from 'deprecated-react-native-listview';
 
-class Phones extends Component {
+class Resources extends Component {
     constructor(props) {
         super(props);
 
-        let ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2,
+        var ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 != r2
         });
 
         this.state = {
@@ -33,10 +33,30 @@ class Phones extends Component {
             recordsCount: 15,
             positionY: 0,
             searchQuery: '',
-            refreshing: false
+            refreshing: false,
+            width: Dimensions.get('window').width
         };
+    }
 
+    componentDidMount() {
+        appConfig.goods.showProgress = true;
+        this.setState({
+            width: Dimensions.get('window').width
+        });
         this.getItems();
+    }
+
+    componentWillUpdate() {
+        if (appConfig.goods.refresh) {
+            appConfig.goods.refresh = false;
+
+            this.setState({
+                showProgress: true,
+                resultsCount: 0
+            });
+
+            this.getItems();
+        }
     }
 
     getItems() {
@@ -63,47 +83,69 @@ class Phones extends Component {
                     dataSource: this.state.dataSource.cloneWithRows(responseData.sort(this.sort).slice(0, 15)),
                     resultsCount: responseData.length,
                     responseData: responseData,
-                    filteredItems: responseData,
-                    refreshing: false,
+                    filteredItems: responseData
                 });
             })
             .catch((error) => {
                 this.setState({
-                    serverError: true,
+                    serverError: true
                 });
+                setTimeout(() => {
+                    appConfig.onLogOut();
+                }, 1000);
             })
             .finally(() => {
                 this.setState({
-                    showProgress: false,
+                    showProgress: false
                 });
-            })
+            });
     }
 
     sort(a, b) {
-        let nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
+        var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
         if (nameA < nameB) {
-            return -1;
+            return -1
         }
         if (nameA > nameB) {
-            return 1;
+            return 1
         }
         return 0;
     }
 
     showDetails(rowData) {
-        this.props.navigation.navigate('PhoneDetails', {data: rowData});
+        this.props.navigator.push({
+            index: 21,
+            data: rowData
+        });
     }
 
-    goSearch() {
-        this.props.navigation.navigate('Search');
+    addItem() {
+        appConfig.goods.showProgress = false;
+        this.props.navigator.push({
+            index: 22
+        });
     }
 
     renderRow(rowData) {
         return (
-            <TouchableHighlight>
-                <View style={styles.row}>
-                    <Text style={styles.rowText}>
-                        {rowData.name}: {((+rowData.quantity).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
+            <TouchableHighlight
+                onPress={() => this.showDetails(rowData)}
+                underlayColor='#ddd'
+            >
+                <View style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    padding: 12,
+                    borderColor: '#D7D7D7',
+                    borderBottomWidth: 1,
+                    backgroundColor: '#fff'
+                }}>
+                    <Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
+                        {rowData.name}
+                    </Text>
+
+                    <Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
+                        {appConfig.language.price}: {((+rowData.price).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
                     </Text>
                 </View>
             </TouchableHighlight>
@@ -111,44 +153,44 @@ class Phones extends Component {
     }
 
     refreshData(event) {
-        if (this.state.showProgress === true) {
+        console.log(event.nativeEvent.contentOffset);
+        if (this.state.showProgress == true) {
             return;
         }
 
-        if (event.nativeEvent.contentOffset.y <= -100) {
+        if (event.nativeEvent.contentOffset.y <= -150) {
             this.setState({
                 showProgress: true,
                 resultsCount: 0,
-                recordsCount: 25,
+                recordsCount: 15,
                 positionY: 0,
                 searchQuery: ''
             });
 
             setTimeout(() => {
-                this.getItems();
+                this.getUsers()
             }, 300);
         }
 
-        if (this.state.filteredItems === undefined) {
+        if (this.state.filteredItems == undefined) {
             return;
         }
 
-        let items, positionY, recordsCount;
-        recordsCount = this.state.recordsCount;
-        positionY = this.state.positionY;
-        items = this.state.filteredItems.slice(0, recordsCount);
+        var recordsCount = this.state.recordsCount;
+        var positionY = this.state.positionY;
+        var items = this.state.filteredItems.slice(0, recordsCount);
 
-        if (event.nativeEvent.contentOffset.y >= positionY - 10) {
+        if (event.nativeEvent.contentOffset.y >= positionY) {
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(items),
                 recordsCount: recordsCount + 10,
-                positionY: positionY + 500
-            })
+                positionY: positionY + 400
+            });
         }
     }
 
     onChangeText(text) {
-        if (this.state.dataSource === undefined) {
+        if (this.state.dataSource == undefined) {
             return;
         }
 
@@ -160,6 +202,15 @@ class Phones extends Component {
             filteredItems: items,
             searchQuery: text
         })
+    }
+
+    refreshDataAndroid() {
+        this.setState({
+            showProgress: true,
+            resultsCount: 0
+        });
+
+        this.getItems();
     }
 
     goBack() {
@@ -177,17 +228,13 @@ class Phones extends Component {
         });
     }
 
-    onMenu() {
-        //appConfig.drawer.openDrawer();
-    }
-
     render() {
         let errorCtrl, loader, image;
 
         if (this.state.serverError) {
             errorCtrl = <Text style={styles.error}>
                 Something went wrong.
-            </Text>
+            </Text>;
         }
 
         if (this.state.showProgress) {
@@ -197,7 +244,7 @@ class Phones extends Component {
                     color="darkblue"
                     animating={true}
                 />
-            </View>
+            </View>;
         }
 
         if (this.state.searchQuery.length > 0) {
@@ -208,36 +255,41 @@ class Phones extends Component {
                     width: 20,
                     marginTop: 10
                 }}
-            />
+            />;
         }
 
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View>
-                        <TouchableWithoutFeedback onPress={this.onMenu.bind(this)}>
+                        <TouchableHighlight
+                            onPress={() => this.goBack()}
+                            underlayColor='darkblue'
+                        >
                             <View>
-                                <Image
-                                    style={styles.menu}
-                                    source={require('../../../img/menu.png')}
-                                />
+                                <Text style={styles.textSmall}>
+                                    {appConfig.language.back}
+                                </Text>
                             </View>
-                        </TouchableWithoutFeedback>
+                        </TouchableHighlight>
                     </View>
                     <View>
                         <TouchableWithoutFeedback>
                             <View>
                                 <Text style={styles.textLarge}>
-                                    Assets
+                                    {appConfig.language.resources}
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
                     <View>
                         <TouchableHighlight
-                            underlayColor='darkblue'>
+                            onPress={() => this.addItem()}
+                            underlayColor='darkblue'
+                        >
                             <View>
                                 <Text style={styles.textSmall}>
+                                    {appConfig.language.add}
                                 </Text>
                             </View>
                         </TouchableHighlight>
@@ -247,15 +299,33 @@ class Phones extends Component {
                 <View style={styles.iconForm}>
                     <View>
                         <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
                             onChangeText={this.onChangeText.bind(this)}
-                            style={styles.searchLarge}
+                            style={{
+                                height: 45,
+                                padding: 5,
+                                backgroundColor: 'white',
+                                borderWidth: 3,
+                                borderColor: 'white',
+                                borderRadius: 0,
+                                width: this.state.width * .90,
+                            }}
                             value={this.state.searchQuery}
-                            placeholder="Search here">
+                            placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
-                    <View style={styles.searchSmall}>
+                    <View style={{
+                        height: 45,
+                        backgroundColor: 'white',
+                        borderWidth: 3,
+                        borderColor: 'white',
+                        marginLeft: -10,
+                        paddingLeft: 5,
+                        width: this.state.width * .10,
+                    }}>
                         <TouchableWithoutFeedback
-                            onPress={() => this.clearSearchQuery()}>
+                            onPress={() => this.clearSearchQuery()}
+                        >
                             <View>
                                 {image}
                             </View>
@@ -267,8 +337,15 @@ class Phones extends Component {
 
                 {loader}
 
-                <ScrollView
-                    onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}>
+                <ScrollView onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}
+                            refreshControl={
+                                <RefreshControl
+                                    enabled={true}
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this.refreshDataAndroid.bind(this)}
+                                />
+                            }
+                >
                     <ListView
                         enableEmptySections={true}
                         dataSource={this.state.dataSource}
@@ -278,7 +355,7 @@ class Phones extends Component {
 
                 <View>
                     <Text style={styles.countFooter}>
-                        Records: {this.state.resultsCount.toString()}
+                        {appConfig.language.records} {this.state.resultsCount.toString()}
                     </Text>
                 </View>
             </View>
@@ -290,53 +367,37 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white',
+        backgroundColor: 'white'
     },
     iconForm: {
         flexDirection: 'row',
+        //borderColor: 'lightgray',
         borderColor: 'darkblue',
-        borderWidth: 3,
+        borderWidth: 3
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
         borderWidth: 0,
-        borderColor: 'whitesmoke',
-    },
-    searchLarge: {
-        height: 45,
-        padding: 5,
-        backgroundColor: 'white',
-        borderWidth: 3,
-        borderColor: 'white',
-        borderRadius: 0,
-        width: Dimensions.get('window').width * .90,
-    },
-    searchSmall: {
-        height: 45,
-        backgroundColor: 'white',
-        borderWidth: 3,
-        borderColor: 'white',
-        marginLeft: -5,
-        paddingLeft: 5,
-        width: Dimensions.get('window').width * .10,
+        borderColor: 'whitesmoke'
     },
     textSmall: {
         fontSize: 16,
         textAlign: 'center',
         margin: 14,
+        marginBottom: 10,
         fontWeight: 'bold',
-        color: 'white',
+        color: 'white'
     },
     textLarge: {
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
-        marginTop: 12,
-        marginLeft: -10,
+        marginRight: 20,
         fontWeight: 'bold',
-        color: 'white',
+        color: 'white'
     },
     textInput: {
         height: 45,
@@ -345,7 +406,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderWidth: 3,
         borderColor: 'lightgray',
-        borderRadius: 0,
+        borderRadius: 0
     },
     row: {
         flex: 1,
@@ -354,36 +415,32 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderColor: '#D7D7D7',
         borderBottomWidth: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#fff'
     },
     rowText: {
         backgroundColor: '#fff',
         color: 'black',
-        fontWeight: 'bold',
+        fontWeight: 'bold'
     },
     countFooter: {
         fontSize: 16,
         textAlign: 'center',
         padding: 10,
         borderColor: '#D7D7D7',
+        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: 'bold'
     },
     loader: {
         justifyContent: 'center',
-        height: 100,
+        height: 100
     },
     error: {
         color: 'red',
         paddingTop: 10,
-        textAlign: 'center',
-    },
-    menu: {
-        alignItems: 'center',
-        margin: 14,
-        marginTop: 16
+        textAlign: 'center'
     }
 });
 
-export default Phones;
+export default Resources;
