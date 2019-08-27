@@ -1,6 +1,8 @@
 import React from 'react';
 import {createBottomTabNavigator, createStackNavigator, createAppContainer} from 'react-navigation';
 
+import Assets from '../resources/assets';
+
 import Phones from '../phones/phones';
 import PhoneDetails from '../phones/phoneDetails';
 
@@ -14,6 +16,10 @@ import UserAdd from '../users/userAdd';
 import Audit from '../audit/audit';
 import AuditDetails from '../audit/auditDetails';
 import {Image} from 'react-native';
+
+const AssetsTab = createStackNavigator({
+    Assets
+});
 
 const PhonesTab = createStackNavigator({
     Phones,
@@ -41,7 +47,7 @@ class Quit extends React.Component {
 }
 
 const TabNavigator = createBottomTabNavigator({
-        Phones: PhonesTab,
+        Assets: AssetsTab,
         Users: UsersTab,
         Audit: AuditTab,
         Quit: Quit
@@ -52,7 +58,7 @@ const TabNavigator = createBottomTabNavigator({
                 const {routeName} = navigation.state;
                 let iconName;
 
-                if (routeName === 'Phones') {
+                if (routeName === 'Assets') {
                     iconName = <Image
                         source={require('../../../img/phones.png')}
                         style={{
