@@ -102,6 +102,20 @@ class Audit extends Component {
             return;
         }
 
+        if (event.nativeEvent.contentOffset.y <= -100) {
+            this.setState({
+                showProgress: true,
+                resultsCount: 0,
+                recordsCount: 25,
+                positionY: 0,
+                searchQuery: ''
+            });
+
+            setTimeout(() => {
+                this.getItems();
+            }, 300)
+        }
+
         if (this.state.filteredItems === undefined) {
             return;
         }
@@ -116,7 +130,7 @@ class Audit extends Component {
                 dataSource: this.state.dataSource.cloneWithRows(items),
                 recordsCount: recordsCount + 10,
                 positionY: positionY + 500
-            });
+            })
         }
     }
 
@@ -133,15 +147,6 @@ class Audit extends Component {
             filteredItems: items,
             searchQuery: text
         });
-    }
-
-    refreshDataAndroid() {
-        this.setState({
-            showProgress: true,
-            resultsCount: 0
-        });
-
-        this.getItems();
     }
 
     goBack() {
@@ -228,11 +233,10 @@ class Audit extends Component {
                 <View style={styles.iconForm}>
                     <View>
                         <TextInput
-                            underlineColorAndroid='rgba(0,0,0,0)'
                             onChangeText={this.onChangeText.bind(this)}
                             style={styles.searchLarge}
                             value={this.state.searchQuery}
-                            placeholder="Search here">
+                            placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
                     <View style={styles.searchSmall}>
@@ -250,15 +254,7 @@ class Audit extends Component {
                 {loader}
 
                 <ScrollView
-                    onScroll={this.refreshData.bind(this)}
-                    scrollEventThrottle={16}
-                    refreshControl={
-                        <RefreshControl
-                            enabled={true}
-                            refreshing={this.state.refreshing}
-                            onRefresh={this.refreshDataAndroid.bind(this)}
-                        />
-                    }>
+                    onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}>
                     <ListView
                         enableEmptySections={true}
                         dataSource={this.state.dataSource}

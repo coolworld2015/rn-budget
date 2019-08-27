@@ -88,7 +88,7 @@ class Login extends Component {
                     <View style={styles.container}>
                         <View style={styles.headerContainer}>
                             <Text style={styles.heading}>
-                                RN-Budget
+                                {appConfig.language.title}
                             </Text>
                         </View>
 
@@ -105,7 +105,7 @@ class Login extends Component {
                             value={this.state.username}
                             editable={!this.state.showProgress}
                             style={styles.loginInput}
-                            placeholder="Login">
+                            placeholder={appConfig.language.login}>
                         </TextInput>
 
                         <TextInput
@@ -116,7 +116,7 @@ class Login extends Component {
                             value={this.state.password}
                             editable={!this.state.showProgress}
                             style={styles.loginInput}
-                            placeholder="Password"
+                            placeholder={appConfig.language.pass}
                             secureTextEntry={true}>
                         </TextInput>
 
@@ -125,7 +125,7 @@ class Login extends Component {
                             disabled={this.state.showProgress}
                             style={styles.button}>
                             <Text style={styles.buttonText}>
-                                Log in
+                                {appConfig.language.enter}
                             </Text>
                         </TouchableHighlight>
 

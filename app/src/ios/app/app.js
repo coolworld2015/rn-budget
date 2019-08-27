@@ -16,23 +16,23 @@ class App extends Component {
             isLoggedIn: false
         };
 
-/*        window.appConfig = {
-            access_token: '',
-            url: 'http://jwt-budget.herokuapp.com/',
-            onLogOut: this.onLogOut.bind(this),
-            phones: {
-                items: [],
-                item: {},
-            },
-            users: {
-                items: [],
-                item: {},
-            },
-            audit: {
-                items: [],
-                item: {},
-            }
-        };*/
+        /*        window.appConfig = {
+                    access_token: '',
+                    url: 'http://jwt-budget.herokuapp.com/',
+                    onLogOut: this.onLogOut.bind(this),
+                    phones: {
+                        items: [],
+                        item: {},
+                    },
+                    users: {
+                        items: [],
+                        item: {},
+                    },
+                    audit: {
+                        items: [],
+                        item: {},
+                    }
+                };*/
 
         window.appConfig = {
             access_token: '',
@@ -42,8 +42,14 @@ class App extends Component {
                 showProgress: false
             },
             users: {
+                items: [],
+                item: {},
                 refresh: false,
                 showProgress: false
+            },
+            audit: {
+                items: [],
+                item: {},
             },
             goods: {
                 refresh: false,
@@ -242,16 +248,16 @@ class App extends Component {
                         })
                         .catch(error => console.log(error))
                 } else {
-                    appConfig.lang = json;
-                    appConfig.language = appConfig[json];
+                    appConfig.lang = 'rus';
+                    appConfig.language = appConfig['rus'];
                 }
             })
             .catch(error => console.log(error))
             .finally(() => {
                 this.setState({
                     isLoading: false
-                });
-            });
+                })
+            })
     }
 
     render() {
