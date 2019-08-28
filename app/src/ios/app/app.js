@@ -16,24 +16,6 @@ class App extends Component {
             isLoggedIn: false
         };
 
-        /*        window.appConfig = {
-                    access_token: '',
-                    url: 'http://jwt-budget.herokuapp.com/',
-                    onLogOut: this.onLogOut.bind(this),
-                    phones: {
-                        items: [],
-                        item: {},
-                    },
-                    users: {
-                        items: [],
-                        item: {},
-                    },
-                    audit: {
-                        items: [],
-                        item: {},
-                    }
-                };*/
-
         window.appConfig = {
             access_token: '',
             url: 'http://jwt-budget.herokuapp.com/',
@@ -43,13 +25,11 @@ class App extends Component {
             },
             users: {
                 items: [],
-                item: {},
-                refresh: false,
-                showProgress: false
+                item: {}
             },
             audit: {
                 items: [],
-                item: {},
+                item: {}
             },
             goods: {
                 refresh: false,

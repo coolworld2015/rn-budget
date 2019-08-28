@@ -304,7 +304,7 @@ class Users extends Component {
                         onPress={() => this.clearSearchQuery()}>
                         <View>
                             <Text style={styles.countFooter}>
-                                {appConfig.language.records} {this.state.resultsCount}
+                                {appConfig.language.records} {this.state.resultsCount.toString()}
                             </Text>
                         </View>
                     </TouchableWithoutFeedback>

@@ -11,8 +11,7 @@ import {
     ActivityIndicator,
     TextInput,
     Image,
-    Dimensions,
-    RefreshControl
+    Dimensions
 } from 'react-native';
 
 import ListView from 'deprecated-react-native-listview';
@@ -22,7 +21,7 @@ class Audit extends Component {
         super(props);
 
         let ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2,
+            rowHasChanged: (r1, r2) => r1 !== r2
         });
 
         this.state = {
@@ -63,19 +62,19 @@ class Audit extends Component {
                     dataSource: this.state.dataSource.cloneWithRows(responseData.slice(0, 15)),
                     resultsCount: responseData.length,
                     responseData: responseData,
-                    filteredItems: responseData,
+                    filteredItems: responseData
                 });
             })
             .catch((error) => {
                 this.setState({
-                    serverError: true,
+                    serverError: true
                 });
             })
             .finally(() => {
                 this.setState({
-                    showProgress: false,
+                    showProgress: false
                 });
-            })
+            });
     }
 
     showDetails(rowData) {
@@ -113,7 +112,7 @@ class Audit extends Component {
 
             setTimeout(() => {
                 this.getItems();
-            }, 300)
+            }, 300);
         }
 
         if (this.state.filteredItems === undefined) {
@@ -130,7 +129,7 @@ class Audit extends Component {
                 dataSource: this.state.dataSource.cloneWithRows(items),
                 recordsCount: recordsCount + 10,
                 positionY: positionY + 500
-            })
+            });
         }
     }
 
@@ -174,7 +173,7 @@ class Audit extends Component {
         if (this.state.serverError) {
             errorCtrl = <Text style={styles.error}>
                 Something went wrong.
-            </Text>
+            </Text>;
         }
 
         if (this.state.showProgress) {
@@ -184,7 +183,7 @@ class Audit extends Component {
                     color="darkblue"
                     animating={true}
                 />
-            </View>
+            </View>;
         }
 
         if (this.state.searchQuery.length > 0) {
@@ -193,9 +192,9 @@ class Audit extends Component {
                 style={{
                     height: 20,
                     width: 20,
-                    marginTop: 10,
+                    marginTop: 10
                 }}
-            />
+            />;
         }
 
         return (
@@ -224,6 +223,7 @@ class Audit extends Component {
                         <TouchableWithoutFeedback>
                             <View>
                                 <Text style={styles.textSmall}>
+                                    New
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
@@ -233,10 +233,11 @@ class Audit extends Component {
                 <View style={styles.iconForm}>
                     <View>
                         <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
                             onChangeText={this.onChangeText.bind(this)}
                             style={styles.searchLarge}
                             value={this.state.searchQuery}
-                            placeholder={appConfig.language.search}>
+                            placeholder="Search here">
                         </TextInput>
                     </View>
                     <View style={styles.searchSmall}>
@@ -276,7 +277,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white',
+        backgroundColor: 'white'
     },
     iconForm: {
         flexDirection: 'row',
@@ -320,7 +321,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
         marginTop: 12,
-        marginLeft: -10,
+        paddingLeft: 10,
         fontWeight: 'bold',
         color: 'white'
     },

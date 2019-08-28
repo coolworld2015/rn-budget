@@ -26,13 +26,13 @@ class UserAdd extends Component {
             this.state.pass === undefined || this.state.pass === '' ||
             this.state.description === undefined || this.state.description === '') {
             this.setState({
-                invalidValue: true,
+                invalidValue: true
             });
             return;
         }
 
         this.setState({
-            showProgress: true,
+            showProgress: true
         });
 
         fetch(appConfig.url + 'api/users/add', {
@@ -55,14 +55,14 @@ class UserAdd extends Component {
             })
             .catch((error) => {
                 this.setState({
-                    serverError: true,
-                })
+                    serverError: true
+                });
             })
             .finally(() => {
                 this.setState({
-                    showProgress: false,
-                })
-            })
+                    showProgress: false
+                });
+            });
     }
 
     goBack() {
@@ -75,13 +75,13 @@ class UserAdd extends Component {
         if (this.state.serverError) {
             errorCtrl = <Text style={styles.error}>
                 Something went wrong.
-            </Text>
+            </Text>;
         }
 
         if (this.state.invalidValue) {
             validCtrl = <Text style={styles.error}>
                 Value required - please provide.
-            </Text>
+            </Text>;
         }
 
         return (
@@ -93,7 +93,7 @@ class UserAdd extends Component {
                             underlayColor='darkblue'>
                             <View>
                                 <Text style={styles.textSmall}>
-                                    Back
+                                    {appConfig.language.back}
                                 </Text>
                             </View>
                         </TouchableHighlight>
@@ -102,7 +102,7 @@ class UserAdd extends Component {
                         <TouchableWithoutFeedback underlayColor='#ddd'>
                             <View>
                                 <Text style={styles.textLarge}>
-                                    New record
+                                    {appConfig.language.newrec}
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
@@ -120,11 +120,7 @@ class UserAdd extends Component {
                 </View>
 
                 <ScrollView keyboardShouldPersistTaps='always'>
-                    <View style={{
-                        flex: 1,
-                        padding: 10,
-                        justifyContent: 'flex-start'
-                    }}>
+                    <View style={styles.inputBlock}>
 
                         <TextInput
                             onChangeText={(text) => this.setState({
@@ -133,7 +129,7 @@ class UserAdd extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.name}
-                            placeholder="Login">
+                            placeholder={appConfig.language.login}>
                         </TextInput>
 
                         <TextInput
@@ -143,7 +139,7 @@ class UserAdd extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.pass}
-                            placeholder="Password">
+                            placeholder={appConfig.language.pass}>
                         </TextInput>
 
                         <TextInput
@@ -154,7 +150,7 @@ class UserAdd extends Component {
                             })}
                             style={styles.formInputArea}
                             value={this.state.description}
-                            placeholder="Description">
+                            placeholder={appConfig.language.description}>
                         </TextInput>
 
                         {validCtrl}
@@ -162,7 +158,9 @@ class UserAdd extends Component {
                         <TouchableHighlight
                             onPress={() => this.addItem()}
                             style={styles.button}>
-                            <Text style={styles.buttonText}>Add</Text>
+                            <Text style={styles.buttonText}>
+                                {appConfig.language.add}
+                            </Text>
                         </TouchableHighlight>
 
                         {errorCtrl}
@@ -170,12 +168,13 @@ class UserAdd extends Component {
                         <ActivityIndicator
                             animating={this.state.showProgress}
                             size="large"
+                            color="darkblue"
                             style={styles.loader}
                         />
                     </View>
                 </ScrollView>
             </View>
-        )
+        );
     }
 }
 
@@ -183,30 +182,30 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white',
+        backgroundColor: 'white'
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: 'darkblue',
         borderWidth: 0,
-        borderColor: 'whitesmoke',
+        borderColor: 'whitesmoke'
     },
     textSmall: {
-        fontSize: 20,
+        fontSize: 16,
         textAlign: 'center',
         margin: 16,
         fontWeight: 'bold',
-        color: 'white',
+        color: 'white'
     },
     textLarge: {
-        fontSize: 24,
+        fontSize: 20,
         textAlign: 'center',
         margin: 10,
         marginTop: 12,
-        marginRight: 40,
+        marginRight: 20,
         fontWeight: 'bold',
-        color: 'white',
+        color: 'white'
     },
     formInputBold: {
         height: 50,
@@ -217,7 +216,7 @@ const styles = StyleSheet.create({
         borderColor: 'lightgray',
         borderRadius: 5,
         color: 'black',
-        fontWeight: 'bold',
+        fontWeight: 'bold'
     },
     loginInput: {
         height: 50,
@@ -227,7 +226,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'lightgray',
         borderRadius: 5,
-        color: 'black',
+        color: 'black'
     },
     formInputArea: {
         height: 100,
@@ -237,28 +236,33 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'lightgray',
         borderRadius: 5,
-        color: 'black',
+        color: 'black'
+    },
+    inputBlock: {
+        flex: 1,
+        padding: 10,
+        justifyContent: 'flex-start'
     },
     button: {
         height: 50,
         backgroundColor: 'darkblue',
         alignSelf: 'stretch',
-        marginTop: 10,
+        marginTop: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 5,
+        borderRadius: 5
     },
     buttonText: {
         color: '#fff',
-        fontSize: 24,
-        fontWeight: 'bold',
+        fontSize: 20,
+        fontWeight: 'bold'
     },
     loader: {
-        marginTop: 20,
+        marginTop: 20
     },
     error: {
         color: 'red',
-        paddingTop: 10,
+        paddingTop: 15,
         textAlign: 'center'
     }
 });

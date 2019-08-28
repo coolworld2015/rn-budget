@@ -155,7 +155,7 @@ class UserAdd extends Component {
                             underlineColorAndroid='rgba(0,0,0,0)'
                             onChangeText={(text) => this.setState({
                                 pass: text,
-                                invalidValue: false,
+                                invalidValue: false
                             })}
                             style={styles.formInput}
                             value={this.state.pass}

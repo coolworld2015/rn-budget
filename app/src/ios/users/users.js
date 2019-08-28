@@ -23,7 +23,7 @@ class Users extends Component {
         super(props);
 
         let ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2,
+            rowHasChanged: (r1, r2) => r1 !== r2
         });
 
         this.state = {
@@ -35,7 +35,9 @@ class Users extends Component {
             positionY: 0,
             searchQuery: ''
         };
+    }
 
+    componentDidMount() {
         this.getItems();
     }
 
@@ -61,18 +63,18 @@ class Users extends Component {
                     resultsCount: responseData.length,
                     responseData: responseData,
                     filteredItems: responseData
-                })
+                });
             })
             .catch(() => {
                 this.setState({
                     serverError: true
-                })
+                });
             })
             .finally(() => {
                 this.setState({
                     showProgress: false
-                })
-            })
+                });
+            });
     }
 
     sort(a, b) {
@@ -84,6 +86,45 @@ class Users extends Component {
             return 1;
         }
         return 0;
+    }
+
+    deleteItem(id) {
+        this.setState({
+            showProgress: true
+        });
+
+        fetch(appConfig.url + 'api/users/delete', {
+            method: 'post',
+            body: JSON.stringify({
+                id: id,
+                authorization: appConfig.access_token
+            }),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then((response) => response.json())
+            .then((responseData) => {
+                if (responseData.text) {
+                    appConfig.users.refresh = true;
+                    this.props.navigator.pop();
+                } else {
+                    this.setState({
+                        badCredentials: true
+                    });
+                }
+            })
+            .catch(() => {
+                this.setState({
+                    serverError: true
+                });
+            })
+            .finally(() => {
+                this.setState({
+                    showProgress: false
+                });
+            });
     }
 
     showDetails(rowData) {
@@ -106,7 +147,7 @@ class Users extends Component {
                     </Text>
                 </View>
             </TouchableHighlight>
-        )
+        );
     }
 
     refreshData(event) {
@@ -142,7 +183,7 @@ class Users extends Component {
                 dataSource: this.state.dataSource.cloneWithRows(items),
                 recordsCount: recordsCount + 10,
                 positionY: positionY + 500
-            })
+            });
         }
     }
 
@@ -158,7 +199,7 @@ class Users extends Component {
             resultsCount: items.length,
             filteredItems: items,
             searchQuery: text
-        })
+        });
     }
 
     clearSearchQuery() {
@@ -169,7 +210,7 @@ class Users extends Component {
             positionY: 0,
             recordsCount: 25,
             searchQuery: ''
-        })
+        });
     }
 
     onMenu() {
@@ -182,7 +223,7 @@ class Users extends Component {
         if (this.state.serverError) {
             errorCtrl = <Text style={styles.error}>
                 Something went wrong.
-            </Text>
+            </Text>;
         }
 
         if (this.state.showProgress) {
@@ -192,7 +233,7 @@ class Users extends Component {
                     color="darkblue"
                     animating={true}
                 />
-            </View>
+            </View>;
         }
 
         if (this.state.searchQuery.length > 0) {
@@ -212,10 +253,9 @@ class Users extends Component {
                     <View>
                         <TouchableWithoutFeedback onPress={this.onMenu.bind(this)}>
                             <View>
-                                <Image
-                                    style={styles.menu}
-                                    source={require('../../../img/menu.png')}
-                                />
+                                <Text style={styles.textSmall}>
+                                    {appConfig.language.back}
+                                </Text>
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
@@ -223,7 +263,7 @@ class Users extends Component {
                         <TouchableWithoutFeedback>
                             <View>
                                 <Text style={styles.textLarge}>
-                                    Users
+                                    {appConfig.language.users}
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
@@ -234,7 +274,7 @@ class Users extends Component {
                             underlayColor='darkblue'>
                             <View>
                                 <Text style={styles.textSmall}>
-                                    New
+                                    {appConfig.language.add}
                                 </Text>
                             </View>
                         </TouchableHighlight>
@@ -247,7 +287,7 @@ class Users extends Component {
                             onChangeText={this.onChangeText.bind(this)}
                             style={styles.searchLarge}
                             value={this.state.searchQuery}
-                            placeholder="Search here">
+                            placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
                     <View style={styles.searchSmall}>
@@ -279,13 +319,13 @@ class Users extends Component {
                         onPress={() => this.clearSearchQuery()}>
                         <View>
                             <Text style={styles.countFooter}>
-                                Records: {this.state.resultsCount}
+                                {appConfig.language.records} {this.state.resultsCount.toString()}
                             </Text>
                         </View>
                     </TouchableWithoutFeedback>
                 </View>
             </View>
-        )
+        );
     }
 }
 
@@ -293,19 +333,19 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white',
+        backgroundColor: 'white'
     },
     iconForm: {
         flexDirection: 'row',
         borderColor: 'darkblue',
-        borderWidth: 3,
+        borderWidth: 3
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: 'darkblue',
         borderWidth: 0,
-        borderColor: 'whitesmoke',
+        borderColor: 'whitesmoke'
     },
     searchLarge: {
         height: 45,
@@ -314,7 +354,7 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: 'white',
         borderRadius: 0,
-        width: Dimensions.get('window').width * .90,
+        width: Dimensions.get('window').width * .90
     },
     searchSmall: {
         height: 45,
@@ -323,14 +363,14 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         marginLeft: -5,
         paddingLeft: 5,
-        width: Dimensions.get('window').width * .10,
+        width: Dimensions.get('window').width * .10
     },
     textSmall: {
         fontSize: 16,
         textAlign: 'center',
         margin: 14,
         fontWeight: 'bold',
-        color: 'white',
+        color: 'white'
     },
     textLarge: {
         fontSize: 20,
@@ -339,7 +379,7 @@ const styles = StyleSheet.create({
         marginTop: 12,
         paddingLeft: 10,
         fontWeight: 'bold',
-        color: 'white',
+        color: 'white'
     },
     textInput: {
         height: 45,
@@ -348,7 +388,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderWidth: 3,
         borderColor: 'lightgray',
-        borderRadius: 0,
+        borderRadius: 0
     },
     row: {
         flex: 1,
@@ -357,12 +397,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderColor: '#D7D7D7',
         borderBottomWidth: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#fff'
     },
     rowText: {
         backgroundColor: '#fff',
         color: 'black',
-        fontWeight: 'bold',
+        fontWeight: 'bold'
     },
     countFooter: {
         fontSize: 16,
@@ -371,11 +411,11 @@ const styles = StyleSheet.create({
         borderColor: '#D7D7D7',
         backgroundColor: 'darkblue',
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: 'bold'
     },
     loader: {
         justifyContent: 'center',
-        height: 100,
+        height: 100
     },
     error: {
         color: 'red',
