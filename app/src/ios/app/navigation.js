@@ -60,17 +60,17 @@ const TabNavigator = createBottomTabNavigator({
 
                 if (routeName === 'Assets') {
                     iconName = <Image
-                        source={require('../../../img/phones.png')}
+                        source={require('../../../img/assets.png')}
                         style={{
-                            height: 15,
-                            width: 15,
+                            height: 30,
+                            width: 30,
                             margin: 0,
                         }}
                     />
                 }
                 if (routeName === 'Users') {
                     iconName = <Image
-                        source={require('../../../img/users.png')}
+                        source={require('../../../img/outputs.png')}
                         style={{
                             height: 20,
                             width: 20,
@@ -80,7 +80,7 @@ const TabNavigator = createBottomTabNavigator({
                 }
                 if (routeName === 'Audit') {
                     iconName = <Image
-                        source={require('../../../img/clock.png')}
+                        source={require('../../../img/inputs.png')}
                         style={{
                             height: 20,
                             width: 20,
@@ -90,7 +90,7 @@ const TabNavigator = createBottomTabNavigator({
                 }
                 if (routeName === 'Quit') {
                     iconName = <Image
-                        source={require('../../../img/log-out.png')}
+                        source={require('../../../img/other.png')}
                         style={{
                             height: 20,
                             width: 20,
