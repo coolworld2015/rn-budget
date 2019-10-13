@@ -10,6 +10,16 @@ import {StackViewStyleInterpolator} from 'react-navigation-stack';
 
 import Assets from '../resources/assets';
 
+import Inputs from '../inputs/inputs';
+import InputDetails from '../inputs/inputDetails';
+import InputAdd from '../inputs/inputAdd';
+
+import Outputs from '../outputs/outputs';
+import OutputDetails from '../outputs/outputDetails';
+import OutputAdd from '../outputs/outputAdd';
+
+import Other from './other';
+
 import Users from '../users/users';
 import UserDetails from '../users/userDetails';
 import UserAdd from '../users/userAdd';
@@ -18,7 +28,7 @@ import Audit from '../audit/audit';
 import AuditDetails from '../audit/auditDetails';
 
 const AssetsTab = createStackNavigator({
-    Assets
+        Assets
     }, {
         headerMode: 'none',
         transitionConfig: () => ({
@@ -29,10 +39,10 @@ const AssetsTab = createStackNavigator({
     }
 );
 
-const UsersTab = createStackNavigator({
-        Users,
-        UserDetails,
-        UserAdd
+const OutputsTab = createStackNavigator({
+        Outputs,
+        OutputDetails,
+        OutputAdd
     }, {
         headerMode: 'none',
         transitionConfig: () => ({
@@ -43,9 +53,22 @@ const UsersTab = createStackNavigator({
     }
 );
 
-const AuditTab = createStackNavigator({
-        Audit,
-        AuditDetails
+const InputsTab = createStackNavigator({
+        Inputs,
+        InputDetails,
+        InputAdd
+    }, {
+        headerMode: 'none',
+        transitionConfig: () => ({
+            screenInterpolator: sceneProps => {
+                return StackViewStyleInterpolator.forHorizontal(sceneProps);
+            }
+        })
+    }
+);
+
+const OtherTab = createStackNavigator({
+        Other
     }, {
         headerMode: 'none',
         transitionConfig: () => ({
@@ -93,9 +116,9 @@ const tabBarOptions = {
 
 const TabNavigator = createMaterialTopTabNavigator({
         Assets: AssetsTab,
-        Users: UsersTab,
-        Audit: AuditTab,
-        Quit: Logout
+        Outputs: OutputsTab,
+        Inputs: InputsTab,
+        Other: OtherTab
     },
     {
         tabBarPosition: 'top',
