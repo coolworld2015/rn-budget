@@ -190,29 +190,17 @@ class Login extends Component {
 }
 
 const styles = StyleSheet.create({
-    AppContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 20,
-    },
     container: {
         paddingTop: 40,
         padding: 10,
         alignItems: 'center',
-        flex: 1
+        flex: 1,
     },
     logo: {
         width: 150,
         height: 150,
         paddingTop: 140,
-        borderRadius: 20,
-        marginBottom: 10
+        borderRadius: 20
     },
     headerContainer: {
         justifyContent: 'center',
@@ -227,38 +215,26 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center'
     },
-    footer: {
-        fontSize: 30,
-        marginTop: 10,
-    },
-    loginInput1: {
-        height: 50,
-        marginTop: 10,
-        padding: 4,
-        fontSize: 18,
-        borderWidth: 1,
-        borderColor: '#48BBEC',
-        borderRadius: 0,
-        color: '#48BBEC'
-    },
     loginInput: {
         height: 50,
+        width: Dimensions.get('window').width * .90,
         marginTop: 10,
         padding: 4,
         fontSize: 18,
         borderWidth: 1,
         borderColor: 'lightgray',
-        borderRadius: 0,
+        borderRadius: 5,
         color: 'black',
         backgroundColor: 'white'
     },
     button: {
         height: 50,
-        //backgroundColor: '#48BBEC',
+        width: Dimensions.get('window').width * .92,
         backgroundColor: 'darkblue',
         borderColor: '#48BBEC',
         alignSelf: 'stretch',
-        marginTop: 10,
+        marginTop: 20,
+        margin: 5,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 5

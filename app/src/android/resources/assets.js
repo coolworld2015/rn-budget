@@ -331,17 +331,33 @@ const styles = StyleSheet.create({
     },
     iconForm: {
         flexDirection: 'row',
-        //borderColor: 'lightgray',
         borderColor: 'darkblue',
-        borderWidth: 3
+        borderWidth: 4
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
-        borderWidth: 0,
-        borderColor: 'whitesmoke'
+        borderTopWidth: 1,
+        borderColor: 'white'
+    },
+    searchLarge: {
+        height: 45,
+        padding: 5,
+        backgroundColor: 'white',
+        borderWidth: 3,
+        borderColor: 'white',
+        borderRadius: 0,
+        width: Dimensions.get('window').width * .90
+    },
+    searchSmall: {
+        height: 45,
+        backgroundColor: 'white',
+        borderWidth: 3,
+        borderColor: 'white',
+        marginLeft: -5,
+        paddingLeft: 5,
+        width: Dimensions.get('window').width * .10
     },
     textSmall: {
         fontSize: 16,
@@ -354,7 +370,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
-        marginRight: 20,
+        marginTop: 12,
+        paddingLeft: 10,
         fontWeight: 'bold',
         color: 'white'
     },
@@ -371,7 +388,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         padding: 20,
-        paddingLeft: 12,
         alignItems: 'center',
         borderColor: '#D7D7D7',
         borderBottomWidth: 1,
@@ -387,7 +403,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         padding: 10,
         borderColor: '#D7D7D7',
-        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
         color: 'white',
         fontWeight: 'bold'
@@ -400,6 +415,11 @@ const styles = StyleSheet.create({
         color: 'red',
         paddingTop: 10,
         textAlign: 'center'
+    },
+    menu: {
+        alignItems: 'center',
+        margin: 14,
+        marginTop: 16
     }
 });
 
