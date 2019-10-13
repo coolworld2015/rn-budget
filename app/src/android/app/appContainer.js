@@ -20,6 +20,10 @@ import OutputAdd from '../outputs/outputAdd';
 
 import Other from './other';
 
+import Projects from '../projects/projects';
+import ProjectDetails from '../projects/projectDetails';
+import ProjectAdd from '../projects/projectAdd';
+
 import Users from '../users/users';
 import UserDetails from '../users/userDetails';
 import UserAdd from '../users/userAdd';
@@ -68,7 +72,8 @@ const InputsTab = createStackNavigator({
 );
 
 const OtherTab = createStackNavigator({
-        Other
+        Other,
+        Projects
     }, {
         headerMode: 'none',
         transitionConfig: () => ({

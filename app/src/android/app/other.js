@@ -42,9 +42,7 @@ class Other extends Component {
     showDetails(rowData) {
         switch (rowData.id) {
             case 1:
-                this.props.navigator.push({
-                    index: 1,
-                });
+                this.props.navigation.navigate('Projects');
                 break;
 
             case 10:
