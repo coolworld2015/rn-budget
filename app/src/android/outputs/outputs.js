@@ -37,26 +37,30 @@ class Outputs extends Component {
             total: 0,
             width: Dimensions.get('window').width
         };
-    }
-
-    componentDidMount() {
         appConfig.outputs.showProgress = true;
-        this.setState({
-            width: Dimensions.get('window').width
-        });
         this.getItems();
     }
 
-    componentWillUpdate() {
+    componentDidMount() {
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            () => {
+                this.refreshComponent()
+            }
+        )
+    }
+
+    refreshComponent() {
         if (appConfig.outputs.refresh) {
             appConfig.outputs.refresh = false;
 
             this.setState({
-                showProgress: true,
-                resultsCount: 0
+                showProgress: true
             });
 
-            this.getItems();
+            setTimeout(() => {
+                this.getItems()
+            }, 500);
         }
     }
 
@@ -115,17 +119,12 @@ class Outputs extends Component {
     }
 
     showDetails(rowData) {
-        this.props.navigator.push({
-            index: 1,
-            data: rowData
-        });
+        this.props.navigation.navigate('OutputDetails', {data: rowData});
     }
 
     addItem() {
         appConfig.outputs.showProgress = false;
-        this.props.navigator.push({
-            index: 2
-        });
+        this.props.navigation.navigate('OutputAdd');
     }
 
     renderRow(rowData) {

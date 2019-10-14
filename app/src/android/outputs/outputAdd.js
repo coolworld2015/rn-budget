@@ -16,8 +16,8 @@ class OutputAdd extends Component {
         super(props);
 
         BackHandler.addEventListener('hardwareBackPress', () => {
-            if (this.props.navigator) {
-                this.props.navigator.pop();
+            if (this.props.navigation) {
+                this.props.navigation.pop();
             }
             return true;
         });
@@ -257,7 +257,7 @@ class OutputAdd extends Component {
                 appConfig.projects.refresh = true;
                 appConfig.departments.refresh = true;
                 appConfig.employees.refresh = true;
-                this.props.navigator.pop();
+                this.props.navigation.pop();
             })
             .catch((error) => {
                 this.setState({
@@ -272,7 +272,7 @@ class OutputAdd extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
