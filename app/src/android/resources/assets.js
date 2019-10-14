@@ -19,7 +19,7 @@ class Store extends Component {
     constructor(props) {
         super(props);
 
-        var ds = new ListView.DataSource({
+        let ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 != r2
         });
 
@@ -34,25 +34,29 @@ class Store extends Component {
             refreshing: false,
             width: Dimensions.get('window').width
         };
-    }
-
-    componentDidMount() {
-        this.setState({
-            width: Dimensions.get('window').width
-        });
         this.getItems();
     }
 
-    componentWillUpdate() {
+    componentDidMount() {
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            () => {
+                this.refreshComponent()
+            }
+        )
+    }
+
+    refreshComponent() {
         if (appConfig.assets.refresh) {
             appConfig.assets.refresh = false;
 
             this.setState({
-                showProgress: true,
-                resultsCount: 0
+                showProgress: true
             });
 
-            this.getItems();
+            setTimeout(() => {
+                this.getItems()
+            }, 500);
         }
     }
 
@@ -327,7 +331,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
     },
     iconForm: {
         flexDirection: 'row',
