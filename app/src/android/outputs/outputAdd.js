@@ -191,25 +191,25 @@ class OutputAdd extends Component {
     }
 
     addItem() {
-        if (appConfig.outputs.showProgress == true) {
+        if (appConfig.outputs.showProgress === true) {
             return;
         }
 
-        if (this.state.projectID == undefined ||
-            this.state.projectName == undefined ||
-            this.state.employeeID == undefined ||
-            this.state.employeeName == undefined ||
-            this.state.departmentID == undefined ||
-            this.state.departmentName == undefined ||
-            this.state.productID == undefined ||
-            this.state.productName == undefined ||
+        if (this.state.projectID === undefined ||
+            this.state.projectName === undefined ||
+            this.state.employeeID === undefined ||
+            this.state.employeeName === undefined ||
+            this.state.departmentID === undefined ||
+            this.state.departmentName === undefined ||
+            this.state.productID === undefined ||
+            this.state.productName === undefined ||
 
-            this.state.invoiceID == undefined ||
-            this.state.date == undefined ||
-            this.state.quantity == undefined ||
-            this.state.description == undefined ||
+            this.state.invoiceID === undefined ||
+            this.state.date === undefined ||
+            this.state.quantity === undefined ||
+            this.state.description === undefined ||
 
-            this.isNumber(this.state.quantity) != true) {
+            this.isNumber(this.state.quantity) !== true) {
             this.setState({
                 invalidValue: true
             });
@@ -251,7 +251,7 @@ class OutputAdd extends Component {
             }
         })
             .then((response) => response.json())
-            .then((responseData) => {
+            .then(() => {
                 appConfig.outputs.refresh = true;
                 appConfig.assets.refresh = true;
                 appConfig.projects.refresh = true;
@@ -276,7 +276,7 @@ class OutputAdd extends Component {
     }
 
     render() {
-        var errorCtrl = <View/>;
+        let errorCtrl = <View/>;
 
         if (this.state.serverError) {
             errorCtrl = <Text style={styles.error}>
@@ -284,7 +284,7 @@ class OutputAdd extends Component {
             </Text>;
         }
 
-        var validCtrl = <View/>;
+        let validCtrl = <View/>;
 
         if (this.state.invalidValue) {
             validCtrl = <Text style={styles.error}>
@@ -292,7 +292,7 @@ class OutputAdd extends Component {
             </Text>;
         }
 
-        var loader = <View/>;
+        let loader = <View/>;
 
         if (this.state.showProgress) {
             loader = <ActivityIndicator
@@ -408,7 +408,7 @@ class OutputAdd extends Component {
 
                                     onValueChange={(value) => {
                                         let arr = [].concat(this.state.projects);
-                                        let project = arr.filter((el) => el.id == value);
+                                        let project = arr.filter((el) => el.id === value);
                                         this.setState({
                                             project: value,
                                             projectID: project[0].id,
@@ -431,24 +431,27 @@ class OutputAdd extends Component {
                             marginTop: 10,
                             margin: 10,
                             marginBottom: 0,
-                            flex: 1,
+                            flex: 1
                         }}>
                             <Picker style={{marginTop: 0}}
                                     selectedValue={this.state.department}
 
                                     onValueChange={(value) => {
                                         let arr = [].concat(this.state.departments);
-                                        let department = arr.filter((el) => el.id == value);
+                                        let department = arr.filter((el) => el.id === value);
 
                                         let arrEmployees = [].concat(this.state.employees);
-                                        let employees = arrEmployees.filter((el) => el.departmentID == value);
+                                        let employees = arrEmployees.filter((el) => el.departmentID === value);
 
                                         this.setState({
                                             department: value,
                                             departmentID: department[0].id,
                                             departmentName: department[0].name,
                                             invalidValue: false,
-                                            employeesFiltered: employees
+                                            employeesFiltered: employees,
+
+                                            employeeID: employees[0].id,
+                                            employeeName: employees[0].name,
                                         })
                                     }}>
 
@@ -473,7 +476,7 @@ class OutputAdd extends Component {
 
                                     onValueChange={(value) => {
                                         let arr = [].concat(this.state.employeesFiltered);
-                                        let employee = arr.filter((el) => el.id == value);
+                                        let employee = arr.filter((el) => el.id === value);
 
                                         this.setState({
                                             employee: value,
