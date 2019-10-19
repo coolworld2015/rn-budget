@@ -20,7 +20,7 @@ class Store extends Component {
         super(props);
 
         let ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 != r2
+            rowHasChanged: (r1, r2) => r1 !== r2
         });
 
         this.state = {
@@ -264,31 +264,14 @@ class Store extends Component {
                         <TextInput
                             underlineColorAndroid='rgba(0,0,0,0)'
                             onChangeText={this.onChangeText.bind(this)}
-                            style={{
-                                height: 45,
-                                padding: 5,
-                                backgroundColor: 'white',
-                                borderWidth: 3,
-                                borderColor: 'white',
-                                borderRadius: 0,
-                                width: this.state.width * .90,
-                            }}
+                            style={styles.searchLarge}
                             value={this.state.searchQuery}
                             placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
-                    <View style={{
-                        height: 45,
-                        backgroundColor: 'white',
-                        borderWidth: 3,
-                        borderColor: 'white',
-                        marginLeft: -10,
-                        paddingLeft: 5,
-                        width: this.state.width * .10,
-                    }}>
+                    <View style={styles.searchSmall}>
                         <TouchableWithoutFeedback
-                            onPress={() => this.clearSearchQuery()}
-                        >
+                            onPress={() => this.clearSearchQuery()}>
                             <View>
                                 {image}
                             </View>
@@ -307,8 +290,7 @@ class Store extends Component {
                                     refreshing={this.state.refreshing}
                                     onRefresh={this.refreshDataAndroid.bind(this)}
                                 />
-                            }
-                >
+                            }>
                     <ListView
                         enableEmptySections={true}
                         dataSource={this.state.dataSource}
@@ -336,7 +318,7 @@ const styles = StyleSheet.create({
     iconForm: {
         flexDirection: 'row',
         borderColor: 'darkblue',
-        borderWidth: 4
+        borderWidth: 3
     },
     header: {
         flexDirection: 'row',
@@ -367,6 +349,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         margin: 14,
+        marginBottom: 10,
         fontWeight: 'bold',
         color: 'white'
     },
@@ -374,8 +357,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
-        marginTop: 12,
-        paddingLeft: 10,
+        paddingLeft: 20,
         fontWeight: 'bold',
         color: 'white'
     },

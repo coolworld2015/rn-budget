@@ -37,27 +37,30 @@ class Inputs extends Component {
             total: 0,
             width: Dimensions.get('window').width
         };
-    }
-
-    componentDidMount() {
         appConfig.inputs.showProgress = true;
-        this.setState({
-            width: Dimensions.get('window').width
-        });
         this.getItems();
     }
 
-    componentWillUpdate() {
-        if (appConfig.inputs.refresh) {
-            appConfig.inputs.refresh = false;
-            appConfig.assets.refresh = true;
+    componentDidMount() {
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            () => {
+                this.refreshComponent()
+            }
+        )
+    }
+
+    refreshComponent() {
+        if (appConfig.outputs.refresh) {
+            appConfig.outputs.refresh = false;
 
             this.setState({
-                showProgress: true,
-                resultsCount: 0
+                showProgress: true
             });
 
-            this.getItems();
+            setTimeout(() => {
+                this.getItems()
+            }, 500);
         }
     }
 
@@ -116,25 +119,19 @@ class Inputs extends Component {
     }
 
     showDetails(rowData) {
-        this.props.navigator.push({
-            index: 1,
-            data: rowData
-        });
+        this.props.navigation.navigate('InputDetails', {data: rowData});
     }
 
     addItem() {
-        appConfig.inputs.showProgress = false;
-        this.props.navigator.push({
-            index: 2
-        });
+        appConfig.outputs.showProgress = false;
+        this.props.navigation.navigate('InputAdd');
     }
 
     renderRow(rowData) {
         return (
             <TouchableHighlight
                 onPress={() => this.showDetails(rowData)}
-                underlayColor='#ddd'
-            >
+                underlayColor='#ddd'>
                 <View style={styles.row}>
                     <Text style={styles.rowText}>
                         {rowData.invoiceID} - {rowData.project} - {(rowData.date).split(' ')[0]}
@@ -303,31 +300,14 @@ class Inputs extends Component {
                         <TextInput
                             underlineColorAndroid='rgba(0,0,0,0)'
                             onChangeText={this.onChangeText.bind(this)}
-                            style={{
-                                height: 45,
-                                padding: 5,
-                                backgroundColor: 'white',
-                                borderWidth: 3,
-                                borderColor: 'white',
-                                borderRadius: 0,
-                                width: this.state.width * .90,
-                            }}
+                            style={styles.searchLarge}
                             value={this.state.searchQuery}
                             placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
-                    <View style={{
-                        height: 45,
-                        backgroundColor: 'white',
-                        borderWidth: 3,
-                        borderColor: 'white',
-                        marginLeft: -10,
-                        paddingLeft: 5,
-                        width: this.state.width * .10,
-                    }}>
+                    <View style={styles.searchSmall}>
                         <TouchableWithoutFeedback
-                            onPress={() => this.clearSearchQuery()}
-                        >
+                            onPress={() => this.clearSearchQuery()}>
                             <View>
                                 {image}
                             </View>
@@ -346,8 +326,7 @@ class Inputs extends Component {
                                     refreshing={this.state.refreshing}
                                     onRefresh={this.refreshDataAndroid.bind(this)}
                                 />
-                            }
-                >
+                            }>
                     <ListView
                         enableEmptySections={true}
                         dataSource={this.state.dataSource}
@@ -384,6 +363,24 @@ const styles = StyleSheet.create({
         backgroundColor: 'darkblue',
         borderTopWidth: 1,
         borderColor: 'white'
+    },
+    searchLarge: {
+        height: 45,
+        padding: 5,
+        backgroundColor: 'white',
+        borderWidth: 3,
+        borderColor: 'white',
+        borderRadius: 0,
+        width: Dimensions.get('window').width * .90
+    },
+    searchSmall: {
+        height: 45,
+        backgroundColor: 'white',
+        borderWidth: 3,
+        borderColor: 'white',
+        marginLeft: -5,
+        paddingLeft: 5,
+        width: Dimensions.get('window').width * .10
     },
     textSmall: {
         fontSize: 16,

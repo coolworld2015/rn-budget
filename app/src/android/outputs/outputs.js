@@ -21,8 +21,8 @@ class Outputs extends Component {
     constructor(props) {
         super(props);
 
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 != r2
+        let ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2
         });
 
         this.state = {
@@ -131,8 +131,7 @@ class Outputs extends Component {
         return (
             <TouchableHighlight
                 onPress={() => this.showDetails(rowData)}
-                underlayColor='#ddd'
-            >
+                underlayColor='#ddd'>
                 <View style={styles.row}>
                     <Text style={styles.rowText}>
                         {rowData.invoiceID} - {rowData.project} - {(rowData.date).split(' ')[0]}
@@ -285,8 +284,7 @@ class Outputs extends Component {
                     <View>
                         <TouchableHighlight
                             onPress={() => this.addItem()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <View>
                                 <Text style={styles.textSmall}>
                                     {appConfig.language.add}
@@ -301,31 +299,14 @@ class Outputs extends Component {
                         <TextInput
                             underlineColorAndroid='rgba(0,0,0,0)'
                             onChangeText={this.onChangeText.bind(this)}
-                            style={{
-                                height: 45,
-                                padding: 5,
-                                backgroundColor: 'white',
-                                borderWidth: 3,
-                                borderColor: 'white',
-                                borderRadius: 0,
-                                width: this.state.width * .90,
-                            }}
+                            style={styles.searchLarge}
                             value={this.state.searchQuery}
                             placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
-                    <View style={{
-                        height: 45,
-                        backgroundColor: 'white',
-                        borderWidth: 3,
-                        borderColor: 'white',
-                        marginLeft: -10,
-                        paddingLeft: 5,
-                        width: this.state.width * .10,
-                    }}>
+                    <View style={styles.searchSmall}>
                         <TouchableWithoutFeedback
-                            onPress={() => this.clearSearchQuery()}
-                        >
+                            onPress={() => this.clearSearchQuery()}>
                             <View>
                                 {image}
                             </View>
@@ -344,8 +325,7 @@ class Outputs extends Component {
                                     refreshing={this.state.refreshing}
                                     onRefresh={this.refreshDataAndroid.bind(this)}
                                 />
-                            }
-                >
+                            }>
                     <ListView
                         enableEmptySections={true}
                         dataSource={this.state.dataSource}
@@ -368,11 +348,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
     },
     iconForm: {
         flexDirection: 'row',
-        //borderColor: 'lightgray',
         borderColor: 'darkblue',
         borderWidth: 3
     },
@@ -382,6 +361,24 @@ const styles = StyleSheet.create({
         backgroundColor: 'darkblue',
         borderTopWidth: 1,
         borderColor: 'white'
+    },
+    searchLarge: {
+        height: 45,
+        padding: 5,
+        backgroundColor: 'white',
+        borderWidth: 3,
+        borderColor: 'white',
+        borderRadius: 0,
+        width: Dimensions.get('window').width * .90
+    },
+    searchSmall: {
+        height: 45,
+        backgroundColor: 'white',
+        borderWidth: 3,
+        borderColor: 'white',
+        marginLeft: -5,
+        paddingLeft: 5,
+        width: Dimensions.get('window').width * .10
     },
     textSmall: {
         fontSize: 16,
@@ -438,7 +435,7 @@ const styles = StyleSheet.create({
     error: {
         color: 'red',
         paddingTop: 10,
-        textAlign: 'center'
+        textAlign: 'center',
     }
 });
 

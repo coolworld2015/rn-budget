@@ -438,17 +438,20 @@ class InputAdd extends Component {
 
                                     onValueChange={(value) => {
                                         let arr = [].concat(this.state.departments);
-                                        let department = arr.filter((el) => el.id == value);
+                                        let department = arr.filter((el) => el.id === value);
 
                                         let arrEmployees = [].concat(this.state.employees);
-                                        let employees = arrEmployees.filter((el) => el.departmentID == value);
+                                        let employees = arrEmployees.filter((el) => el.departmentID === value);
 
                                         this.setState({
                                             department: value,
                                             departmentID: department[0].id,
                                             departmentName: department[0].name,
                                             invalidValue: false,
-                                            employeesFiltered: employees
+                                            employeesFiltered: employees,
+
+                                            employeeID: employees[0].id,
+                                            employeeName: employees[0].name
                                         })
                                     }}>
 
