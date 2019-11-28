@@ -382,6 +382,7 @@ class OutputAdd extends Component {
                             })}
                             style={styles.loginInputBold}
                             value={this.state.invoiceID}
+                            placeholderTextColor='gray'
                             placeholder="ID">
                         </TextInput>
 
@@ -390,6 +391,7 @@ class OutputAdd extends Component {
                             editable={false}
                             style={styles.loginInputBold}
                             value={this.state.date}
+                            placeholderTextColor='gray'
                             placeholder="date">
                         </TextInput>
                     </View>
@@ -403,22 +405,21 @@ class OutputAdd extends Component {
                             marginBottom: 0,
                             flex: 1,
                         }}>
-                            <Picker style={{marginTop: 0}}
-                                    selectedValue={this.state.project}
-
-                                    onValueChange={(value) => {
-                                        let arr = [].concat(this.state.projects);
-                                        let project = arr.filter((el) => el.id === value);
-                                        this.setState({
-                                            project: value,
-                                            projectID: project[0].id,
-                                            projectName: project[0].name,
-                                            invalidValue: false
-                                        })
-                                    }}>
+                            <Picker
+                                selectedValue={this.state.project}
+                                onValueChange={(value) => {
+                                    let arr = [].concat(this.state.projects);
+                                    let project = arr.filter((el) => el.id === value);
+                                    this.setState({
+                                        project: value,
+                                        projectID: project[0].id,
+                                        projectName: project[0].name,
+                                        invalidValue: false
+                                    })
+                                }}>
 
                                 {this.state.projects.map((item, i) =>
-                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                    <Picker.Item value={item.id} label={item.name} key={i} color='black'/>
                                 )}
                             </Picker>
                         </View>
@@ -433,30 +434,30 @@ class OutputAdd extends Component {
                             marginBottom: 0,
                             flex: 1
                         }}>
-                            <Picker style={{marginTop: 0}}
-                                    selectedValue={this.state.department}
+                            <Picker
+                                selectedValue={this.state.department}
 
-                                    onValueChange={(value) => {
-                                        let arr = [].concat(this.state.departments);
-                                        let department = arr.filter((el) => el.id === value);
+                                onValueChange={(value) => {
+                                    let arr = [].concat(this.state.departments);
+                                    let department = arr.filter((el) => el.id === value);
 
-                                        let arrEmployees = [].concat(this.state.employees);
-                                        let employees = arrEmployees.filter((el) => el.departmentID === value);
+                                    let arrEmployees = [].concat(this.state.employees);
+                                    let employees = arrEmployees.filter((el) => el.departmentID === value);
 
-                                        this.setState({
-                                            department: value,
-                                            departmentID: department[0].id,
-                                            departmentName: department[0].name,
-                                            invalidValue: false,
-                                            employeesFiltered: employees,
+                                    this.setState({
+                                        department: value,
+                                        departmentID: department[0].id,
+                                        departmentName: department[0].name,
+                                        invalidValue: false,
+                                        employeesFiltered: employees,
 
-                                            employeeID: employees[0].id,
-                                            employeeName: employees[0].name,
-                                        })
-                                    }}>
+                                        employeeID: employees[0].id,
+                                        employeeName: employees[0].name,
+                                    })
+                                }}>
 
                                 {this.state.departments.map((item, i) =>
-                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                    <Picker.Item value={item.id} label={item.name} key={i} color='black'/>
                                 )}
                             </Picker>
                         </View>
@@ -471,23 +472,23 @@ class OutputAdd extends Component {
                             marginBottom: 0,
                             flex: 1,
                         }}>
-                            <Picker style={{marginTop: 0}}
-                                    selectedValue={this.state.employee}
+                            <Picker
+                                selectedValue={this.state.employee}
 
-                                    onValueChange={(value) => {
-                                        let arr = [].concat(this.state.employeesFiltered);
-                                        let employee = arr.filter((el) => el.id === value);
+                                onValueChange={(value) => {
+                                    let arr = [].concat(this.state.employeesFiltered);
+                                    let employee = arr.filter((el) => el.id === value);
 
-                                        this.setState({
-                                            employee: value,
-                                            employeeID: employee[0].id,
-                                            employeeName: employee[0].name,
-                                            invalidValue: false
-                                        })
-                                    }}>
+                                    this.setState({
+                                        employee: value,
+                                        employeeID: employee[0].id,
+                                        employeeName: employee[0].name,
+                                        invalidValue: false
+                                    })
+                                }}>
 
                                 {this.state.employeesFiltered.map((item, i) =>
-                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                    <Picker.Item value={item.id} label={item.name} key={i} color='black'/>
                                 )}
                             </Picker>
                         </View>
@@ -501,26 +502,27 @@ class OutputAdd extends Component {
                             margin: 10,
                             marginBottom: 0,
                             flex: 1,
+                            color: 'black',
                         }}>
-                            <Picker style={{marginTop: 0}}
-                                    selectedValue={this.state.good}
+                            <Picker
+                                selectedValue={this.state.good}
+                                placeholderTextColor='gray'
+                                onValueChange={(value) => {
+                                    let arr = [].concat(this.state.goods);
+                                    let good = arr.filter((el) => el.id == value);
 
-                                    onValueChange={(value) => {
-                                        let arr = [].concat(this.state.goods);
-                                        let good = arr.filter((el) => el.id == value);
-
-                                        this.setState({
-                                            good: value,
-                                            productID: good[0].id,
-                                            productName: good[0].name,
-                                            price: (+good[0].price).toFixed(2),
-                                            total: ((+good[0].price) * (+this.state.quantity)).toFixed(2).toString(),
-                                            invalidValue: false
-                                        })
-                                    }}>
+                                    this.setState({
+                                        good: value,
+                                        productID: good[0].id,
+                                        productName: good[0].name,
+                                        price: (+good[0].price).toFixed(2),
+                                        total: ((+good[0].price) * (+this.state.quantity)).toFixed(2).toString(),
+                                        invalidValue: false
+                                    })
+                                }}>
 
                                 {this.state.goods.map((item, i) =>
-                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                    <Picker.Item value={item.id} label={item.name} key={i} color='black'/>
                                 )}
                             </Picker>
                         </View>
@@ -538,6 +540,7 @@ class OutputAdd extends Component {
                             editable={false}
                             style={styles.loginInputBold}
                             value={this.state.price}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.price}>
                         </TextInput>
 
@@ -550,6 +553,7 @@ class OutputAdd extends Component {
                             })}
                             style={styles.loginInputBold}
                             value={this.state.quantity}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.quantity}>
                         </TextInput>
 
@@ -562,6 +566,7 @@ class OutputAdd extends Component {
                             })}
                             style={styles.loginInput1}
                             value={this.state.description}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.description}>
                         </TextInput>
 
