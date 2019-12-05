@@ -232,6 +232,7 @@ class Audit extends Component {
                             onChangeText={this.onChangeText.bind(this)}
                             style={styles.searchLarge}
                             value={this.state.searchQuery}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>

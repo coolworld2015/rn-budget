@@ -266,6 +266,7 @@ class Store extends Component {
                             onChangeText={this.onChangeText.bind(this)}
                             style={styles.searchLarge}
                             value={this.state.searchQuery}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
@@ -318,7 +319,7 @@ const styles = StyleSheet.create({
     iconForm: {
         flexDirection: 'row',
         borderColor: 'darkblue',
-        borderWidth: 3
+        borderWidth: 3,
     },
     header: {
         flexDirection: 'row',
@@ -334,6 +335,7 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: 'white',
         borderRadius: 0,
+        color: 'black',
         width: Dimensions.get('window').width * .90
     },
     searchSmall: {

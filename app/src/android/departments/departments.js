@@ -304,6 +304,7 @@ class Departments extends Component {
                                 width: this.state.width * .90,
                             }}
                             value={this.state.searchQuery}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
