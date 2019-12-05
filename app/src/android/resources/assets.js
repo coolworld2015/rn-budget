@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
-        paddingLeft: 20,
+        paddingRight: 10,
         fontWeight: 'bold',
         color: 'white'
     },

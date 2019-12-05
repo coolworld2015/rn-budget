@@ -42,7 +42,7 @@ class Config extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     toggleTypeChange() {
@@ -65,7 +65,7 @@ class Config extends Component {
         AsyncStorage.setItem('rn-budget.language', JSON.stringify(appConfig.lang))
             .then(json => {
                 appConfig.login.showProgress = false;
-                this.props.onLogOut();
+                appConfig.onLogOut();
             })
             .catch(error => console.log(error))
     }
