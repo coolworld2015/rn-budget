@@ -16,8 +16,8 @@ class InputDetails extends Component {
         super(props);
 
         BackHandler.addEventListener('hardwareBackPress', () => {
-            if (this.props.navigator) {
-                this.props.navigator.pop();
+            if (this.props.navigation) {
+                this.props.navigation.pop();
             }
             return true;
         });
@@ -26,28 +26,28 @@ class InputDetails extends Component {
             serverError: false
         };
 
-        if (props.data) {
+        if (props.navigation.state.params.data) {
             this.state = {
-                id: props.data.id,
-                invoiceID: props.data.invoiceID,
-                date: props.data.date,
-                project: props.data.project,
-                projectID: props.data.projectID,
-                department: props.data.department,
-                departmentID: props.data.departmentID,
-                employee: props.data.employee,
-                employeeID: props.data.employeeID,
-                product: props.data.product,
-                productID: props.data.productID,
-                description: props.data.description,
+                id: props.navigation.state.params.data.id,
+                invoiceID: props.navigation.state.params.data.invoiceID,
+                date: props.navigation.state.params.data.date,
+                project: props.navigation.state.params.data.project,
+                projectID: props.navigation.state.params.data.projectID,
+                department: props.navigation.state.params.data.department,
+                departmentID: props.navigation.state.params.data.departmentID,
+                employee: props.navigation.state.params.data.employee,
+                employeeID: props.navigation.state.params.data.employeeID,
+                product: props.navigation.state.params.data.product,
+                productID: props.navigation.state.params.data.productID,
+                description: props.navigation.state.params.data.description,
 
-                priceShow: ((+props.data.price).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
-                quantityShow: ((+props.data.quantity).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
-                totalShow: ((+props.data.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
+                priceShow: ((+props.navigation.state.params.data.price).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
+                quantityShow: ((+props.navigation.state.params.data.quantity).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
+                totalShow: ((+props.navigation.state.params.data.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
 
-                price: props.data.price,
-                quantity: props.data.quantity,
-                total: props.data.total,
+                price: props.navigation.state.params.data.price,
+                quantity: props.navigation.state.params.data.quantity,
+                total: props.navigation.state.params.data.total,
                 showProgress: false,
                 serverError: false
             };
@@ -109,7 +109,7 @@ class InputDetails extends Component {
                     appConfig.projects.refresh = true;
                     appConfig.departments.refresh = true;
                     appConfig.employees.refresh = true;
-                    this.props.navigator.pop();
+                    this.props.navigation.pop();
                 } else {
                     this.setState({
                         badCredentials: true
@@ -131,7 +131,7 @@ class InputDetails extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -346,7 +346,6 @@ const styles = StyleSheet.create({
     itemWrap: {
         flex: 1,
         flexDirection: 'column',
-        flexWrap: 'wrap'
     },
     itemTextBold: {
         fontSize: 18,
