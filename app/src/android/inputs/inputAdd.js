@@ -382,6 +382,7 @@ class InputAdd extends Component {
                             })}
                             style={styles.loginInputBold}
                             value={this.state.invoiceID}
+                            placeholderTextColor='gray'
                             placeholder="ID">
                         </TextInput>
 
@@ -390,6 +391,7 @@ class InputAdd extends Component {
                             editable={false}
                             style={styles.loginInputBold}
                             value={this.state.date}
+                            placeholderTextColor='gray'
                             placeholder="date">
                         </TextInput>
                     </View>
@@ -538,6 +540,7 @@ class InputAdd extends Component {
                             editable={false}
                             style={styles.loginInputBold}
                             value={this.state.price}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.price}>
                         </TextInput>
 
@@ -550,6 +553,7 @@ class InputAdd extends Component {
                             })}
                             style={styles.loginInputBold}
                             value={this.state.quantity}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.quantity}>
                         </TextInput>
 
@@ -562,6 +566,7 @@ class InputAdd extends Component {
                             })}
                             style={styles.loginInput1}
                             value={this.state.description}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.description}>
                         </TextInput>
 

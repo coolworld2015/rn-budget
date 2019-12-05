@@ -372,6 +372,7 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: 'white',
         borderRadius: 0,
+        color: 'black',
         width: Dimensions.get('window').width * .90
     },
     searchSmall: {
