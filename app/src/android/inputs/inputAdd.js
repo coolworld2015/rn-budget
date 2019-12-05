@@ -406,12 +406,12 @@ class InputAdd extends Component {
                             marginBottom: 0,
                             flex: 1,
                         }}>
-                            <Picker style={{marginTop: 0}}
+                            <Picker
                                     selectedValue={this.state.project}
-
+                                    itemStyle={{ backgroundColor:'white'}}
                                     onValueChange={(value) => {
                                         let arr = [].concat(this.state.projects);
-                                        let project = arr.filter((el) => el.id == value);
+                                        let project = arr.filter((el) => el.id === value);
                                         this.setState({
                                             project: value,
                                             projectID: project[0].id,
@@ -421,7 +421,7 @@ class InputAdd extends Component {
                                     }}>
 
                                 {this.state.projects.map((item, i) =>
-                                    <Picker.Item value={item.id} label={item.name} key={i} color='black'/>
+                                    <Picker.Item  value={item.id} label={item.name} key={i} color='black'/>
                                 )}
                             </Picker>
                         </View>
