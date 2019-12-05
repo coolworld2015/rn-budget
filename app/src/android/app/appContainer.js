@@ -20,9 +20,25 @@ import OutputAdd from '../outputs/outputAdd';
 
 import Other from './other';
 
+import Search from '../search/search';
+import SearchResults from '../search/searchResults';
+import SearchDetails from '../search/searchDetails';
+
 import Projects from '../projects/projects';
 import ProjectDetails from '../projects/projectDetails';
 import ProjectAdd from '../projects/projectAdd';
+
+import Departments from '../departments/departments';
+import DepartmentDetails from '../departments/departmentDetails';
+import DepartmentAdd from '../departments/departmentAdd';
+
+import Employees from '../employees/employees';
+import EmployeeDetails from '../employees/employeeDetails';
+import EmployeeAdd from '../employees/employeeAdd';
+
+import Resources from '../resources/resources';
+import ResourceDetails from '../resources/resourceDetails';
+import ResourceAdd from '../resources/resourceAdd';
 
 import Users from '../users/users';
 import UserDetails from '../users/userDetails';
@@ -30,6 +46,8 @@ import UserAdd from '../users/userAdd';
 
 import Audit from '../audit/audit';
 import AuditDetails from '../audit/auditDetails';
+
+import Config from './config';
 
 const AssetsTab = createStackNavigator({
         Assets
@@ -73,7 +91,35 @@ const InputsTab = createStackNavigator({
 
 const OtherTab = createStackNavigator({
         Other,
-        Projects
+
+        Search,
+        SearchResults,
+        SearchDetails,
+
+        Projects,
+        ProjectDetails,
+        ProjectAdd,
+
+        Departments,
+        DepartmentDetails,
+        DepartmentAdd,
+
+        Employees,
+        EmployeeDetails,
+        EmployeeAdd,
+
+        Resources,
+        ResourceDetails,
+        ResourceAdd,
+
+        Users,
+        UserDetails,
+        UserAdd,
+
+        Audit,
+        AuditDetails,
+
+        Config
     }, {
         headerMode: 'none',
         transitionConfig: () => ({

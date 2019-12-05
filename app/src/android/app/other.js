@@ -23,14 +23,14 @@ class Other extends Component {
         this.state = {
             dataSource: ds.cloneWithRows([
                 {name: appConfig.language.reports, id: 1},
-                {name: appConfig.language.projects, id: 10},
-                {name: appConfig.language.departments, id: 30},
-                {name: appConfig.language.employees, id: 40},
-                {name: appConfig.language.resources, id: 20},
-                {name: appConfig.language.users, id: 50},
-                {name: appConfig.language.audit, id: 60},
-                {name: appConfig.language.config, id: 70},
-                {name: appConfig.language.logout, id: 80}
+                {name: appConfig.language.projects, id: 2},
+                {name: appConfig.language.departments, id: 3},
+                {name: appConfig.language.employees, id: 4},
+                {name: appConfig.language.resources, id: 5},
+                {name: appConfig.language.users, id: 6},
+                {name: appConfig.language.audit, id: 7},
+                {name: appConfig.language.config, id: 8},
+                {name: appConfig.language.logout, id: 9}
             ]),
             showProgress: true,
             resultsCount: 9,
@@ -42,61 +42,41 @@ class Other extends Component {
     showDetails(rowData) {
         switch (rowData.id) {
             case 1:
+                this.props.navigation.navigate('Search');
+                break;
+
+            case 2:
                 this.props.navigation.navigate('Projects');
                 break;
 
-            case 10:
-                this.props.navigator.push({
-                    index: 10,
-                });
+            case 3:
+                this.props.navigation.navigate('Departments');
                 break;
 
-            case 20:
-                this.props.navigator.push({
-                    index: 20,
-                    data: rowData
-                });
+            case 4:
+                this.props.navigation.navigate('Employees');
                 break;
 
-            case 30:
-                this.props.navigator.push({
-                    index: 30,
-                    data: rowData
-                });
+            case 5:
+                this.props.navigation.navigate('Resources');
                 break;
 
-            case 40:
-                this.props.navigator.push({
-                    index: 40,
-                    data: rowData
-                });
+            case 6:
+                this.props.navigation.navigate('Users');
                 break;
 
-            case 50:
-                this.props.navigator.push({
-                    index: 50,
-                    data: rowData
-                });
+            case 7:
+                this.props.navigation.navigate('Audit');
                 break;
 
-            case 60:
-                this.props.navigator.push({
-                    index: 60,
-                    data: rowData
-                });
+            case 8:
+                this.props.navigation.navigate('Config');
                 break;
 
-            case 70:
-                this.props.navigator.push({
-                    index: 70,
-                    data: rowData
-                });
+            case 9:
+                appConfig.onLogOut();
                 break;
 
-            case 80:
-                appConfig.login.showProgress = false;
-                this.props.onLogOut();
-                break;
         }
     }
 
