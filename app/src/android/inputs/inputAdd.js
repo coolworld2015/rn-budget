@@ -31,6 +31,7 @@ class InputAdd extends Component {
             showProgress: true,
             showProgressAdd: true,
             serverError: false,
+            invalidValue: false,
             projects: [],
             departments: [],
             employees: [],
@@ -191,25 +192,25 @@ class InputAdd extends Component {
     }
 
     addItem() {
-        if (appConfig.inputs.showProgress == true) {
+        if (this.state.showProgress === true) {
             return;
         }
 
-        if (this.state.projectID == undefined ||
-            this.state.projectName == undefined ||
-            this.state.employeeID == undefined ||
-            this.state.employeeName == undefined ||
-            this.state.departmentID == undefined ||
-            this.state.departmentName == undefined ||
-            this.state.productID == undefined ||
-            this.state.productName == undefined ||
+        if (this.state.projectID === undefined ||
+            this.state.projectName === undefined ||
+            this.state.employeeID === undefined ||
+            this.state.employeeName === undefined ||
+            this.state.departmentID === undefined ||
+            this.state.departmentName === undefined ||
+            this.state.productID === undefined ||
+            this.state.productName === undefined ||
 
-            this.state.invoiceID == undefined ||
-            this.state.date == undefined ||
-            this.state.quantity == undefined ||
-            this.state.description == undefined ||
+            this.state.invoiceID === undefined ||
+            this.state.date === undefined ||
+            this.state.quantity === undefined ||
+            this.state.description === undefined ||
 
-            this.isNumber(this.state.quantity) != true) {
+            this.isNumber(this.state.quantity) !== true) {
             this.setState({
                 invalidValue: true
             });
@@ -257,7 +258,7 @@ class InputAdd extends Component {
                 appConfig.projects.refresh = true;
                 appConfig.departments.refresh = true;
                 appConfig.employees.refresh = true;
-                this.props.navigator.pop();
+                this.props.navigation.pop();
             })
             .catch((error) => {
                 this.setState({
@@ -272,7 +273,7 @@ class InputAdd extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -420,7 +421,7 @@ class InputAdd extends Component {
                                     }}>
 
                                 {this.state.projects.map((item, i) =>
-                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                    <Picker.Item value={item.id} label={item.name} key={i} color='black'/>
                                 )}
                             </Picker>
                         </View>
@@ -458,7 +459,7 @@ class InputAdd extends Component {
                                     }}>
 
                                 {this.state.departments.map((item, i) =>
-                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                    <Picker.Item value={item.id} label={item.name} key={i} color='black'/>
                                 )}
                             </Picker>
                         </View>
@@ -489,7 +490,7 @@ class InputAdd extends Component {
                                     }}>
 
                                 {this.state.employeesFiltered.map((item, i) =>
-                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                    <Picker.Item value={item.id} label={item.name} key={i} color='black'/>
                                 )}
                             </Picker>
                         </View>
@@ -522,7 +523,7 @@ class InputAdd extends Component {
                                     }}>
 
                                 {this.state.goods.map((item, i) =>
-                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                    <Picker.Item value={item.id} label={item.name} key={i} color='black'/>
                                 )}
                             </Picker>
                         </View>

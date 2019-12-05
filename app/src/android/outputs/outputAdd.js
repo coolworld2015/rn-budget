@@ -31,6 +31,7 @@ class OutputAdd extends Component {
             showProgress: true,
             showProgressAdd: true,
             serverError: false,
+            invalidValue: false,
             projects: [],
             departments: [],
             employees: [],
@@ -191,7 +192,7 @@ class OutputAdd extends Component {
     }
 
     addItem() {
-        if (appConfig.outputs.showProgress === true) {
+        if (this.state.showProgress === true) {
             return;
         }
 

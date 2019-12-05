@@ -51,8 +51,8 @@ class Inputs extends Component {
     }
 
     refreshComponent() {
-        if (appConfig.outputs.refresh) {
-            appConfig.outputs.refresh = false;
+        if (appConfig.inputs.refresh) {
+            appConfig.inputs.refresh = false;
 
             this.setState({
                 showProgress: true
