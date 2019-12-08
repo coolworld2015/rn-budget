@@ -16,8 +16,8 @@ class InputAdd extends Component {
         super(props);
 
         BackHandler.addEventListener('hardwareBackPress', () => {
-            if (this.props.navigator) {
-                this.props.navigator.pop();
+            if (this.props.navigation) {
+                this.props.navigation.pop();
             }
             return true;
         });
@@ -219,10 +219,7 @@ class InputAdd extends Component {
 
         this.setState({
             showProgressAdd: true,
-            bugANDROID: ' '
         });
-
-        appConfig.inputs.showProgress = true;
 
         fetch(appConfig.url + 'api/inputs/add', {
             method: 'post',

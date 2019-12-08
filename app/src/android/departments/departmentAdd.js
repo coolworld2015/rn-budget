@@ -1,39 +1,33 @@
 import React, {Component} from 'react';
 import {
-    AppRegistry,
     StyleSheet,
     Text,
     View,
-    Image,
     TouchableHighlight,
-    ListView,
     ScrollView,
     ActivityIndicator,
-    TabBarIOS,
-    NavigatorIOS,
     TextInput,
-    BackAndroid
+    BackHandler
 } from 'react-native';
 
 class DepartmentAdd extends Component {
     constructor(props) {
         super(props);
 
-        /*		BackAndroid.addEventListener('hardwareBackPress', () => {
-                    if (this.props.navigator) {
-                        this.props.navigator.pop();
-                    }
-                    return true;
-                });*/
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.props.navigation) {
+                this.props.navigation.pop();
+            }
+            return true;
+        });
 
         this.state = {
             showProgress: false,
-            bugANDROID: ''
         }
     }
 
     addItem() {
-        if (appConfig.departments.showProgress === true) {
+        if (this.state.showProgress === true) {
             return;
         }
 
@@ -49,10 +43,7 @@ class DepartmentAdd extends Component {
 
         this.setState({
             showProgress: true,
-            bugANDROID: ' '
         });
-
-        appConfig.departments.showProgress = true;
 
         fetch(appConfig.url + 'api/departments/add', {
             method: 'post',
@@ -73,7 +64,7 @@ class DepartmentAdd extends Component {
             .then((response) => response.json())
             .then((responseData) => {
                 appConfig.departments.refresh = true;
-                this.props.navigator.pop();
+                this.props.navigation.pop();
             })
             .catch((error) => {
                 this.setState({
@@ -88,7 +79,7 @@ class DepartmentAdd extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -128,8 +119,7 @@ class DepartmentAdd extends Component {
                     <View>
                         <TouchableHighlight
                             onPress={() => this.goBack()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <Text style={{
                                 fontSize: 16,
                                 textAlign: 'center',
@@ -143,8 +133,7 @@ class DepartmentAdd extends Component {
                     </View>
                     <View>
                         <TouchableHighlight
-                            underlayColor='#ddd'
-                        >
+                            underlayColor='#ddd'>
                             <Text style={{
                                 fontSize: 20,
                                 textAlign: 'center',
@@ -159,15 +148,13 @@ class DepartmentAdd extends Component {
                     </View>
                     <View>
                         <TouchableHighlight
-                            underlayColor='#ddd'
-                        >
+                            underlayColor='#ddd'>
                             <Text style={{
                                 fontSize: 16,
                                 textAlign: 'center',
                                 margin: 14,
                                 fontWeight: 'bold'
                             }}>
-
                             </Text>
                         </TouchableHighlight>
                     </View>
@@ -192,6 +179,7 @@ class DepartmentAdd extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.name}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.name}>
                         </TextInput>
 
@@ -203,6 +191,7 @@ class DepartmentAdd extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.address}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.address}>
                         </TextInput>
 
@@ -214,6 +203,7 @@ class DepartmentAdd extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.phone}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.phone}>
                         </TextInput>
 
@@ -226,6 +216,7 @@ class DepartmentAdd extends Component {
                             })}
                             style={styles.loginInput1}
                             value={this.state.description}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.description}>
                         </TextInput>
 
@@ -234,7 +225,7 @@ class DepartmentAdd extends Component {
                         <TouchableHighlight
                             onPress={() => this.addItem()}
                             style={styles.button}>
-                            <Text style={styles.buttonText}>{appConfig.language.add}</Text>
+                            <Text style={styles.buttonText}>{appConfig.language.submit}</Text>
                         </TouchableHighlight>
 
                         <ActivityIndicator
@@ -243,7 +234,6 @@ class DepartmentAdd extends Component {
                             style={styles.loader}
                         />
 
-                        <Text>{this.state.bugANDROID}</Text>
                     </View>
                 </ScrollView>
             </View>

@@ -36,26 +36,29 @@ class Departments extends Component {
             refreshing: false,
             width: Dimensions.get('window').width
         };
-    }
-
-    componentDidMount() {
-        appConfig.departments.showProgress = true;
-        this.setState({
-            width: Dimensions.get('window').width
-        });
         this.getItems();
     }
 
-    componentWillUpdate() {
+    componentDidMount() {
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            () => {
+                this.refreshComponent()
+            }
+        )
+    }
+
+    refreshComponent() {
         if (appConfig.departments.refresh) {
             appConfig.departments.refresh = false;
 
             this.setState({
-                showProgress: true,
-                resultsCount: 0
+                showProgress: true
             });
 
-            this.getItems();
+            setTimeout(() => {
+                this.getItems()
+            }, 500);
         }
     }
 
@@ -120,10 +123,7 @@ class Departments extends Component {
     }
 
     addItem() {
-        appConfig.departments.showProgress = false;
-        this.props.navigator.push({
-            index: 32
-        });
+        this.props.navigation.navigate('DepartmentAdd');
     }
 
     renderRow(rowData) {
@@ -207,7 +207,7 @@ class Departments extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     clearSearchQuery() {
@@ -278,8 +278,7 @@ class Departments extends Component {
                     <View>
                         <TouchableHighlight
                             onPress={() => this.addItem()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <View>
                                 <Text style={styles.textSmall}>
                                     {appConfig.language.add}
