@@ -17,7 +17,7 @@ class Other extends Component {
         super(props);
 
         let ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 != r2
+            rowHasChanged: (r1, r2) => r1 !== r2
         });
 
         this.state = {
@@ -40,6 +40,7 @@ class Other extends Component {
     }
 
     showDetails(rowData) {
+        console.log(appConfig)
         switch (rowData.id) {
             case 1:
                 this.props.navigation.navigate('Search');
@@ -76,7 +77,6 @@ class Other extends Component {
             case 9:
                 appConfig.onLogOut();
                 break;
-
         }
     }
 
@@ -84,8 +84,7 @@ class Other extends Component {
         return (
             <TouchableHighlight
                 onPress={() => this.showDetails(rowData)}
-                underlayColor='#ddd'
-            >
+                underlayColor='#ddd'>
                 <View style={{
                     flex: 1,
                     flexDirection: 'row',

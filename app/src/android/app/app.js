@@ -33,6 +33,7 @@ class App extends Component {
         window.appConfig = {
             access_token: '',
             url: 'http://jwt-budget.herokuapp.com/',
+            onLogin: this.onLogin.bind(this),
             onLogOut: this.onLogOut.bind(this),
             login: {
                 showProgress: false
@@ -275,13 +276,13 @@ class App extends Component {
     }
 
     onLogin() {
-        console.log('onLogin');
         this.setState({isLoggedIn: true});
+        console.log('onLogin');
     }
 
     onLogOut() {
-        console.log('onLogOut');
         this.setState({isLoggedIn: false});
+        console.log('onLogOut');
     }
 }
 

@@ -68,7 +68,7 @@ class Login extends Component {
                         badCredentials: false
                     });
 
-                    this.props.onLogin();
+                    appConfig.onLogin();
                 } else {
                     this.setState({
                         badCredentials: true
