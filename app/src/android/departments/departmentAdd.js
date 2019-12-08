@@ -108,13 +108,14 @@ class DepartmentAdd extends Component {
         }
 
         return (
-            <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white'}}>
+            <View style={{flex: 1, justifyContent: 'center', backgroundColor: 'white',}}>
                 <View style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     backgroundColor: 'darkblue',
                     borderWidth: 0,
-                    borderColor: 'whitesmoke'
+                    borderColor: 'whitesmoke',
+                    borderTopWidth: 1,
                 }}>
                     <View>
                         <TouchableHighlight
@@ -169,7 +170,7 @@ class DepartmentAdd extends Component {
                         padding: 10,
                         justifyContent: 'flex-start',
                         paddingBottom: 90,
-                        backgroundColor: 'white'
+                        backgroundColor: 'white',
                     }}>
                         <TextInput
                             underlineColorAndroid='rgba(0,0,0,0)'

@@ -354,7 +354,6 @@ const styles = StyleSheet.create({
     },
     iconForm: {
         flexDirection: 'row',
-        //borderColor: 'lightgray',
         borderColor: 'darkblue',
         borderWidth: 3
     },
@@ -427,7 +426,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         padding: 10,
         borderColor: '#D7D7D7',
-        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
         color: 'white',
         fontWeight: 'bold'

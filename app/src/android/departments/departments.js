@@ -105,7 +105,7 @@ class Departments extends Component {
     }
 
     sort(a, b) {
-        var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
+        let nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
         if (nameA < nameB) {
             return -1
         }
@@ -116,10 +116,8 @@ class Departments extends Component {
     }
 
     showDetails(rowData) {
-        this.props.navigator.push({
-            index: 31,
-            data: rowData
-        });
+        appConfig.item = rowData;
+        this.props.navigation.navigate('DepartmentDetails');
     }
 
     addItem() {
@@ -130,8 +128,7 @@ class Departments extends Component {
         return (
             <TouchableHighlight
                 onPress={() => this.showDetails(rowData)}
-                underlayColor='#ddd'
-            >
+                underlayColor='#ddd'>
                 <View style={styles.row}>
                     <Text style={styles.rowText}>
                         {rowData.name}
@@ -147,7 +144,7 @@ class Departments extends Component {
 
     refreshData(event) {
         console.log(event.nativeEvent.contentOffset);
-        if (this.state.showProgress == true) {
+        if (this.state.showProgress === true) {
             return;
         }
 
@@ -165,13 +162,13 @@ class Departments extends Component {
             }, 300);
         }
 
-        if (this.state.filteredItems == undefined) {
+        if (this.state.filteredItems === undefined) {
             return;
         }
 
-        var recordsCount = this.state.recordsCount;
-        var positionY = this.state.positionY;
-        var items = this.state.filteredItems.slice(0, recordsCount);
+        let recordsCount = this.state.recordsCount;
+        let positionY = this.state.positionY;
+        let items = this.state.filteredItems.slice(0, recordsCount);
 
         if (event.nativeEvent.contentOffset.y >= positionY) {
             this.setState({
@@ -183,12 +180,12 @@ class Departments extends Component {
     }
 
     onChangeText(text) {
-        if (this.state.dataSource == undefined) {
+        if (this.state.dataSource === undefined) {
             return;
         }
 
-        var arr = [].concat(this.state.responseData);
-        var items = arr.filter((el) => el.name.toLowerCase().indexOf(text.toLowerCase()) != -1);
+        let arr = [].concat(this.state.responseData);
+        let items = arr.filter((el) => el.name.toLowerCase().indexOf(text.toLowerCase()) !== -1);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(items),
             resultsCount: items.length,
@@ -257,8 +254,7 @@ class Departments extends Component {
                     <View>
                         <TouchableHighlight
                             onPress={() => this.goBack()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <View>
                                 <Text style={styles.textSmall}>
                                     {appConfig.language.back}
@@ -317,8 +313,7 @@ class Departments extends Component {
                         width: this.state.width * .10,
                     }}>
                         <TouchableWithoutFeedback
-                            onPress={() => this.clearSearchQuery()}
-                        >
+                            onPress={() => this.clearSearchQuery()}>
                             <View>
                                 {image}
                             </View>
@@ -337,8 +332,7 @@ class Departments extends Component {
                                     refreshing={this.state.refreshing}
                                     onRefresh={this.refreshDataAndroid.bind(this)}
                                 />
-                            }
-                >
+                            }>
                     <ListView
                         enableEmptySections={true}
                         dataSource={this.state.dataSource}
@@ -360,20 +354,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
     },
     iconForm: {
         flexDirection: 'row',
-        //borderColor: 'lightgray',
         borderColor: 'darkblue',
         borderWidth: 3
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
-        borderWidth: 0,
+        borderTopWidth: 1,
         borderColor: 'whitesmoke'
     },
     textSmall: {

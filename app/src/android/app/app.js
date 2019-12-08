@@ -35,6 +35,7 @@ class App extends Component {
             url: 'http://jwt-budget.herokuapp.com/',
             onLogin: this.onLogin.bind(this),
             onLogOut: this.onLogOut.bind(this),
+            item: {},
             login: {
                 showProgress: false
             },

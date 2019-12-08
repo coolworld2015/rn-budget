@@ -1,18 +1,13 @@
 import React, {Component} from 'react';
 import {
-    AppRegistry,
     StyleSheet,
     Text,
     View,
-    Image,
     TouchableHighlight,
-    ListView,
     ScrollView,
     ActivityIndicator,
-    TabBarIOS,
-    NavigatorIOS,
     TextInput,
-    BackAndroid,
+    BackHandler,
     Alert
 } from 'react-native';
 
@@ -20,29 +15,27 @@ class DepartmentDetails extends Component {
     constructor(props) {
         super(props);
 
-        /*		BackAndroid.addEventListener('hardwareBackPress', () => {
-                    if (this.props.navigator) {
-                        this.props.navigator.pop();
-                    }
-                    return true;
-                });	*/
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.props.navigation) {
+                this.props.navigation.pop();
+            }
+            return true;
+        });
 
         this.state = {
             serverError: false
-        }
+        };
 
-        if (props.data) {
-            this.state = {
-                id: props.data.id,
-                name: props.data.name,
-                address: props.data.address,
-                phone: props.data.phone,
-                description: props.data.description,
-                sumShow: ((+props.data.sum).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
-                sum: props.data.sum,
-                showProgress: false
-            };
-        }
+        this.state = {
+            id: appConfig.item.id,
+            name: appConfig.item.name,
+            address: appConfig.item.address,
+            phone: appConfig.item.phone,
+            description: appConfig.item.description,
+            sumShow: ((+appConfig.item.sum).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
+            sum: appConfig.item.sum,
+            showProgress: false
+        };
     }
 
     updateItem() {
@@ -82,7 +75,7 @@ class DepartmentDetails extends Component {
             .then((responseData) => {
                 if (responseData) {
                     appConfig.departments.refresh = true;
-                    this.props.navigator.pop();
+                    this.props.navigation.pop();
                 } else {
                     this.setState({
                         badCredentials: true
@@ -138,7 +131,7 @@ class DepartmentDetails extends Component {
                 console.log(responseData);
                 if (responseData.text) {
                     appConfig.departments.refresh = true;
-                    this.props.navigator.pop();
+                    this.props.navigation.pop();
                 } else {
                     this.setState({
                         badCredentials: true
@@ -160,7 +153,7 @@ class DepartmentDetails extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -195,7 +188,8 @@ class DepartmentDetails extends Component {
                     justifyContent: 'space-between',
                     backgroundColor: 'darkblue',
                     borderWidth: 0,
-                    borderColor: 'whitesmoke'
+                    borderColor: 'whitesmoke',
+                    borderTopWidth: 1,
                 }}>
                     <View>
                         <TouchableHighlight
@@ -213,14 +207,14 @@ class DepartmentDetails extends Component {
                             </Text>
                         </TouchableHighlight>
                     </View>
-                    <View style={{flex: 1, flexDirection: 'column', flexWrap: 'wrap'}}>
+                    <View>
                         <TouchableHighlight
-                            underlayColor='#ddd'
-                        >
+                            underlayColor='#ddd'>
                             <Text style={{
                                 fontSize: 20,
                                 textAlign: 'center',
                                 margin: 10,
+                                marginRight: 0,
                                 fontWeight: 'bold',
                                 color: 'white'
                             }}>
@@ -231,8 +225,7 @@ class DepartmentDetails extends Component {
                     <View>
                         <TouchableHighlight
                             onPress={() => this.deleteItemDialog()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <Text style={{
                                 fontSize: 16,
                                 textAlign: 'center',
