@@ -8,6 +8,7 @@ import {
     TouchableHighlight,
     ScrollView,
     ActivityIndicator,
+    BackHandler
 } from 'react-native';
 
 import ListView from 'deprecated-react-native-listview';
@@ -16,15 +17,15 @@ class SearchResults extends Component {
     constructor(props) {
         super(props);
 
-        /*		BackAndroid.addEventListener('hardwareBackPress', () => {
-                    if (this.props.navigator) {
-                        this.props.navigator.pop();
-                    }
-                    return true;
-                });*/
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.props.navigation) {
+                this.props.navigation.pop();
+            }
+            return true;
+        });
 
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 != r2
+        let ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2
         });
 
         this.state = {
@@ -32,35 +33,33 @@ class SearchResults extends Component {
             dataSource2: ds.cloneWithRows([]),
             resultsCount1: 0,
             resultsCount2: 0
-        }
+        };
 
-        if (props.data) {
-            this.state = {
-                dataSource1: ds.cloneWithRows([]),
-                dataSource2: ds.cloneWithRows([]),
+        this.state = {
+            dataSource1: ds.cloneWithRows([]),
+            dataSource2: ds.cloneWithRows([]),
 
-                projectName: props.data.projectName,
-                departmentName: props.data.departmentName,
-                employeeName: props.data.employeeName,
+            projectName: appConfig.item.projectName,
+            departmentName: appConfig.item.departmentName,
+            employeeName: appConfig.item.employeeName,
 
-                startDate: props.data.startDate,
-                endDate: props.data.endDate,
+            startDate: appConfig.item.startDate,
+            endDate: appConfig.item.endDate,
 
-                searchType: props.data.searchType,
-                showProgress: true,
+            searchType: appConfig.item.searchType,
+            showProgress: true,
 
-                resultsCount1: 0,
-                recordsCount1: 15,
-                positionY1: 0,
+            resultsCount1: 0,
+            recordsCount1: 15,
+            positionY1: 0,
 
-                resultsCount2: 0,
-                recordsCount2: 15,
-                positionY2: 0,
+            resultsCount2: 0,
+            recordsCount2: 15,
+            positionY2: 0,
 
-                inputsTotal: 0,
-                outputsTotal: 0
-            };
-        }
+            inputsTotal: 0,
+            outputsTotal: 0
+        };
     }
 
     componentDidMount() {
@@ -197,18 +196,15 @@ class SearchResults extends Component {
     }
 
     showDetails(rowData) {
-        this.props.navigator.push({
-            index: 3,
-            data: rowData
-        });
+        appConfig.item = rowData;
+        this.props.navigation.navigate('SearchDetails');
     }
 
     renderRow(rowData) {
         return (
             <TouchableHighlight
                 onPress={() => this.showDetails(rowData)}
-                underlayColor='#ddd'
-            >
+                underlayColor='#ddd'>
                 <View style={{
                     flex: 1,
                     flexDirection: 'column',
@@ -234,7 +230,7 @@ class SearchResults extends Component {
     }
 
     refreshData1(event) {
-        if (this.state.showProgress == true) {
+        if (this.state.showProgress === true) {
             return;
         }
 
@@ -253,7 +249,7 @@ class SearchResults extends Component {
     }
 
     refreshData2(event) {
-        if (this.state.showProgress == true) {
+        if (this.state.showProgress === true) {
             return;
         }
 
@@ -272,7 +268,7 @@ class SearchResults extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -301,13 +297,15 @@ class SearchResults extends Component {
                 <View style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
-                    backgroundColor: 'darkblue'
+                    backgroundColor: 'darkblue',
+                    borderWidth: 0,
+                    borderColor: 'whitesmoke',
+                    borderTopWidth: 1,
                 }}>
                     <View>
                         <TouchableHighlight
                             onPress={() => this.goBack()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <Text style={{
                                 fontSize: 16,
                                 textAlign: 'center',
@@ -321,8 +319,7 @@ class SearchResults extends Component {
                     </View>
                     <View>
                         <TouchableHighlight
-                            underlayColor='#ddd'
-                        >
+                            underlayColor='#ddd'>
                             <Text style={{
                                 fontSize: 20,
                                 textAlign: 'center',

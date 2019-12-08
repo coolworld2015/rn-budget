@@ -177,7 +177,7 @@ class Search extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     clearSearch() {
@@ -188,16 +188,15 @@ class Search extends Component {
     }
 
     onSearchPressed() {
-        this.props.navigator.push({
-            index: 2,
-            data: {
-                projectName: this.state.projectName,
-                departmentName: this.state.departmentName,
-                employeeName: this.state.employeeName,
-                startDate: this.state.startText,
-                endDate: this.state.endText
-            }
-        });
+        let data = {
+            projectName: this.state.projectName,
+            departmentName: this.state.departmentName,
+            employeeName: this.state.employeeName,
+            startDate: this.state.startText,
+            endDate: this.state.endText
+        };
+        appConfig.item = data;
+        this.props.navigation.navigate('SearchResults');
     }
 
     toggleTypeChange() {
@@ -259,13 +258,13 @@ class Search extends Component {
                     justifyContent: 'space-between',
                     backgroundColor: 'darkblue',
                     borderWidth: 0,
-                    borderColor: 'whitesmoke'
+                    borderColor: 'whitesmoke',
+                    borderTopWidth: 1,
                 }}>
                     <View>
                         <TouchableHighlight
                             onPress={() => this.goBack()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <View>
                                 <Text style={{
                                     fontSize: 16,
@@ -287,7 +286,6 @@ class Search extends Component {
                                     textAlign: 'center',
                                     margin: 10,
                                     marginRight: 40,
-                                    //marginRight: 40,
                                     fontWeight: 'bold',
                                     color: 'white'
                                 }}>
@@ -341,7 +339,7 @@ class Search extends Component {
                                     }}>
 
                                 {this.state.projects.map((item, i) =>
-                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                    <Picker.Item value={item.id} label={item.name} key={i} color='black'/>
                                 )}
                             </Picker>
                         </View>
@@ -372,7 +370,7 @@ class Search extends Component {
                                     }}>
 
                                 {this.state.departments.map((item, i) =>
-                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                    <Picker.Item value={item.id} label={item.name} key={i} color='black'/>
                                 )}
                             </Picker>
                         </View>
@@ -403,7 +401,7 @@ class Search extends Component {
                                     }}>
 
                                 {this.state.employees.map((item, i) =>
-                                    <Picker.Item value={item.id} label={item.name} key={i}/>
+                                    <Picker.Item value={item.id} label={item.name} key={i} color='black'/>
                                 )}
                             </Picker>
                         </View>

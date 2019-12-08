@@ -5,6 +5,7 @@ import {
     View,
     TouchableHighlight,
     ScrollView,
+    BackHandler,
     Alert
 } from 'react-native';
 
@@ -12,43 +13,41 @@ class SearchDetails extends Component {
     constructor(props) {
         super(props);
 
-        /*		BackAndroid.addEventListener('hardwareBackPress', () => {
-                    if (this.props.navigator) {
-                        this.props.navigator.pop();
-                    }
-                    return true;
-                });		*/
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.props.navigation) {
+                this.props.navigation.pop();
+            }
+            return true;
+        });
 
         this.state = {
             serverError: false
         };
 
-        if (props.data) {
-            this.state = {
-                id: props.data.id,
-                invoiceID: props.data.invoiceID,
-                date: props.data.date,
-                project: props.data.project,
-                projectID: props.data.projectID,
-                department: props.data.department,
-                departmentID: props.data.departmentID,
-                employee: props.data.employee,
-                employeeID: props.data.employeeID,
-                product: props.data.product,
-                productID: props.data.productID,
-                description: props.data.description,
+        this.state = {
+            id: appConfig.item.id,
+            invoiceID: appConfig.item.invoiceID,
+            date: appConfig.item.date,
+            project: appConfig.item.project,
+            projectID: appConfig.item.projectID,
+            department: appConfig.item.department,
+            departmentID: appConfig.item.departmentID,
+            employee: appConfig.item.employee,
+            employeeID: appConfig.item.employeeID,
+            product: appConfig.item.product,
+            productID: appConfig.item.productID,
+            description: appConfig.item.description,
 
-                priceShow: ((+props.data.price).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
-                quantityShow: ((+props.data.quantity).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
-                totalShow: ((+props.data.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
+            priceShow: ((+appConfig.item.price).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
+            quantityShow: ((+appConfig.item.quantity).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
+            totalShow: ((+appConfig.item.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
 
-                price: props.data.price,
-                quantity: props.data.quantity,
-                total: props.data.total,
-                showProgress: false,
-                serverError: false
-            };
-        }
+            price: appConfig.item.price,
+            quantity: appConfig.item.quantity,
+            total: appConfig.item.total,
+            showProgress: false,
+            serverError: false
+        };
     }
 
     deleteItemDialog() {
@@ -128,7 +127,7 @@ class SearchDetails extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -138,17 +137,15 @@ class SearchDetails extends Component {
                     <View>
                         <TouchableHighlight
                             onPress={() => this.goBack()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <Text style={styles.textSmall}>
                                 {appConfig.language.back}
                             </Text>
                         </TouchableHighlight>
                     </View>
-                    <View style={styles.itemWrap}>
+                    <View>
                         <TouchableHighlight
-                            underlayColor='#ddd'
-                        >
+                            underlayColor='#ddd'>
                             <Text style={styles.textLarge}>
                                 {this.state.project}
                             </Text>
@@ -156,8 +153,7 @@ class SearchDetails extends Component {
                     </View>
                     <View>
                         <TouchableHighlight
-                            underlayColor='#ddd'
-                        >
+                            underlayColor='#ddd'>
                             <Text style={styles.textSmall}>
                             </Text>
                         </TouchableHighlight>
@@ -286,9 +282,8 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
-        borderWidth: 0,
+        borderTopWidth: 1,
         borderColor: 'whitesmoke'
     },
     textSmall: {
