@@ -62,7 +62,7 @@ class UserAdd extends Component {
             .then((response) => response.json())
             .then((responseData) => {
                 appConfig.users.refresh = true;
-                this.props.navigator.pop();
+                this.props.navigation.pop();
             })
             .catch((error) => {
                 this.setState({
@@ -77,7 +77,7 @@ class UserAdd extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -148,6 +148,7 @@ class UserAdd extends Component {
                             })}
                             style={styles.formInput}
                             value={this.state.name}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.login}>
                         </TextInput>
 
@@ -159,6 +160,7 @@ class UserAdd extends Component {
                             })}
                             style={styles.formInput}
                             value={this.state.pass}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.pass}>
                         </TextInput>
 
@@ -171,6 +173,7 @@ class UserAdd extends Component {
                             })}
                             style={styles.formInputArea}
                             value={this.state.description}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.description}>
                         </TextInput>
 
@@ -208,11 +211,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'darkblue',
         borderWidth: 0,
         borderColor: 'whitesmoke',
+        borderTopWidth: 1,
     },
     textSmall: {
         fontSize: 16,
         textAlign: 'center',
         margin: 16,
+        marginBottom: 15,
         fontWeight: 'bold',
         color: 'white',
     },

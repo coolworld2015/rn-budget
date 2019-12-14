@@ -39,16 +39,26 @@ class Users extends Component {
         this.getItems();
     }
 
-    componentWillUpdate() {
+    componentDidMount() {
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            () => {
+                this.refreshComponent()
+            }
+        )
+    }
+
+    refreshComponent() {
         if (appConfig.users.refresh) {
             appConfig.users.refresh = false;
 
             this.setState({
-                showProgress: true,
-                resultsCount: 0
+                showProgress: true
             });
 
-            this.getItems();
+            setTimeout(() => {
+                this.getItems()
+            }, 500);
         }
     }
 
@@ -103,16 +113,12 @@ class Users extends Component {
     }
 
     showDetails(rowData) {
-        this.props.navigator.push({
-            index: 51,
-            data: rowData
-        });
+        appConfig.item = rowData;
+        this.props.navigation.navigate('UserDetails');
     }
 
     addItem() {
-        this.props.navigator.push({
-            index: 52
-        })
+        this.props.navigation.navigate('UserAdd');
     }
 
     renderRow(rowData) {

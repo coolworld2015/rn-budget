@@ -29,15 +29,13 @@ class UserDetails extends Component {
             serverError: false
         };
 
-        if (props.data) {
-            this.state = {
-                id: props.data.id,
-                name: props.data.name,
-                pass: props.data.pass,
-                description: props.data.description,
-                showProgress: false
-            };
-        }
+        this.state = {
+            id: appConfig.item.id,
+            name: appConfig.item.name,
+            pass: appConfig.item.pass,
+            description: appConfig.item.description,
+            showProgress: false
+        };
     }
 
     updateItem() {
@@ -73,7 +71,7 @@ class UserDetails extends Component {
             .then((responseData) => {
                 if (responseData.pass) {
                     appConfig.users.refresh = true;
-                    this.props.navigator.pop();
+                    this.props.navigation.pop();
                 } else {
                     this.setState({
                         badCredentials: true
@@ -128,7 +126,7 @@ class UserDetails extends Component {
             .then((responseData) => {
                 if (responseData.text) {
                     appConfig.users.refresh = true;
-                    this.props.navigator.pop();
+                    this.props.navigation.pop();
                 } else {
                     this.setState({
                         badCredentials: true
@@ -148,7 +146,7 @@ class UserDetails extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -222,6 +220,7 @@ class UserDetails extends Component {
                             })}
                             style={styles.formInputBold}
                             value={this.state.name}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.login}>
                         </TextInput>
 
@@ -233,6 +232,7 @@ class UserDetails extends Component {
                             })}
                             style={styles.formInput}
                             value={this.state.pass}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.pass}>
                         </TextInput>
 
@@ -245,6 +245,7 @@ class UserDetails extends Component {
                             })}
                             style={styles.formInputArea}
                             value={this.state.description}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.description}>
                         </TextInput>
 
@@ -282,11 +283,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'darkblue',
         borderWidth: 0,
         borderColor: 'whitesmoke',
+        borderTopWidth: 1,
     },
     textSmall: {
         fontSize: 16,
         textAlign: 'center',
         margin: 16,
+        marginBottom: 15,
         fontWeight: 'bold',
         color: 'white',
     },
