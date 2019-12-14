@@ -1,18 +1,13 @@
 import React, {Component} from 'react';
 import {
-    AppRegistry,
     StyleSheet,
     Text,
     View,
-    Image,
     TouchableHighlight,
-    ListView,
     ScrollView,
     ActivityIndicator,
-    TabBarIOS,
-    NavigatorIOS,
     TextInput,
-    BackAndroid,
+    BackHandler,
     Alert
 } from 'react-native';
 
@@ -20,33 +15,31 @@ class ProjectDetails extends Component {
     constructor(props) {
         super(props);
 
-        /*		BackAndroid.addEventListener('hardwareBackPress', () => {
-                    if (this.props.navigator) {
-                        this.props.navigator.pop();
-                    }
-                    return true;
-                });		*/
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.props.navigation) {
+                this.props.navigation.pop();
+            }
+            return true;
+        });
 
         this.state = {
             serverError: false
-        }
+        };
 
-        if (props.data) {
-            this.state = {
-                id: props.data.id,
-                name: props.data.name,
-                address: props.data.address,
-                phone: props.data.phone,
-                description: props.data.description,
-                sumShow: ((+props.data.sum).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
-                sum: props.data.sum,
-                showProgress: false
-            };
-        }
+        this.state = {
+            id: appConfig.item.id,
+            name: appConfig.item.name,
+            address: appConfig.item.address,
+            phone: appConfig.item.phone,
+            description: appConfig.item.description,
+            sumShow: ((+appConfig.item.sum).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
+            sum: appConfig.item.sum,
+            showProgress: false
+        };
     }
 
     updateItem() {
-        if (this.state.name == '' ||
+        if (this.state.name === '' ||
             this.state.address == '' ||
             this.state.phone == '' ||
             this.state.sum == '' ||
@@ -82,7 +75,7 @@ class ProjectDetails extends Component {
             .then((responseData) => {
                 if (responseData) {
                     appConfig.projects.refresh = true;
-                    this.props.navigator.pop();
+                    this.props.navigation.pop();
                 } else {
                     this.setState({
                         badCredentials: true
@@ -119,7 +112,6 @@ class ProjectDetails extends Component {
     deleteItem() {
         this.setState({
             showProgress: true,
-            bugANDROID: ' '
         });
 
         fetch(appConfig.url + 'api/projects/delete', {
@@ -138,7 +130,7 @@ class ProjectDetails extends Component {
                 console.log(responseData);
                 if (responseData.text) {
                     appConfig.projects.refresh = true;
-                    this.props.navigator.pop();
+                    this.props.navigation.pop();
                 } else {
                     this.setState({
                         badCredentials: true
@@ -160,7 +152,7 @@ class ProjectDetails extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -195,7 +187,8 @@ class ProjectDetails extends Component {
                     justifyContent: 'space-between',
                     backgroundColor: 'darkblue',
                     borderWidth: 0,
-                    borderColor: 'whitesmoke'
+                    borderColor: 'whitesmoke',
+                    borderTopWidth: 1,
                 }}>
                     <View>
                         <TouchableHighlight
@@ -213,7 +206,7 @@ class ProjectDetails extends Component {
                             </Text>
                         </TouchableHighlight>
                     </View>
-                    <View style={{flex: 1, flexDirection: 'column', flexWrap: 'wrap'}}>
+                    <View>
                         <TouchableHighlight
                             underlayColor='#ddd'
                         >

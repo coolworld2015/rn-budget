@@ -36,26 +36,29 @@ class Projects extends Component {
             refreshing: false,
             width: Dimensions.get('window').width
         };
-    }
-
-    componentDidMount() {
-        appConfig.projects.showProgress = true;
-        this.setState({
-            width: Dimensions.get('window').width
-        });
         this.getItems();
     }
 
-    componentWillUpdate() {
+    componentDidMount() {
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            () => {
+                this.refreshComponent()
+            }
+        )
+    }
+
+    refreshComponent() {
         if (appConfig.projects.refresh) {
             appConfig.projects.refresh = false;
 
             this.setState({
-                showProgress: true,
-                resultsCount: 0
+                showProgress: true
             });
 
-            this.getItems();
+            setTimeout(() => {
+                this.getItems()
+            }, 500);
         }
     }
 
@@ -113,17 +116,12 @@ class Projects extends Component {
     }
 
     showDetails(rowData) {
-        this.props.navigator.push({
-            index: 11,
-            data: rowData
-        });
+        appConfig.item = rowData;
+        this.props.navigation.navigate('ProjectDetails');
     }
 
     addItem() {
-        appConfig.projects.showProgress = false;
-        this.props.navigator.push({
-            index: 12
-        });
+        this.props.navigation.navigate('ProjectAdd');
     }
 
     renderRow(rowData) {
@@ -165,7 +163,7 @@ class Projects extends Component {
             }, 300);
         }
 
-        if (this.state.filteredItems == undefined) {
+        if (this.state.filteredItems === undefined) {
             return;
         }
 
@@ -183,12 +181,12 @@ class Projects extends Component {
     }
 
     onChangeText(text) {
-        if (this.state.dataSource == undefined) {
+        if (this.state.dataSource === undefined) {
             return;
         }
 
         var arr = [].concat(this.state.responseData);
-        var items = arr.filter((el) => el.name.toLowerCase().indexOf(text.toLowerCase()) != -1);
+        var items = arr.filter((el) => el.name.toLowerCase().indexOf(text.toLowerCase()) !== -1);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(items),
             resultsCount: items.length,
@@ -301,6 +299,7 @@ class Projects extends Component {
                                 borderWidth: 3,
                                 borderColor: 'white',
                                 borderRadius: 0,
+                                color: 'black',
                                 width: this.state.width * .90,
                             }}
                             value={this.state.searchQuery}

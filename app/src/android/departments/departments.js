@@ -21,8 +21,8 @@ class Departments extends Component {
     constructor(props) {
         super(props);
 
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 != r2
+        let ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2
         });
 
         this.state = {
@@ -296,6 +296,7 @@ class Departments extends Component {
                                 borderWidth: 3,
                                 borderColor: 'white',
                                 borderRadius: 0,
+                                color: 'black',
                                 width: this.state.width * .90,
                             }}
                             value={this.state.searchQuery}

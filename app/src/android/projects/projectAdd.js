@@ -1,46 +1,40 @@
 import React, {Component} from 'react';
 import {
-    AppRegistry,
     StyleSheet,
     Text,
     View,
-    Image,
     TouchableHighlight,
-    ListView,
     ScrollView,
     ActivityIndicator,
-    TabBarIOS,
-    NavigatorIOS,
     TextInput,
-    BackAndroid
+    BackHandler
 } from 'react-native';
 
 class ProjectAdd extends Component {
     constructor(props) {
         super(props);
 
-        /*		BackAndroid.addEventListener('hardwareBackPress', () => {
-                    if (this.props.navigator) {
-                        this.props.navigator.pop();
-                    }
-                    return true;
-                });*/
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.props.navigation) {
+                this.props.navigation.pop();
+            }
+            return true;
+        });
 
         this.state = {
             showProgress: false,
-            bugANDROID: ''
         }
     }
 
     addItem() {
-        if (appConfig.projects.showProgress == true) {
+        if (this.state.showProgress === true) {
             return;
         }
 
-        if (this.state.name == undefined ||
-            this.state.address == undefined ||
-            this.state.phone == undefined ||
-            this.state.description == undefined) {
+        if (this.state.name === undefined ||
+            this.state.address === undefined ||
+            this.state.phone === undefined ||
+            this.state.description === undefined) {
             this.setState({
                 invalidValue: true
             });
@@ -49,10 +43,7 @@ class ProjectAdd extends Component {
 
         this.setState({
             showProgress: true,
-            bugANDROID: ' '
         });
-
-        appConfig.projects.showProgress = true;
 
         fetch(appConfig.url + 'api/projects/add', {
             method: 'post',
@@ -73,7 +64,7 @@ class ProjectAdd extends Component {
             .then((response) => response.json())
             .then((responseData) => {
                 appConfig.projects.refresh = true;
-                this.props.navigator.pop();
+                this.props.navigation.pop();
             })
             .catch((error) => {
                 this.setState({
@@ -88,7 +79,7 @@ class ProjectAdd extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -123,7 +114,8 @@ class ProjectAdd extends Component {
                     justifyContent: 'space-between',
                     backgroundColor: 'darkblue',
                     borderWidth: 0,
-                    borderColor: 'whitesmoke'
+                    borderColor: 'whitesmoke',
+                    borderTopWidth: 1,
                 }}>
                     <View>
                         <TouchableHighlight
@@ -192,6 +184,7 @@ class ProjectAdd extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.name}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.name}>
                         </TextInput>
 
@@ -203,6 +196,7 @@ class ProjectAdd extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.address}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.address}>
                         </TextInput>
 
@@ -214,6 +208,7 @@ class ProjectAdd extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.phone}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.phone}>
                         </TextInput>
 
@@ -226,6 +221,7 @@ class ProjectAdd extends Component {
                             })}
                             style={styles.loginInput1}
                             value={this.state.description}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.description}>
                         </TextInput>
 
