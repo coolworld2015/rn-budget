@@ -311,7 +311,8 @@ class OutputAdd extends Component {
                     justifyContent: 'space-between',
                     backgroundColor: 'darkblue',
                     borderWidth: 0,
-                    borderColor: 'whitesmoke'
+                    borderColor: 'whitesmoke',
+                    borderTopWidth: 1,
                 }}>
                     <View>
                         <TouchableHighlight
@@ -321,7 +322,8 @@ class OutputAdd extends Component {
                             <Text style={{
                                 fontSize: 16,
                                 textAlign: 'center',
-                                margin: 14,
+                                margin: 16,
+                                marginBottom: 15,
                                 fontWeight: 'bold',
                                 color: 'white'
                             }}>
@@ -336,7 +338,7 @@ class OutputAdd extends Component {
                             <Text style={{
                                 fontSize: 20,
                                 textAlign: 'center',
-                                margin: 10,
+                                marginTop: 12,
                                 marginRight: 40,
                                 fontWeight: 'bold',
                                 color: 'white'
