@@ -79,10 +79,8 @@ class Audit extends Component {
     }
 
     showDetails(rowData) {
-        this.props.navigator.push({
-            index: 61,
-            data: rowData
-        })
+        appConfig.item = rowData;
+        this.props.navigation.navigate('AuditDetails');
     }
 
     renderRow(rowData) {
@@ -286,7 +284,7 @@ const styles = StyleSheet.create({
     iconForm: {
         flexDirection: 'row',
         borderColor: 'darkblue',
-        borderWidth: 4
+        borderWidth: 3
     },
     header: {
         flexDirection: 'row',
@@ -302,6 +300,7 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: 'white',
         borderRadius: 0,
+        color: 'black',
         width: Dimensions.get('window').width * .90
     },
     searchSmall: {
@@ -317,6 +316,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         margin: 14,
+        marginBottom: 10,
         fontWeight: 'bold',
         color: 'white'
     },
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
         marginTop: 12,
-        paddingLeft: 10,
+        paddingRight: 40,
         fontWeight: 'bold',
         color: 'white'
     },

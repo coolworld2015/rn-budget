@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     textLarge: {
         fontSize: 20,
         textAlign: 'center',
-        marginTop: 10,
+        marginTop: 12,
         marginBottom: 13,
         paddingRight: 10,
         fontWeight: 'bold',

@@ -26,22 +26,20 @@ class AuditDetails extends Component {
             name: ''
         };
 
-        if (props.data) {
-            let ip = props.data.ip.split(':');
+        let ip = appConfig.item.ip.split(':');
 
-            this.state = {
-                id: props.data.id,
-                name: props.data.name,
-                date: props.data.date,
-                ip: ip[3],
-                description: props.data.description,
-                showProgress: false
-            };
-        }
+        this.state = {
+            id: appConfig.item.id,
+            name: appConfig.item.name,
+            date: appConfig.item.date,
+            ip: ip[3],
+            description: appConfig.item.description,
+            showProgress: false
+        };
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -151,11 +149,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'darkblue',
         borderWidth: 0,
         borderColor: 'whitesmoke',
+        borderTopWidth: 1,
     },
     textSmall: {
         fontSize: 16,
         textAlign: 'center',
         margin: 16,
+        marginBottom: 15,
         fontWeight: 'bold',
         color: 'white',
     },
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
         marginTop: 12,
-        marginRight: 40,
+        marginRight: 20,
         fontWeight: 'bold',
         color: 'white',
     },
