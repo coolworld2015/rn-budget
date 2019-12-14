@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white',
+        backgroundColor: 'white'
     },
     iconForm: {
         flexDirection: 'row',
@@ -394,7 +394,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
-        paddingLeft: 20,
+        marginTop: 12,
+        paddingLeft: 10,
         fontWeight: 'bold',
         color: 'white'
     },
@@ -425,7 +426,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         padding: 10,
         borderColor: '#D7D7D7',
-        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
         color: 'white',
         fontWeight: 'bold'
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
     error: {
         color: 'red',
         paddingTop: 10,
-        textAlign: 'center',
+        textAlign: 'center'
     }
 });
 

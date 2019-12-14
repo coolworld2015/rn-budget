@@ -309,10 +309,10 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
         borderWidth: 0,
-        borderColor: 'whitesmoke'
+        borderColor: 'whitesmoke',
+        borderTopWidth: 1,
     },
     textSmall: {
         fontSize: 16,
@@ -325,6 +325,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
+        marginTop: 12,
         marginRight: 20,
         fontWeight: 'bold',
         color: 'white'

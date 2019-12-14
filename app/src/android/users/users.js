@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     iconForm: {
         flexDirection: 'row',
         borderColor: 'darkblue',
-        borderWidth: 4
+        borderWidth: 3
     },
     header: {
         flexDirection: 'row',
@@ -340,6 +340,7 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: 'white',
         borderRadius: 0,
+        color: 'black',
         width: Dimensions.get('window').width * .90
     },
     searchSmall: {
@@ -355,6 +356,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         margin: 14,
+        marginBottom: 10,
         fontWeight: 'bold',
         color: 'white'
     },
