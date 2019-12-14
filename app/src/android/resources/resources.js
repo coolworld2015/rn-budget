@@ -214,7 +214,7 @@ class Resources extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     clearSearchQuery() {
