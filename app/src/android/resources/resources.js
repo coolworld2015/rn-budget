@@ -21,8 +21,8 @@ class Resources extends Component {
     constructor(props) {
         super(props);
 
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 != r2
+        let ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2
         });
 
         this.state = {
@@ -36,26 +36,29 @@ class Resources extends Component {
             refreshing: false,
             width: Dimensions.get('window').width
         };
-    }
-
-    componentDidMount() {
-        appConfig.goods.showProgress = true;
-        this.setState({
-            width: Dimensions.get('window').width
-        });
         this.getItems();
     }
 
-    componentWillUpdate() {
+    componentDidMount() {
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            () => {
+                this.refreshComponent()
+            }
+        )
+    }
+
+    refreshComponent() {
         if (appConfig.goods.refresh) {
             appConfig.goods.refresh = false;
 
             this.setState({
-                showProgress: true,
-                resultsCount: 0
+                showProgress: true
             });
 
-            this.getItems();
+            setTimeout(() => {
+                this.getItems()
+            }, 500);
         }
     }
 
@@ -113,25 +116,19 @@ class Resources extends Component {
     }
 
     showDetails(rowData) {
-        this.props.navigator.push({
-            index: 21,
-            data: rowData
-        });
+        appConfig.item = rowData;
+        this.props.navigation.navigate('ResourceDetails');
     }
 
     addItem() {
-        appConfig.goods.showProgress = false;
-        this.props.navigator.push({
-            index: 22
-        });
+        this.props.navigation.navigate('ResourceAdd');
     }
 
     renderRow(rowData) {
         return (
             <TouchableHighlight
                 onPress={() => this.showDetails(rowData)}
-                underlayColor='#ddd'
-            >
+                underlayColor='#ddd'>
                 <View style={{
                     flex: 1,
                     flexDirection: 'column',
@@ -308,9 +305,11 @@ class Resources extends Component {
                                 borderWidth: 3,
                                 borderColor: 'white',
                                 borderRadius: 0,
+                                color: 'black',
                                 width: this.state.width * .90,
                             }}
                             value={this.state.searchQuery}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
@@ -378,10 +377,10 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
         borderWidth: 0,
-        borderColor: 'whitesmoke'
+        borderColor: 'whitesmoke',
+        borderTopWidth: 1,
     },
     textSmall: {
         fontSize: 16,

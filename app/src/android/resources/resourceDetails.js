@@ -1,47 +1,40 @@
 import React, {Component} from 'react';
 import {
-    AppRegistry,
     StyleSheet,
     Text,
     View,
-    Image,
     TouchableHighlight,
-    ListView,
     ScrollView,
     ActivityIndicator,
-    TabBarIOS,
-    NavigatorIOS,
     TextInput,
-    BackAndroid,
-    Alert
+    Alert,
+    BackHandler
 } from 'react-native';
 
 class ResourceDetails extends Component {
     constructor(props) {
         super(props);
 
-        /*		BackAndroid.addEventListener('hardwareBackPress', () => {
-                    if (this.props.navigator) {
-                        this.props.navigator.pop();
-                    }
-                    return true;
-                });	*/
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.props.navigator) {
+                this.props.navigator.pop();
+            }
+            return true;
+        });
 
         this.state = {
             serverError: false
-        }
+        };
 
-        if (props.data) {
-            this.state = {
-                id: props.data.id,
-                name: props.data.name,
-                price: ((+props.data.price).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
-                quantity: props.data.quantity,
-                store: props.data.store,
-                description: props.data.description,
-                showProgress: false
-            };
-        }
+        this.state = {
+            id: appConfig.item.id,
+            name: appConfig.item.name,
+            price: ((+appConfig.item.price).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
+            quantity: appConfig.item.quantity,
+            store: appConfig.item.store,
+            description: appConfig.item.description,
+            showProgress: false
+        };
     }
 
     isNumber(n) {
@@ -49,11 +42,11 @@ class ResourceDetails extends Component {
     }
 
     updateItem() {
-        if (this.state.name == '' ||
-            this.state.price == '' ||
-            this.state.description == undefined ||
+        if (this.state.name === '' ||
+            this.state.price === '' ||
+            this.state.description === undefined ||
 
-            this.isNumber(this.state.price) != true) {
+            this.isNumber(this.state.price) !== true) {
             this.setState({
                 invalidValue: true
             });
@@ -62,7 +55,6 @@ class ResourceDetails extends Component {
 
         this.setState({
             showProgress: true,
-            bugANDROID: ' '
         });
 
         fetch(appConfig.url + 'api/goods/update', {
@@ -85,7 +77,7 @@ class ResourceDetails extends Component {
             .then((responseData) => {
                 if (responseData) {
                     appConfig.goods.refresh = true;
-                    this.props.navigator.pop();
+                    this.props.navigation.pop();
                 } else {
                     this.setState({
                         badCredentials: true
@@ -141,7 +133,7 @@ class ResourceDetails extends Component {
                 console.log(responseData);
                 if (responseData.text) {
                     appConfig.goods.refresh = true;
-                    this.props.navigator.pop();
+                    this.props.navigation.pop();
                 } else {
                     this.setState({
                         badCredentials: true
@@ -163,7 +155,7 @@ class ResourceDetails extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -198,13 +190,13 @@ class ResourceDetails extends Component {
                     justifyContent: 'space-between',
                     backgroundColor: 'darkblue',
                     borderWidth: 0,
-                    borderColor: 'whitesmoke'
+                    borderColor: 'whitesmoke',
+                    borderTopWidth: 1,
                 }}>
                     <View>
                         <TouchableHighlight
                             onPress={() => this.goBack()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <Text style={{
                                 fontSize: 16,
                                 textAlign: 'center',
@@ -216,10 +208,9 @@ class ResourceDetails extends Component {
                             </Text>
                         </TouchableHighlight>
                     </View>
-                    <View style={{flex: 1, flexDirection: 'column', flexWrap: 'wrap'}}>
+                    <View>
                         <TouchableHighlight
-                            underlayColor='#ddd'
-                        >
+                            underlayColor='#ddd'>
                             <Text style={{
                                 fontSize: 20,
                                 textAlign: 'center',
@@ -234,8 +225,7 @@ class ResourceDetails extends Component {
                     <View>
                         <TouchableHighlight
                             onPress={() => this.deleteItemDialog()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <Text style={{
                                 fontSize: 16,
                                 textAlign: 'center',
@@ -266,6 +256,7 @@ class ResourceDetails extends Component {
                             editable={false}
                             style={styles.loginInputBold}
                             value={this.state.name}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.name}>
                         </TextInput>
 
@@ -277,6 +268,7 @@ class ResourceDetails extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.price}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.price}>
                         </TextInput>
 
@@ -289,6 +281,7 @@ class ResourceDetails extends Component {
                             })}
                             style={styles.loginInput1}
                             value={this.state.description}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.description}>
                         </TextInput>
 
@@ -323,7 +316,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         margin: 5,
         fontWeight: 'bold',
-        color: 'black'
+        color: 'black',
     },
     itemText: {
         fontSize: 20,

@@ -26,7 +26,6 @@ class UserAdd extends Component {
 
         this.state = {
             showProgress: false,
-            bugANDROID: ''
         };
     }
 
@@ -42,7 +41,6 @@ class UserAdd extends Component {
 
         this.setState({
             showProgress: true,
-            bugANDROID: ' '
         });
 
         fetch(appConfig.url + 'api/users/add', {
