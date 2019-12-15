@@ -21,8 +21,8 @@ class Employees extends Component {
     constructor(props) {
         super(props);
 
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 != r2
+        let ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2
         });
 
         this.state = {
@@ -36,26 +36,29 @@ class Employees extends Component {
             refreshing: false,
             width: Dimensions.get('window').width
         };
-    }
-
-    componentDidMount() {
-        appConfig.employees.showProgress = true;
-        this.setState({
-            width: Dimensions.get('window').width
-        });
         this.getItems();
     }
 
-    componentWillUpdate() {
+    componentDidMount() {
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            () => {
+                this.refreshComponent()
+            }
+        )
+    }
+
+    refreshComponent() {
         if (appConfig.employees.refresh) {
             appConfig.employees.refresh = false;
 
             this.setState({
-                showProgress: true,
-                resultsCount: 0
+                showProgress: true
             });
 
-            this.getItems();
+            setTimeout(() => {
+                this.getItems()
+            }, 500);
         }
     }
 
@@ -113,17 +116,12 @@ class Employees extends Component {
     }
 
     showDetails(rowData) {
-        this.props.navigator.push({
-            index: 41,
-            data: rowData
-        });
+        appConfig.item = rowData;
+        this.props.navigation.navigate('EmployeeDetails');
     }
 
     addItem() {
-        appConfig.employees.showProgress = false;
-        this.props.navigator.push({
-            index: 42
-        });
+        this.props.navigation.navigate('EmployeeAdd');
     }
 
     renderRow(rowData) {
@@ -301,6 +299,7 @@ class Employees extends Component {
                                 borderWidth: 3,
                                 borderColor: 'white',
                                 borderRadius: 0,
+                                color: 'black',
                                 width: this.state.width * .90,
                             }}
                             value={this.state.searchQuery}
@@ -365,17 +364,16 @@ const styles = StyleSheet.create({
     },
     iconForm: {
         flexDirection: 'row',
-        //borderColor: 'lightgray',
         borderColor: 'darkblue',
         borderWidth: 3
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
         borderWidth: 0,
-        borderColor: 'whitesmoke'
+        borderColor: 'whitesmoke',
+        borderTopWidth: 1,
     },
     textSmall: {
         fontSize: 16,

@@ -1,61 +1,54 @@
 import React, {Component} from 'react';
 import {
-    AppRegistry,
     StyleSheet,
     Text,
     View,
-    Image,
     TouchableHighlight,
-    ListView,
     ScrollView,
     ActivityIndicator,
-    TabBarIOS,
-    NavigatorIOS,
     TextInput,
-    BackAndroid,
-    Alert
+    Alert,
+    BackHandler
 } from 'react-native';
 
 class EmployeeDetails extends Component {
     constructor(props) {
         super(props);
 
-        /*		BackAndroid.addEventListener('hardwareBackPress', () => {
-                    if (this.props.navigator) {
-                        this.props.navigator.pop();
-                    }
-                    return true;
-                });	*/
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.props.navigator) {
+                this.props.navigator.pop();
+            }
+            return true;
+        });
 
         this.state = {
             serverError: false
-        }
+        };
 
-        if (props.data) {
-            this.state = {
-                id: props.data.id,
-                name: props.data.name,
-                address: props.data.address,
-                phone: props.data.phone,
-                departmentID: props.data.departmentID,
-                department: props.data.department,
-                departmentShow: 'Department: ' + props.data.department,
-                description: props.data.description,
-                sumShow: ((+props.data.sum).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
-                sum: props.data.sum,
-                showProgress: false
-            };
-        }
+        this.state = {
+            id: appConfig.item.id,
+            name: appConfig.item.name,
+            address: appConfig.item.address,
+            phone: appConfig.item.phone,
+            departmentID: appConfig.item.departmentID,
+            department: appConfig.item.department,
+            departmentShow: 'Department: ' + appConfig.item.department,
+            description: appConfig.item.description,
+            sumShow: ((+appConfig.item.sum).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
+            sum: appConfig.item.sum,
+            showProgress: false
+        };
     }
 
     updateItem() {
-        if (this.state.name == '' ||
-            this.state.address == '' ||
-            this.state.phone == '' ||
-            this.state.sum == '' ||
-            this.state.departmentID == '' ||
-            this.state.department == '' ||
-            this.state.description == '') {
+        if (this.state.name === '' ||
+            this.state.address === '' ||
+            this.state.phone === '' ||
+            this.state.sum === '' ||
+            this.state.departmentID === '' ||
+            this.state.department === '' ||
+            this.state.description === '') {
             this.setState({
                 invalidValue: true
             });
@@ -64,7 +57,6 @@ class EmployeeDetails extends Component {
 
         this.setState({
             showProgress: true,
-            bugANDROID: ' '
         });
 
         fetch(appConfig.url + 'api/employees/update', {
@@ -89,7 +81,7 @@ class EmployeeDetails extends Component {
             .then((responseData) => {
                 if (responseData) {
                     appConfig.employees.refresh = true;
-                    this.props.navigator.pop();
+                    this.props.navigation.pop();
                 } else {
                     this.setState({
                         badCredentials: true
@@ -145,7 +137,7 @@ class EmployeeDetails extends Component {
                 console.log(responseData);
                 if (responseData.text) {
                     appConfig.employees.refresh = true;
-                    this.props.navigator.pop();
+                    this.props.navigation.pop();
                 } else {
                     this.setState({
                         badCredentials: true
@@ -167,7 +159,7 @@ class EmployeeDetails extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -202,13 +194,13 @@ class EmployeeDetails extends Component {
                     justifyContent: 'space-between',
                     backgroundColor: 'darkblue',
                     borderWidth: 0,
-                    borderColor: 'whitesmoke'
+                    borderColor: 'whitesmoke',
+                    borderTopWidth: 1,
                 }}>
                     <View>
                         <TouchableHighlight
                             onPress={() => this.goBack()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <Text style={{
                                 fontSize: 16,
                                 textAlign: 'center',
@@ -220,10 +212,9 @@ class EmployeeDetails extends Component {
                             </Text>
                         </TouchableHighlight>
                     </View>
-                    <View style={{flex: 1, flexDirection: 'column', flexWrap: 'wrap'}}>
+                    <View>
                         <TouchableHighlight
-                            underlayColor='#ddd'
-                        >
+                            underlayColor='#ddd'>
                             <Text style={{
                                 fontSize: 20,
                                 textAlign: 'center',
@@ -238,8 +229,7 @@ class EmployeeDetails extends Component {
                     <View>
                         <TouchableHighlight
                             onPress={() => this.deleteItemDialog()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <Text style={{
                                 fontSize: 16,
                                 textAlign: 'center',
@@ -270,6 +260,7 @@ class EmployeeDetails extends Component {
                             editable={false}
                             style={styles.loginInputBold}
                             value={this.state.name}
+                            placeholderTextColor='gray'
                             placeholder="Name">
                         </TextInput>
 
@@ -279,6 +270,7 @@ class EmployeeDetails extends Component {
                             editable={false}
                             style={styles.loginInputBold}
                             value={this.state.department}
+                            placeholderTextColor='gray'
                             placeholder="Department">
                         </TextInput>
 
@@ -290,6 +282,7 @@ class EmployeeDetails extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.address}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.address}>
                         </TextInput>
 
@@ -301,6 +294,7 @@ class EmployeeDetails extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.phone}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.phone}>
                         </TextInput>
 
@@ -312,6 +306,7 @@ class EmployeeDetails extends Component {
                             })}
                             style={styles.loginInput1}
                             value={this.state.description}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.description}>
                         </TextInput>
 
