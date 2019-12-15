@@ -1,34 +1,28 @@
 import React, {Component} from 'react';
 import {
-    AppRegistry,
     StyleSheet,
     Text,
     View,
-    Image,
     TouchableHighlight,
-    ListView,
     ScrollView,
     ActivityIndicator,
-    TabBarIOS,
-    NavigatorIOS,
     TextInput,
-    BackAndroid
+    BackHandler
 } from 'react-native';
 
 class ResourceAdd extends Component {
     constructor(props) {
         super(props);
 
-        /*		BackAndroid.addEventListener('hardwareBackPress', () => {
-                    if (this.props.navigator) {
-                        this.props.navigator.pop();
-                    }
-                    return true;
-                });*/
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.props.navigator) {
+                this.props.navigator.pop();
+            }
+            return true
+        });
 
         this.state = {
             showProgress: false,
-            bugANDROID: ''
         }
     }
 
@@ -37,15 +31,15 @@ class ResourceAdd extends Component {
     }
 
     addItem() {
-        if (appConfig.goods.showProgress == true) {
+        if (appConfig.goods.showProgress === true) {
             return;
         }
 
-        if (this.state.name == undefined ||
-            this.state.price == undefined ||
-            this.state.description == undefined ||
+        if (this.state.name === undefined ||
+            this.state.price === undefined ||
+            this.state.description === undefined ||
 
-            this.isNumber(this.state.price) != true) {
+            this.isNumber(this.state.price) !== true) {
             this.setState({
                 invalidValue: true
             });
@@ -54,10 +48,7 @@ class ResourceAdd extends Component {
 
         this.setState({
             showProgress: true,
-            bugANDROID: ' '
         });
-
-        appConfig.goods.showProgress = true;
 
         fetch(appConfig.url + 'api/goods/add', {
             method: 'post',
@@ -78,7 +69,7 @@ class ResourceAdd extends Component {
             .then((response) => response.json())
             .then((responseData) => {
                 appConfig.goods.refresh = true;
-                this.props.navigator.pop();
+                this.props.navigation.pop();
             })
             .catch((error) => {
                 this.setState({
@@ -93,7 +84,7 @@ class ResourceAdd extends Component {
     }
 
     goBack() {
-        this.props.navigator.pop();
+        this.props.navigation.pop();
     }
 
     render() {
@@ -197,6 +188,7 @@ class ResourceAdd extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.name}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.name}>
                         </TextInput>
 
@@ -208,6 +200,7 @@ class ResourceAdd extends Component {
                             })}
                             style={styles.loginInput}
                             value={this.state.price}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.price}>
                         </TextInput>
 
@@ -220,6 +213,7 @@ class ResourceAdd extends Component {
                             })}
                             style={styles.loginInput1}
                             value={this.state.description}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.description}>
                         </TextInput>
 

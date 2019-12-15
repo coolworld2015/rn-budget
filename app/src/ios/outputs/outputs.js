@@ -17,7 +17,7 @@ import {
 
 import ListView from 'deprecated-react-native-listview';
 
-class Resources extends Component {
+class Outputs extends Component {
     constructor(props) {
         super(props);
 
@@ -34,8 +34,10 @@ class Resources extends Component {
             positionY: 0,
             searchQuery: '',
             refreshing: false,
+            total: 0,
             width: Dimensions.get('window').width
         };
+        appConfig.outputs.showProgress = true;
         this.getItems();
     }
 
@@ -49,8 +51,8 @@ class Resources extends Component {
     }
 
     refreshComponent() {
-        if (appConfig.goods.refresh) {
-            appConfig.goods.refresh = false;
+        if (appConfig.outputs.refresh) {
+            appConfig.outputs.refresh = false;
 
             this.setState({
                 showProgress: true
@@ -68,10 +70,11 @@ class Resources extends Component {
             resultsCount: 0,
             recordsCount: 15,
             positionY: 0,
-            searchQuery: ''
+            searchQuery: '',
+            total: 0
         });
 
-        fetch(appConfig.url + 'api/goods/get', {
+        fetch(appConfig.url + 'api/outputs/get', {
             method: 'get',
             headers: {
                 'Accept': 'application/json',
@@ -81,7 +84,7 @@ class Resources extends Component {
         })
             .then((response) => response.json())
             .then((responseData) => {
-
+                appConfig.outputs.outputsCount = (responseData.length + 1).toString();
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(responseData.sort(this.sort).slice(0, 15)),
                     resultsCount: responseData.length,
@@ -105,23 +108,23 @@ class Resources extends Component {
     }
 
     sort(a, b) {
-        var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
+        var nameA = +a.invoiceID.toLowerCase(), nameB = +b.invoiceID.toLowerCase();
         if (nameA < nameB) {
-            return -1
+            return 1
         }
         if (nameA > nameB) {
-            return 1
+            return -1
         }
         return 0;
     }
 
     showDetails(rowData) {
-        appConfig.item = rowData;
-        this.props.navigation.navigate('ResourceDetails');
+        this.props.navigation.navigate('OutputDetails', {data: rowData});
     }
 
     addItem() {
-        this.props.navigation.navigate('ResourceAdd');
+        appConfig.outputs.showProgress = false;
+        this.props.navigation.navigate('OutputAdd');
     }
 
     renderRow(rowData) {
@@ -129,20 +132,17 @@ class Resources extends Component {
             <TouchableHighlight
                 onPress={() => this.showDetails(rowData)}
                 underlayColor='#ddd'>
-                <View style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    padding: 12,
-                    borderColor: '#D7D7D7',
-                    borderBottomWidth: 1,
-                    backgroundColor: '#fff'
-                }}>
-                    <Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
-                        {rowData.name}
+                <View style={styles.row}>
+                    <Text style={styles.rowText}>
+                        {rowData.invoiceID} - {rowData.project} - {(rowData.date).split(' ')[0]}
                     </Text>
 
-                    <Text style={{backgroundColor: '#fff', color: 'black', fontWeight: 'bold'}}>
-                        {appConfig.language.price}: {((+rowData.price).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
+                    <Text style={styles.rowText}>
+                        {rowData.description}
+                    </Text>
+
+                    <Text style={styles.rowText}>
+                        {appConfig.language.total}: {((+rowData.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")}
                     </Text>
                 </View>
             </TouchableHighlight>
@@ -150,7 +150,6 @@ class Resources extends Component {
     }
 
     refreshData(event) {
-        console.log(event.nativeEvent.contentOffset);
         if (this.state.showProgress == true) {
             return;
         }
@@ -192,12 +191,16 @@ class Resources extends Component {
         }
 
         var arr = [].concat(this.state.responseData);
-        var items = arr.filter((el) => el.name.toLowerCase().indexOf(text.toLowerCase()) != -1);
+        var items = arr.filter((el) => el.description.toLowerCase().indexOf(text.toLowerCase()) != -1);
+        var total = 0;
+        items.forEach((el) => total += +el.total);
+
         this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(items),
+            dataSource: this.state.dataSource.cloneWithRows(items.slice(0, 15)),
             resultsCount: items.length,
             filteredItems: items,
-            searchQuery: text
+            searchQuery: text,
+            total: total
         })
     }
 
@@ -210,10 +213,6 @@ class Resources extends Component {
         this.getItems();
     }
 
-    goBack() {
-        this.props.navigation.pop();
-    }
-
     clearSearchQuery() {
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(this.state.responseData.slice(0, 15)),
@@ -221,12 +220,13 @@ class Resources extends Component {
             filteredItems: this.state.responseData,
             positionY: 0,
             recordsCount: 15,
-            searchQuery: ''
+            searchQuery: '',
+            total: 0
         });
     }
 
     render() {
-        let errorCtrl, loader, image;
+        let errorCtrl, loader, image, total;
 
         if (this.state.serverError) {
             errorCtrl = <Text style={styles.error}>
@@ -255,26 +255,28 @@ class Resources extends Component {
             />;
         }
 
+        if (this.state.total > 0) {
+            total = <Text>
+                {"\u00a0"}({((+this.state.total).toFixed(2)).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")})
+            </Text>;
+        }
+
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View>
-                        <TouchableHighlight
-                            onPress={() => this.goBack()}
-                            underlayColor='darkblue'
-                        >
+                        <TouchableWithoutFeedback>
                             <View>
                                 <Text style={styles.textSmall}>
-                                    {appConfig.language.back}
                                 </Text>
                             </View>
-                        </TouchableHighlight>
+                        </TouchableWithoutFeedback>
                     </View>
                     <View>
                         <TouchableWithoutFeedback>
                             <View>
                                 <Text style={styles.textLarge}>
-                                    {appConfig.language.resources}
+                                    {appConfig.language.outputs}
                                 </Text>
                             </View>
                         </TouchableWithoutFeedback>
@@ -282,8 +284,7 @@ class Resources extends Component {
                     <View>
                         <TouchableHighlight
                             onPress={() => this.addItem()}
-                            underlayColor='darkblue'
-                        >
+                            underlayColor='darkblue'>
                             <View>
                                 <Text style={styles.textSmall}>
                                     {appConfig.language.add}
@@ -298,33 +299,15 @@ class Resources extends Component {
                         <TextInput
                             underlineColorAndroid='rgba(0,0,0,0)'
                             onChangeText={this.onChangeText.bind(this)}
-                            style={{
-                                height: 45,
-                                padding: 5,
-                                backgroundColor: 'white',
-                                borderWidth: 3,
-                                borderColor: 'white',
-                                borderRadius: 0,
-                                color: 'black',
-                                width: this.state.width * .90,
-                            }}
+                            style={styles.searchLarge}
                             value={this.state.searchQuery}
                             placeholderTextColor='gray'
                             placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
-                    <View style={{
-                        height: 45,
-                        backgroundColor: 'white',
-                        borderWidth: 3,
-                        borderColor: 'white',
-                        marginLeft: -10,
-                        paddingLeft: 5,
-                        width: this.state.width * .10,
-                    }}>
+                    <View style={styles.searchSmall}>
                         <TouchableWithoutFeedback
-                            onPress={() => this.clearSearchQuery()}
-                        >
+                            onPress={() => this.clearSearchQuery()}>
                             <View>
                                 {image}
                             </View>
@@ -343,8 +326,7 @@ class Resources extends Component {
                                     refreshing={this.state.refreshing}
                                     onRefresh={this.refreshDataAndroid.bind(this)}
                                 />
-                            }
-                >
+                            }>
                     <ListView
                         enableEmptySections={true}
                         dataSource={this.state.dataSource}
@@ -355,6 +337,7 @@ class Resources extends Component {
                 <View>
                     <Text style={styles.countFooter}>
                         {appConfig.language.records} {this.state.resultsCount.toString()}
+                        {total}
                     </Text>
                 </View>
             </View>
@@ -370,7 +353,6 @@ const styles = StyleSheet.create({
     },
     iconForm: {
         flexDirection: 'row',
-        //borderColor: 'lightgray',
         borderColor: 'darkblue',
         borderWidth: 3
     },
@@ -378,9 +360,27 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: 'darkblue',
-        borderWidth: 0,
-        borderColor: 'whitesmoke',
         borderTopWidth: 1,
+        borderColor: 'white'
+    },
+    searchLarge: {
+        height: 45,
+        padding: 5,
+        backgroundColor: 'white',
+        borderWidth: 3,
+        borderColor: 'white',
+        borderRadius: 0,
+        color: 'black',
+        width: Dimensions.get('window').width * .90
+    },
+    searchSmall: {
+        height: 45,
+        backgroundColor: 'white',
+        borderWidth: 3,
+        borderColor: 'white',
+        marginLeft: -5,
+        paddingLeft: 5,
+        width: Dimensions.get('window').width * .10
     },
     textSmall: {
         fontSize: 16,
@@ -394,7 +394,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
-        marginRight: 20,
+        marginTop: 12,
+        paddingLeft: 10,
         fontWeight: 'bold',
         color: 'white'
     },
@@ -409,9 +410,8 @@ const styles = StyleSheet.create({
     },
     row: {
         flex: 1,
-        flexDirection: 'row',
-        padding: 20,
-        alignItems: 'center',
+        flexDirection: 'column',
+        padding: 12,
         borderColor: '#D7D7D7',
         borderBottomWidth: 1,
         backgroundColor: '#fff'
@@ -426,7 +426,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         padding: 10,
         borderColor: '#D7D7D7',
-        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
         color: 'white',
         fontWeight: 'bold'
@@ -442,4 +441,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Resources;
+export default Outputs;

@@ -9,7 +9,8 @@ import {
     ActivityIndicator,
     TextInput,
     Image,
-    Dimensions
+    Dimensions,
+    RefreshControl
 } from 'react-native';
 
 import ListView from 'deprecated-react-native-listview';
@@ -30,15 +31,32 @@ class Store extends Component {
             recordsCount: 25,
             positionY: 0,
             searchQuery: '',
-            refreshing: false
+            refreshing: false,
+            width: Dimensions.get('window').width
         };
-
         this.getItems();
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.navigation.state.params.refresh) {
-            this.getItems();
+    componentDidMount() {
+        this.didFocusListener = this.props.navigation.addListener(
+            'didFocus',
+            () => {
+                this.refreshComponent()
+            }
+        )
+    }
+
+    refreshComponent() {
+        if (appConfig.assets.refresh) {
+            appConfig.assets.refresh = false;
+
+            this.setState({
+                showProgress: true
+            });
+
+            setTimeout(() => {
+                this.getItems()
+            }, 500);
         }
     }
 
@@ -62,7 +80,7 @@ class Store extends Component {
             .then((response) => response.json())
             .then((responseData) => {
                 let arr = [].concat(responseData.sort(this.sort));
-                let items = arr.filter((el) => el.store === true);
+                let items = arr.filter((el) => el.store == true);
 
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(items),
@@ -87,7 +105,7 @@ class Store extends Component {
     }
 
     sort(a, b) {
-        let nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
+        var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
         if (nameA < nameB) {
             return -1
         }
@@ -123,55 +141,53 @@ class Store extends Component {
     }
 
     refreshData(event) {
-        if (this.state.showProgress === true) {
+        if (this.state.showProgress == true) {
             return;
         }
 
-        if (event.nativeEvent.contentOffset.y <= -100) {
-            this.setState({
-                showProgress: true,
-                resultsCount: 0,
-                recordsCount: 25,
-                positionY: 0,
-                searchQuery: ''
-            });
-
-            setTimeout(() => {
-                this.getItems();
-            }, 300)
-        }
-
-        if (this.state.filteredItems === undefined) {
+        if (this.state.filteredItems == undefined) {
             return;
         }
 
-        let items, positionY, recordsCount;
+        var items, positionY, recordsCount;
         recordsCount = this.state.recordsCount;
         positionY = this.state.positionY;
         items = this.state.filteredItems.slice(0, recordsCount);
 
-        if (event.nativeEvent.contentOffset.y >= positionY - 10) {
+        console.log(positionY + ' - ' + recordsCount + ' - ' + items.length);
+
+        if (event.nativeEvent.contentOffset.y >= positionY) {
+            console.log(items.length);
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(items),
                 recordsCount: recordsCount + 10,
-                positionY: positionY + 500
-            })
+                positionY: positionY + 400
+            });
         }
     }
 
     onChangeText(text) {
-        if (this.state.dataSource === undefined) {
+        if (this.state.dataSource == undefined) {
             return;
         }
 
-        let arr = [].concat(this.state.responseData);
-        let items = arr.filter((el) => el.name.toLowerCase().indexOf(text.toLowerCase()) !== -1);
+        var arr = [].concat(this.state.responseData);
+        var items = arr.filter((el) => el.name.toLowerCase().indexOf(text.toLowerCase()) != -1);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(items),
             resultsCount: items.length,
             filteredItems: items,
             searchQuery: text
         })
+    }
+
+    refreshDataAndroid() {
+        this.setState({
+            showProgress: true,
+            resultsCount: 0
+        });
+
+        this.getItems();
     }
 
     clearSearchQuery() {
@@ -183,17 +199,13 @@ class Store extends Component {
         });
     }
 
-    onMenu() {
-        //appConfig.drawer.openDrawer();
-    }
-
     render() {
         let errorCtrl, loader, image;
 
         if (this.state.serverError) {
             errorCtrl = <Text style={styles.error}>
                 Something went wrong.
-            </Text>
+            </Text>;
         }
 
         if (this.state.showProgress) {
@@ -203,7 +215,7 @@ class Store extends Component {
                     color="darkblue"
                     animating={true}
                 />
-            </View>
+            </View>;
         }
 
         if (this.state.searchQuery.length > 0) {
@@ -214,19 +226,17 @@ class Store extends Component {
                     width: 20,
                     marginTop: 10
                 }}
-            />
+            />;
         }
 
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
                     <View>
-                        <TouchableWithoutFeedback onPress={this.onMenu.bind(this)}>
+                        <TouchableWithoutFeedback>
                             <View>
-                                <Image
-                                    style={styles.menu}
-                                    source={require('../../../img/menu.png')}
-                                />
+                                <Text style={styles.textSmall}>
+                                </Text>
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
@@ -252,9 +262,11 @@ class Store extends Component {
                 <View style={styles.iconForm}>
                     <View>
                         <TextInput
+                            underlineColorAndroid='rgba(0,0,0,0)'
                             onChangeText={this.onChangeText.bind(this)}
                             style={styles.searchLarge}
                             value={this.state.searchQuery}
+                            placeholderTextColor='gray'
                             placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
@@ -272,8 +284,14 @@ class Store extends Component {
 
                 {loader}
 
-                <ScrollView
-                    onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}>
+                <ScrollView onScroll={this.refreshData.bind(this)} scrollEventThrottle={16}
+                            refreshControl={
+                                <RefreshControl
+                                    enabled={true}
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={this.refreshDataAndroid.bind(this)}
+                                />
+                            }>
                     <ListView
                         enableEmptySections={true}
                         dataSource={this.state.dataSource}
@@ -281,7 +299,7 @@ class Store extends Component {
                     />
                 </ScrollView>
 
-                <View>
+                <View style={{marginBottom: 0}}>
                     <Text style={styles.countFooter}>
                         {appConfig.language.records} {this.state.resultsCount.toString()}
                     </Text>
@@ -296,19 +314,19 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
     },
     iconForm: {
         flexDirection: 'row',
         borderColor: 'darkblue',
-        borderWidth: 3
+        borderWidth: 3,
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: 'darkblue',
-        borderWidth: 0,
-        borderColor: 'whitesmoke'
+        borderTopWidth: 1,
+        borderColor: 'white'
     },
     searchLarge: {
         height: 45,
@@ -317,6 +335,7 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: 'white',
         borderRadius: 0,
+        color: 'black',
         width: Dimensions.get('window').width * .90
     },
     searchSmall: {
@@ -332,6 +351,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         margin: 14,
+        marginBottom: 10,
         fontWeight: 'bold',
         color: 'white'
     },
@@ -340,7 +360,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         margin: 10,
         marginTop: 12,
-        marginLeft: -10,
+        paddingRight: 10,
         fontWeight: 'bold',
         color: 'white'
     },

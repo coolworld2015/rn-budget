@@ -21,8 +21,8 @@ class Resources extends Component {
     constructor(props) {
         super(props);
 
-        let ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
+        var ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 != r2
         });
 
         this.state = {
@@ -36,29 +36,26 @@ class Resources extends Component {
             refreshing: false,
             width: Dimensions.get('window').width
         };
-        this.getItems();
     }
 
     componentDidMount() {
-        this.didFocusListener = this.props.navigation.addListener(
-            'didFocus',
-            () => {
-                this.refreshComponent()
-            }
-        )
+        appConfig.goods.showProgress = true;
+        this.setState({
+            width: Dimensions.get('window').width
+        });
+        this.getItems();
     }
 
-    refreshComponent() {
+    componentWillUpdate() {
         if (appConfig.goods.refresh) {
             appConfig.goods.refresh = false;
 
             this.setState({
-                showProgress: true
+                showProgress: true,
+                resultsCount: 0
             });
 
-            setTimeout(() => {
-                this.getItems()
-            }, 500);
+            this.getItems();
         }
     }
 
@@ -116,19 +113,25 @@ class Resources extends Component {
     }
 
     showDetails(rowData) {
-        appConfig.item = rowData;
-        this.props.navigation.navigate('ResourceDetails');
+        this.props.navigator.push({
+            index: 21,
+            data: rowData
+        });
     }
 
     addItem() {
-        this.props.navigation.navigate('ResourceAdd');
+        appConfig.goods.showProgress = false;
+        this.props.navigator.push({
+            index: 22
+        });
     }
 
     renderRow(rowData) {
         return (
             <TouchableHighlight
                 onPress={() => this.showDetails(rowData)}
-                underlayColor='#ddd'>
+                underlayColor='#ddd'
+            >
                 <View style={{
                     flex: 1,
                     flexDirection: 'column',
@@ -211,7 +214,7 @@ class Resources extends Component {
     }
 
     goBack() {
-        this.props.navigation.pop();
+        this.props.navigator.pop();
     }
 
     clearSearchQuery() {
@@ -305,11 +308,9 @@ class Resources extends Component {
                                 borderWidth: 3,
                                 borderColor: 'white',
                                 borderRadius: 0,
-                                color: 'black',
                                 width: this.state.width * .90,
                             }}
                             value={this.state.searchQuery}
-                            placeholderTextColor='gray'
                             placeholder={appConfig.language.search}>
                         </TextInput>
                     </View>
@@ -377,10 +378,10 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        //backgroundColor: '#48BBEC',
         backgroundColor: 'darkblue',
         borderWidth: 0,
-        borderColor: 'whitesmoke',
-        borderTopWidth: 1,
+        borderColor: 'whitesmoke'
     },
     textSmall: {
         fontSize: 16,
