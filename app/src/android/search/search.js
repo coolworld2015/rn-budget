@@ -50,7 +50,7 @@ class Search extends Component {
             calendarDate: new Date(),
             defaultDate: new Date(),
             allDate: new Date(),
-            startText: '01/01/19',
+            startText: '01/01/20',
             endText: todayDate,
             simpleText: 'pick a date',
             spinnerText: 'pick a date',
