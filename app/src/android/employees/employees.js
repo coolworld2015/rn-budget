@@ -365,7 +365,8 @@ const styles = StyleSheet.create({
     iconForm: {
         flexDirection: 'row',
         borderColor: 'darkblue',
-        borderWidth: 3
+        borderWidth: 3,
+        borderBottomWidth: 4,
     },
     header: {
         flexDirection: 'row',

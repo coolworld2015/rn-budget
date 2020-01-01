@@ -320,6 +320,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderColor: 'darkblue',
         borderWidth: 3,
+        borderBottomWidth: 4,
     },
     header: {
         flexDirection: 'row',

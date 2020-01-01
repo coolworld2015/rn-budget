@@ -372,7 +372,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         //borderColor: 'lightgray',
         borderColor: 'darkblue',
-        borderWidth: 3
+        borderWidth: 3,
+        borderBottomWidth: 4,
     },
     header: {
         flexDirection: 'row',
