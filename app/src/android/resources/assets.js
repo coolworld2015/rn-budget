@@ -80,7 +80,7 @@ class Store extends Component {
             .then((response) => response.json())
             .then((responseData) => {
                 let arr = [].concat(responseData.sort(this.sort));
-                let items = arr.filter((el) => el.store == true);
+                let items = arr.filter((el) => el.store === true && el.quantity !== '0');
 
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(items),
